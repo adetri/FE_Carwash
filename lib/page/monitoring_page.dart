@@ -135,14 +135,17 @@ class _MonitoringState extends State<Monitoring> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => PayOrder()),
+                                        builder: (context) =>
+                                            PayOrder(id_order: order)),
                                   );
                                   // Add other actions for true status here
                                 } else {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Preorder()),
+                                        builder: (context) => Preorder(
+                                              spot_id: id,
+                                            )),
                                   );
                                   // Execute code when status is false
 

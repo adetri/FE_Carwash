@@ -10,10 +10,12 @@ import 'order_detail.dart';
 import 'monitoring_page.dart';
 
 class Preorder extends StatefulWidget {
-  Preorder({Key? key, List? data1}) : super(key: key) {
+  Preorder({Key? key, List? data1, required int spot_id}) : super(key: key) {
     this.data1 = data1 ?? [];
+    this.spot_id = spot_id;
   }
 
+  late int spot_id;
   late dynamic data1;
 
   @override
@@ -46,6 +48,8 @@ class _PreorderState extends State<Preorder> {
     // Call the fetchData method when the widget is first built
     fetchData();
     itemdata(requestBody, customHeaders);
+
+    print(widget.spot_id);
   }
 
   void add_list_item() {
@@ -347,7 +351,9 @@ class _PreorderState extends State<Preorder> {
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         ItemDetail(
-                                                            data1: payload)),
+                                                            data1: payload,
+                                                            spot_id: widget
+                                                                .spot_id)),
                                               );
                                               //
                                             },
@@ -383,6 +389,7 @@ class _PreorderState extends State<Preorder> {
           OrderSum(
             sub_total: sub_total,
             list_item: list_item,
+            spot_id: widget.spot_id,
           ),
         ],
       ),
@@ -415,11 +422,14 @@ class OrderSum extends StatelessWidget {
     Key? key,
     required this.sub_total,
     required this.list_item,
+    required this.spot_id,
   }) : super(key: key) {
     // Call your method here
     methodsetter();
   }
   final Map<String, int> sub_total;
+  final int spot_id;
+
   final List list_item;
   late final String item_count;
   late final String total;
@@ -441,9 +451,8 @@ class OrderSum extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => OrderDetail(
-                        data1: list_item,
-                      )),
+                  builder: (context) =>
+                      OrderDetail(data1: list_item, spot_id: spot_id)),
             );
           },
           child: Container(

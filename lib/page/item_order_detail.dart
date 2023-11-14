@@ -6,9 +6,12 @@ import '../inc/method.dart';
 import 'pre_order.dart';
 
 class ItemDetail extends StatefulWidget {
-  ItemDetail({dynamic data1, Key? key}) : super(key: key) {
+  ItemDetail({dynamic data1, Key? key, required int spot_id})
+      : super(key: key) {
     this.data1 = data1 ?? {};
+    this.spot_id = spot_id;
   }
+  late int spot_id;
 
   late dynamic data1;
 
@@ -32,6 +35,7 @@ class _ItemDetailState extends State<ItemDetail> {
     add_existing_item();
     itemdata();
     testmethod();
+    print(widget.spot_id);
     // Call the fetchData method when the widget is first built
   }
 
@@ -115,8 +119,9 @@ class _ItemDetailState extends State<ItemDetail> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => Preorder(
-                          data1:
-                              requestBody), // Ensure you pass 'data' as a named parameter
+                        data1: requestBody,
+                        spot_id: widget.spot_id,
+                      ), // Ensure you pass 'data' as a named parameter
                     ),
                   );
                 },
@@ -391,8 +396,9 @@ class _ItemDetailState extends State<ItemDetail> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => Preorder(
-                                                data1:
-                                                    requestBody), // Ensure you pass 'data' as a named parameter
+                                              data1: requestBody,
+                                              spot_id: widget.spot_id,
+                                            ), // Ensure you pass 'data' as a named parameter
                                           ),
                                         );
                                       },
