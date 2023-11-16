@@ -7,10 +7,14 @@ import '../env.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:flutter/services.dart';
+import 'print.dart';
+import 'package:intl/intl.dart';
 
 class PayOrder extends StatefulWidget {
   // ignore: non_constant_identifier_names
-  const PayOrder({super.key, required this.id_order});
+  PayOrder({super.key, required this.id_order});
 
   final int id_order;
   @override
@@ -19,12 +23,27 @@ class PayOrder extends StatefulWidget {
 
 class _PayOrderState extends State<PayOrder> {
   dynamic d_order;
+  dynamic paylod = {};
+  BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
 
   @override
   void initState() {
     super.initState();
     call_order();
   }
+
+  // dynamic printer_check() async {
+  //   bluetooth.isConnected.then((isConnected) {
+  //     if (isConnected == true) {
+  //       print("bluetooth is conect");
+
+  //       return 1;
+  //     } else {
+  //       print("bluetooth is not conect");
+  //       return 0;
+  //     }
+  //   });
+  // }
 
   void call_order() async {
     String apiUrl =
@@ -43,7 +62,7 @@ class _PayOrderState extends State<PayOrder> {
       setState(() {
         d_order = json.decode(response.body);
       });
-      // print(d_order);
+      print(d_order);
       print("Success with order");
     } else {
       print(
@@ -62,7 +81,7 @@ class _PayOrderState extends State<PayOrder> {
     final response = await http.post(
       Uri.parse(apiUrl),
       headers: headers,
-      // body: jsonEncode(paylod),
+      body: jsonEncode(paylod),
     );
 
     return {"status_code": response.statusCode, "response": response.body};
@@ -84,6 +103,42 @@ class _PayOrderState extends State<PayOrder> {
 
     return {"status_code": response.statusCode, "response": response.body};
   }
+
+  void printRecipt(data) {
+    bluetooth.isConnected.then((isConnected) {
+      bluetooth.printCustom(data['outlet_name'], 2, 1);
+      bluetooth.printCustom(data['outlet_alamt'], 1, 1);
+      bluetooth.printCustom(data['phone_number'], 1, 1);
+
+      bluetooth.printNewLine();
+      bluetooth.printCustom(data['datetime'], 0, 0);
+
+      bluetooth.printCustom("No order : ${data['no_order']}", 0, 0);
+
+      bluetooth.printCustom("==========================================", 0, 0);
+
+      for (var d in data['list_item']) {
+        String item_name = d['item']['name'];
+        int price = d['price'];
+        if (d['subitem_service_list'].isNotEmpty) {
+          String sub_item = d['subitem_service_list'][0]['sub_item']['name'];
+          item_name = "$item_name ($sub_item)";
+          int harga_sub = d['subitem_service_list'][0]['sub_item']['price'];
+          price += harga_sub;
+        }
+        int sub_total = d['qty'] * price;
+        bluetooth.printCustom(item_name, 0, 0);
+        bluetooth.printLeftRight("${d['qty'].toString()} x ${price.toString()}",
+            sub_total.toString(), 0);
+      }
+
+      bluetooth.printCustom("==========================================", 0, 0);
+      bluetooth.printLeftRight("Total", data['total'], 0);
+      bluetooth.paperCut();
+    });
+  }
+
+  int? nominal = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -111,6 +166,21 @@ class _PayOrderState extends State<PayOrder> {
         ? data['order']['order_washer_list']
         : [];
 
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(now);
+
+    dynamic data_recipe = {
+      "sub_total": data['order']['sub_total'],
+      "total": formatCurrency(
+        data['order']['sub_total'],
+      ),
+      "list_item": list_item,
+      "outlet_name": "Mr Carwash",
+      "outlet_alamt": "Jagakarsa, Kec. Jagakarsa, Kota Jakarta Selatan",
+      "phone_number": "085157792607",
+      "datetime": formattedDate,
+      "no_order": data['order']['order_code']
+    };
     // String total = formatCurrency(d_order['sub_total']);
 
     return Scaffold(
@@ -187,40 +257,46 @@ class _PayOrderState extends State<PayOrder> {
                       ),
                     ),
                     wahser_list(washer_list),
-                    Container(
-                      margin: EdgeInsets.only(top: 30),
-                      height: 50,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 105, 216, 109),
-                          borderRadius: BorderRadius.circular(4)),
-                      child: TextButton(
-                        onPressed: () async {
-                          print("click");
-
-                          Map<String, dynamic> send_req =
-                              await pay_order(id_order);
-
-                          if (send_req['status_code'] == 201) {
-                            dialog("Success to add order data", "Success",
-                                monitoring: "istrue");
-                          } else {
-                            dialog(send_req['response'], "Failed");
-                          }
-                          print(send_req);
-                        },
-                        child: Center(
+                    Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(top: 20),
+                          alignment: Alignment.topLeft,
                           child: Text(
                             "Pay",
-                            textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white),
+                              fontSize: 25,
+                            ),
+                            textAlign: TextAlign.left,
                           ),
                         ),
-                      ),
+                        Container(
+                          margin: EdgeInsets.only(top: 10),
+                          child: TextField(
+                            onChanged: (num) {
+                              setState(() {
+                                nominal = int.parse(num);
+
+                                print(nominal);
+                              });
+                            },
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly,
+                              // You can add more formatters if needed, for instance, to limit the length
+                              // LengthLimitingTextInputFormatter(5), // Allows only 5 characters
+                            ],
+                            decoration: InputDecoration(
+                              labelText: 'Nominal',
+                              hintText: 'Nominal',
+                              border: OutlineInputBorder(),
+                            ),
+                            // Additional properties and handlers for the TextField
+                          ),
+                        )
+                      ],
                     ),
+                    pay_btn(data_recipe, context),
                     Container(
                       margin: EdgeInsets.only(top: 10),
                       height: 50,
@@ -285,6 +361,62 @@ class _PayOrderState extends State<PayOrder> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Container pay_btn(data, BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(top: 30),
+      height: 50,
+      width: double.infinity,
+      decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 105, 216, 109),
+          borderRadius: BorderRadius.circular(4)),
+      child: TextButton(
+        onPressed: () async {
+          // print(data['order']['sub_total']);
+          print(nominal);
+          print(data);
+          if (nominal! < data['sub_total']) {
+            dialog(
+                "Nominal Most be Equar or higher than total", "Nominal Error");
+            return;
+          }
+
+          int? printer_cek = await printerCheck();
+
+          if (printer_cek == 1) {
+            printRecipt(data);
+            // paylod['nominal'] = nominal;
+            // Map<String, dynamic> send_req =
+            //     await pay_order(id_order);
+
+            // if (send_req['status_code'] == 201) {
+            //   dialog("Success to add order data", "Success",
+            //       monitoring: "istrue");
+            // } else {
+            //   dialog(send_req['response'], "Failed");
+            // }
+            // print(send_req);
+          } else {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    ThermalPrint(), // Ensure you pass 'data' as a named parameter
+              ),
+            );
+          }
+        },
+        child: Center(
+          child: Text(
+            "Pay",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.w600, color: Colors.white),
+          ),
         ),
       ),
     );

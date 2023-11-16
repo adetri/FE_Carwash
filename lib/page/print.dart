@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/page/monitoring_page.dart';
+
+import '../inc/method.dart';
 
 class ThermalPrint extends StatefulWidget {
   const ThermalPrint({super.key});
@@ -116,7 +119,7 @@ class _ThermalPrintState extends State<ThermalPrint> {
     }
   }
 
-  void test_method() {
+  void test_method() async {
     items = [];
     if (_devices.isEmpty) {
       print("devices empty");
@@ -126,11 +129,15 @@ class _ThermalPrintState extends State<ThermalPrint> {
       });
     }
 
+    int? printer_cek = await printerCheck();
+
     setState(() {
-      _connected = BlueThermalPrinter.CONNECTED == true ||
-              BlueThermalPrinter.CONNECTED == 1
-          ? true
-          : false;
+      if (printer_cek == 1) {
+        _connected = true;
+      } else {
+        _connected == false;
+      }
+      print(_connected);
     });
   }
 
@@ -183,6 +190,36 @@ class _ThermalPrintState extends State<ThermalPrint> {
     return Scaffold(
         body: Column(
       children: [
+        Container(
+          margin: EdgeInsets.only(top: 50),
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Monitoring()),
+                  );
+                },
+                child: Container(
+                  height: 50,
+                  alignment: Alignment.topLeft,
+                  child: Image.asset('assets/back.png'),
+                ),
+              ),
+              Container(
+                child: Text(
+                  'Printer Bluetooth',
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.left, // Apply bold font weight
+                ),
+              ),
+            ],
+          ),
+        ),
         Expanded(
           child: ListView.builder(
             itemCount: items.length,
