@@ -75,36 +75,27 @@ class _MonitoringState extends State<Monitoring> {
                 children: [
                   Container(
                     width: double.infinity,
-                    margin: EdgeInsets.only(
-                        top: 50, left: 50, bottom: 20, right: 50),
+                    margin: EdgeInsets.only(top: 50, bottom: 20, right: 50),
                     child: Row(
                       children: [
-                        Expanded(
-                          flex: 1,
-                          child: GestureDetector(
-                            onTap: () {},
-                            child: Container(
-                              height: 50,
-                              alignment: Alignment.topLeft,
-                              child: Image.asset('assets/back.png'),
-                            ),
+                        GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            height: 50,
+                            alignment: Alignment.topLeft,
+                            child: Image.asset('assets/back.png'),
                           ),
                         ),
-                        Expanded(
-                          flex: 1,
-                          child: Container(
-                            // color: Colors.blue,
-                            child: Text(
-                              'Monitoring',
-                              style: TextStyle(
-                                fontSize: 40,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign:
-                                  TextAlign.center, // Apply bold font weight
+                        Container(
+                          child: Text(
+                            'Monitoring',
+                            style: TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
                             ),
+                            textAlign: TextAlign.left, // Apply bold font weight
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),

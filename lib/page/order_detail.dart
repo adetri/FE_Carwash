@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/page/pre_order.dart';
 import 'monitoring_page.dart';
 import '../inc/method.dart';
 import '../env.dart';
@@ -132,15 +133,12 @@ class _OrderDetailState extends State<OrderDetail> {
       washerValues = [];
     }
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Order Detail'),
-      ),
       body: Stack(
         children: [
           SingleChildScrollView(
             child: Column(
               children: [
-                Tittle(),
+                Tittle(list_item, widget.spot_id),
                 Container(
                   child: Align(
                     alignment: Alignment.topLeft,
@@ -405,17 +403,17 @@ class _OrderDetailState extends State<OrderDetail> {
                       children: [
                         Expanded(
                           flex: 1,
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                list_item[index]['qty'] += 1;
-                              });
-                            },
-                            child: Container(
-                              height: 50,
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Image.asset('assets/Plus.png'),
+                          child: Container(
+                            height: 50,
+                            child: TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  list_item[index]['qty'] += 1;
+                                });
+                              },
+                              child: Image.asset(
+                                'assets/Plus.png',
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
@@ -431,28 +429,28 @@ class _OrderDetailState extends State<OrderDetail> {
                         ),
                         Expanded(
                           flex: 1,
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                // print(inputText);
+                          child: Container(
+                            height: 50,
+                            child: TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  // print(inputText);
 
-                                count_total();
+                                  count_total();
 
-                                if (list_item[index]['qty'] > 1) {
-                                  list_item[index]['qty'] -= 1;
-                                } else {
-                                  list_item.remove(index);
+                                  if (list_item[index]['qty'] > 1) {
+                                    list_item[index]['qty'] -= 1;
+                                  } else {
+                                    list_item.remove(index);
 
-                                  list_item.removeWhere(
-                                      (item) => item['item_id'] == item_id);
-                                }
-                              });
-                            },
-                            child: Container(
-                              height: 50,
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Image.asset('assets/Minus.png'),
+                                    list_item.removeWhere(
+                                        (item) => item['item_id'] == item_id);
+                                  }
+                                });
+                              },
+                              child: Image.asset(
+                                'assets/Minus.png',
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
@@ -567,20 +565,53 @@ class _OrderDetailState extends State<OrderDetail> {
 }
 
 class Tittle extends StatelessWidget {
-  const Tittle({
-    super.key,
-  });
+  final List list_item;
+  final spot_id;
+
+  const Tittle(
+    this.list_item,
+    this.spot_id, {
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.center,
-      child: Container(
-        margin: EdgeInsets.all(20.0), // Add margin here
-        child: Text(
-          "Order Detail",
-          style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
-        ),
+    return Container(
+      margin: EdgeInsets.only(top: 50),
+      child: Row(
+        children: [
+          Container(
+            height: 50,
+            alignment: Alignment.topLeft,
+            child: TextButton(
+              onPressed: () {
+                print("press");
+                print(list_item);
+                print(spot_id);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Preorder(
+                      data1: list_item,
+                      spot_id: spot_id,
+                    ),
+                  ),
+                );
+              },
+              child: Image.asset('assets/back.png'),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              margin: EdgeInsets.all(20.0),
+              child: Text(
+                "Order Detail",
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

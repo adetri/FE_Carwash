@@ -152,35 +152,42 @@ class _PreorderState extends State<Preorder> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            Monitoring(), // Ensure you pass 'data' as a named parameter
+                Container(
+                  margin: EdgeInsets.only(top: 50),
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  Monitoring(), // Ensure you pass 'data' as a named parameter
+                            ),
+                          );
+                        },
+                        child: Container(
+                          height: 50,
+                          // margin: EdgeInsets.only(top: 50, left: 10),
+                          alignment: Alignment.topLeft,
+                          child: Image.asset('assets/back.png'),
+                        ),
                       ),
-                    );
-                  },
-                  child: Container(
-                    height: 50,
-                    margin: EdgeInsets.only(top: 50, left: 10),
-                    alignment: Alignment.topLeft,
-                    child: Image.asset('assets/back.png'),
+                      Padding(
+                        padding: EdgeInsets.only(top: 19.0, bottom: 19),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Wash Services',
+                            style: TextStyle(
+                                fontSize: 40, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 19.0, bottom: 19),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Wash Services',
-                      style:
-                          TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(top: 19.0, left: 10, bottom: 19),
                   child: Align(
                     alignment: Alignment.centerLeft,

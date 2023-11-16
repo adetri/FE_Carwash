@@ -114,164 +114,177 @@ class _PayOrderState extends State<PayOrder> {
     // String total = formatCurrency(d_order['sub_total']);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Pay Your Order'),
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                  margin: EdgeInsets.all(20.0), // Add margin here
-                  child: Text(
-                    "Order Detail",
-                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.only(top: 50, bottom: 50),
+              child: Row(
+                children: [
+                  Container(
+                    height: 50,
+                    alignment: Alignment.topLeft,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Monitoring(),
+                          ),
+                        );
+                      },
+                      child: Image.asset('assets/back.png'),
+                    ),
                   ),
-                ),
+                  Container(
+                    child: Text(
+                      "Order Detail",
+                      style:
+                          TextStyle(fontSize: 40, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
               ),
-              list_itm(list_item),
-              Container(
-                margin: EdgeInsets.all(10),
-                decoration:
-                    BoxDecoration(border: Border(bottom: BorderSide(width: 3))),
-              ),
-              sub_total(total),
-              data_owner(vehicle_number, owner),
-              Align(
-                alignment: Alignment.topLeft,
-                child: Container(
-                  margin: EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 1,
-                              child: Text(
-                                "Washers",
-                                style: TextStyle(
-                                  fontSize: 25,
-                                ),
+            ),
+            list_itm(list_item),
+            Container(
+              margin: EdgeInsets.all(10),
+              decoration:
+                  BoxDecoration(border: Border(bottom: BorderSide(width: 3))),
+            ),
+            sub_total(total),
+            data_owner(vehicle_number, owner),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Container(
+                margin: EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              "Washers",
+                              style: TextStyle(
+                                fontSize: 25,
                               ),
                             ),
-                            // Expanded(
-                            //   flex: 1,
-                            //   child: Container(
-                            //     height: 50,
-                            //     child: Align(
-                            //       alignment: Alignment.topRight,
-                            //       child: Image.asset('assets/Plus.png'),
-                            //     ),
-                            //   ),
-                            // )
-                          ],
-                        ),
+                          ),
+                          // Expanded(
+                          //   flex: 1,
+                          //   child: Container(
+                          //     height: 50,
+                          //     child: Align(
+                          //       alignment: Alignment.topRight,
+                          //       child: Image.asset('assets/Plus.png'),
+                          //     ),
+                          //   ),
+                          // )
+                        ],
                       ),
-                      wahser_list(washer_list),
-                      Container(
-                        margin: EdgeInsets.only(top: 30),
-                        height: 50,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 105, 216, 109),
-                            borderRadius: BorderRadius.circular(4)),
-                        child: TextButton(
-                          onPressed: () async {
-                            print("click");
+                    ),
+                    wahser_list(washer_list),
+                    Container(
+                      margin: EdgeInsets.only(top: 30),
+                      height: 50,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 105, 216, 109),
+                          borderRadius: BorderRadius.circular(4)),
+                      child: TextButton(
+                        onPressed: () async {
+                          print("click");
 
-                            Map<String, dynamic> send_req =
-                                await pay_order(id_order);
+                          Map<String, dynamic> send_req =
+                              await pay_order(id_order);
 
-                            if (send_req['status_code'] == 201) {
-                              dialog("Success to add order data", "Success",
-                                  monitoring: "istrue");
-                            } else {
-                              dialog(send_req['response'], "Failed");
-                            }
-                            print(send_req);
-                          },
-                          child: Center(
-                            child: Text(
-                              "Pay",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white),
-                            ),
+                          if (send_req['status_code'] == 201) {
+                            dialog("Success to add order data", "Success",
+                                monitoring: "istrue");
+                          } else {
+                            dialog(send_req['response'], "Failed");
+                          }
+                          print(send_req);
+                        },
+                        child: Center(
+                          child: Text(
+                            "Pay",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white),
                           ),
                         ),
                       ),
-                      Container(
-                        margin: EdgeInsets.only(top: 10),
-                        height: 50,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 205, 52, 52),
-                            borderRadius: BorderRadius.circular(4)),
-                        child: TextButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text("Delete"),
-                                  content: Text("Are you sure to delete ?"),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () async {
-                                        Navigator.of(context)
-                                            .pop(); // Close the dialog
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 10),
+                      height: 50,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 205, 52, 52),
+                          borderRadius: BorderRadius.circular(4)),
+                      child: TextButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text("Delete"),
+                                content: Text("Are you sure to delete ?"),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () async {
+                                      Navigator.of(context)
+                                          .pop(); // Close the dialog
 
-                                        Map<String, dynamic> send_req =
-                                            await delete_order(id_order);
+                                      Map<String, dynamic> send_req =
+                                          await delete_order(id_order);
 
-                                        if (send_req['status_code'] == 202) {
-                                          dialog("Success to delete order data",
-                                              "Success",
-                                              monitoring: "istrue");
-                                        } else {
-                                          dialog(
-                                              send_req['response'], "Failed");
-                                        }
-                                      },
-                                      child: Text('OK'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context)
-                                            .pop(); // Close the dialog
-                                      },
-                                      child: Text('NO'),
-                                    )
-                                  ],
-                                );
-                              },
-                            );
-                            // delete_order
-                          },
-                          child: Center(
-                            child: Text(
-                              "Cancle",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white),
-                            ),
+                                      if (send_req['status_code'] == 202) {
+                                        dialog("Success to delete order data",
+                                            "Success",
+                                            monitoring: "istrue");
+                                      } else {
+                                        dialog(send_req['response'], "Failed");
+                                      }
+                                    },
+                                    child: Text('OK'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Close the dialog
+                                    },
+                                    child: Text('NO'),
+                                  )
+                                ],
+                              );
+                            },
+                          );
+                          // delete_order
+                        },
+                        child: Center(
+                          child: Text(
+                            "Cancle",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white),
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
