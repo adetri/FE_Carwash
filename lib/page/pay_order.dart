@@ -128,12 +128,33 @@ class _PayOrderState extends State<PayOrder> {
         }
         int sub_total = d['qty'] * price;
         bluetooth.printCustom(item_name, 0, 0);
-        bluetooth.printLeftRight("${d['qty'].toString()} x ${price.toString()}",
-            sub_total.toString(), 0);
+        bluetooth.printLeftRight(
+            "${d['qty'].toString()} x ${formatCurrency(price)}",
+            formatCurrency(sub_total),
+            0);
       }
 
       bluetooth.printCustom("==========================================", 0, 0);
-      bluetooth.printLeftRight("Total", data['total'], 0);
+      // checkDataType(data['nominal'] as int);
+      // checkDataType(data['total'] as int);
+      // data['nominal'] as int;
+      // data['total'] as int;
+
+      checkDataType(data['nominal'] as int);
+      checkDataType(data['sub_total'] as int);
+      if (data['total'] != null) {
+        print(data['total']); // Output: 42
+      } else {
+        print('Invalid integer format');
+      }
+      int kembalian = data['nominal'] - data['sub_total'];
+
+      // dynamic kembalian = data['nominal'] - data['total'];
+      bluetooth.printLeftRight("Pay", formatCurrency(data['nominal']), 0);
+      bluetooth.printLeftRight("Total", data['total'].toString(), 0);
+
+      bluetooth.printLeftRight("Change", formatCurrency(kembalian), 0);
+
       bluetooth.paperCut();
     });
   }
@@ -170,16 +191,19 @@ class _PayOrderState extends State<PayOrder> {
     String formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(now);
 
     dynamic data_recipe = {
-      "sub_total": data['order']['sub_total'],
-      "total": formatCurrency(
-        data['order']['sub_total'],
-      ),
+      "sub_total": data != null && data['order'] != null
+          ? data['order']['sub_total']
+          : 0,
+      "total": total,
       "list_item": list_item,
       "outlet_name": "Mr Carwash",
       "outlet_alamt": "Jagakarsa, Kec. Jagakarsa, Kota Jakarta Selatan",
       "phone_number": "085157792607",
+      "nominal": nominal,
       "datetime": formattedDate,
-      "no_order": data['order']['order_code']
+      "no_order": data != null && data['order'] != null
+          ? data['order']['order_code']
+          : ""
     };
     // String total = formatCurrency(d_order['sub_total']);
 

@@ -43,3 +43,15 @@ Future<int> printerCheck() async {
     return 0;
   }
 }
+
+void checkDataType(dynamic data) {
+  if (data is int) {
+    print('Data is an integer.');
+  } else if (data is double) {
+    print('Data is a double.');
+  } else if (data is String) {
+    print('Data is a string.');
+  } else {
+    print('Data is of some other type.');
+  }
+}

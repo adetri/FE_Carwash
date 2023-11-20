@@ -6,6 +6,7 @@ import 'package:flutter_application_1/page/monitoring_page.dart';
 // import 'page/order_detail.dart';
 // import 'page/pay_order.dart';
 // import 'page/test_page.dart';
+import 'page/report.dart';
 // import 'page/test_print.dart';
 // import 'page/item_order_detail.dart';
 
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter List from JSON',
-      home: Monitoring(),
+      home: Report(),
     );
   }
 }
