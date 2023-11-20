@@ -21,6 +21,7 @@ class _ReportState extends State<Report> {
 
   String? field_startdate;
   String? field_enddate;
+  dynamic total = 0;
   dynamic d_order;
 
   @override
@@ -49,7 +50,12 @@ class _ReportState extends State<Report> {
           d_order = json.decode(response.body);
         });
         print(d_order);
+        total = 0;
         print("Success with order");
+        for (var data in d_order) {
+          total += data['sub_total'];
+        }
+        total = formatCurrency(total);
       } else {
         print(
             'Failed to load data item. Status code: ${response.statusCode} ${response.body}');
@@ -174,116 +180,52 @@ class _ReportState extends State<Report> {
               ),
             ),
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  d_order == null || d_order.isEmpty
-                      ? Center(
-                          child: Text("No items"),
-                        )
-                      : ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: d_order.length,
-                          itemBuilder: (context, int i) {
-                            String order_cod = d_order[i]['order_code'];
-                            String vehicle =
-                                "${d_order[i]['vehicle_owner']} (${d_order[i]['vehicle_number']})";
-                            bool order_status = d_order[i]['order_status'];
-
-                            DateTime originalDateTime =
-                                DateTime.parse(d_order[i]['create_at']);
-                            String formattedDateTime =
-                                DateFormat('dd/MM/yyyy HH:mm')
-                                    .format(originalDateTime);
-                            String Sub_total =
-                                formatCurrency(d_order[i]['sub_total']);
-                            return ExpansionTile(
-                              backgroundColor: order_status == true
-                                  ? Color.fromARGB(255, 143, 207, 221)
-                                  : Color.fromARGB(255, 173, 104, 104),
-                              collapsedBackgroundColor: order_status == true
-                                  ? Color.fromARGB(255, 143, 207, 221)
-                                  : Color.fromARGB(255, 173, 104, 104),
-                              title: Text(vehicle),
-                              subtitle: Container(
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.topLeft,
-                                      child: Text(
-                                        order_cod,
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.topLeft,
-                                      child: Text(
-                                        formattedDateTime,
-                                        textAlign: TextAlign.left,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              trailing: Text(Sub_total),
-                              controlAffinity: ListTileControlAffinity.leading,
-                              children: <Widget>[
-                                ListTile(title: Text('This is tile number ')),
-                              ],
-                            );
-                          },
-                        ),
-                ],
-              ),
-            ),
-          ),
+          list_item(),
           Container(
             margin: EdgeInsets.only(top: 20),
           ),
           Column(
             children: [
               ExpansionTile(
-                backgroundColor: Color.fromARGB(255, 143, 207, 221),
-                collapsedBackgroundColor: Color.fromARGB(255, 143, 207, 221),
+                backgroundColor: Colors.white,
+                collapsedBackgroundColor: Colors.white,
                 title: Text(
-                  'Klo(B A546 CB)',
+                  'TOTAL',
                   style: TextStyle(
                     color: Colors.black,
                   ),
                 ),
-                subtitle: Container(
-                  // color: Colors.grey,
-                  child: Column(
-                    children: [
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "NoOrder",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "03/04/2024 40:30",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                trailing: Text("Rp.40.000"),
-                controlAffinity: ListTileControlAffinity.leading,
+                // subtitle: Container(
+                //   // color: Colors.grey,
+                //   child: Column(
+                //     children: [
+                //       Container(
+                //         alignment: Alignment.topLeft,
+                //         child: Text(
+                //           "NoOrder",
+                //           textAlign: TextAlign.left,
+                //           style: TextStyle(
+                //             color: Colors.black,
+                //           ),
+                //         ),
+                //       ),
+                //       Container(
+                //         alignment: Alignment.topLeft,
+                //         child: Text(
+                //           "03/04/2024 40:30",
+                //           textAlign: TextAlign.left,
+                //           style: TextStyle(
+                //             color: Colors.black,
+                //           ),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                trailing: Text(total.toString()),
+                // controlAffinity: ListTileControlAffinity.leading,
                 children: <Widget>[
-                  ListTile(title: Text('This is tile number 3')),
+                  // ListTile(title: Text('This is tile number 3')),
                 ],
               ),
             ],
@@ -291,6 +233,192 @@ class _ReportState extends State<Report> {
         ],
       ),
     ));
+  }
+
+  Expanded list_item() {
+    dynamic item_price_total = 0;
+
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            d_order == null || d_order.isEmpty
+                ? Center(
+                    child: Text("No items"),
+                  )
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: d_order.length,
+                    itemBuilder: (context, int i) {
+                      String order_cod = d_order[i]['order_code'];
+                      String vehicle =
+                          "${d_order[i]['vehicle_owner']} (${d_order[i]['vehicle_number']})";
+                      bool order_status = d_order[i]['order_status'];
+
+                      DateTime originalDateTime =
+                          DateTime.parse(d_order[i]['create_at']);
+                      String formattedDateTime = DateFormat('dd/MM/yyyy HH:mm')
+                          .format(originalDateTime);
+                      String Sub_total =
+                          formatCurrency(d_order[i]['sub_total']);
+                      String washers = "";
+                      if (d_order[i]['order_washer_list'].isNotEmpty) {
+                        for (var washer in d_order[i]['order_washer_list']) {
+                          washers += "${washer['karyawan']['name']} ,";
+                        }
+                      }
+
+                      dynamic total_order = 0;
+                      return ExpansionTile(
+                        backgroundColor: order_status == true
+                            ? Color.fromARGB(255, 143, 207, 221)
+                            : Color.fromARGB(255, 173, 104, 104),
+                        collapsedBackgroundColor: order_status == true
+                            ? Color.fromARGB(255, 143, 207, 221)
+                            : Color.fromARGB(255, 173, 104, 104),
+                        title: Text(
+                          vehicle,
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        subtitle: Container(
+                          child: Column(
+                            children: [
+                              Container(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  order_cod,
+                                  style: TextStyle(color: Colors.black),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  formattedDateTime,
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        trailing: Text(
+                          Sub_total,
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        controlAffinity: ListTileControlAffinity.leading,
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.all(8),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        child: Text("Washer : ${washers}"),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        margin: EdgeInsets.all(8),
+                                        child: Text(
+                                          "Kasir : ${washers}",
+                                          textAlign: TextAlign.right,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                d_order[i]['service_list_order'].isEmpty
+                                    ? Text("Item Empty")
+                                    : ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemCount: d_order[i]
+                                                ['service_list_order']
+                                            .length,
+                                        itemBuilder: (context, int i1) {
+                                          dynamic data_item =
+                                              d_order[i]['service_list_order'];
+                                          String item_name =
+                                              data_item[i1]['item']['name'];
+                                          dynamic item_price =
+                                              data_item[i1]['price'];
+                                          String qty =
+                                              data_item[i1]['qty'].toString();
+
+                                          if (d_order[i]['service_list_order']
+                                                  [i1]['subitem_service_list']
+                                              .isNotEmpty) {
+                                            String sub_item_name = d_order[i]
+                                                        ['service_list_order']
+                                                    [i1]['subitem_service_list']
+                                                [0]['sub_item']['name'];
+                                            dynamic sub_harga = d_order[i]
+                                                        ['service_list_order']
+                                                    [i1]['subitem_service_list']
+                                                [0]['price'];
+                                            item_name =
+                                                "$item_name ($sub_item_name)";
+                                            item_price += (data_item[i1]
+                                                    ['qty'] *
+                                                sub_harga);
+                                          }
+                                          total_order += item_price;
+                                          print("total  is $total_order");
+
+                                          item_price =
+                                              formatCurrency(item_price);
+                                          return Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(item_name),
+                                              ),
+                                              Expanded(
+                                                child: Text(
+                                                  qty,
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Text(
+                                                  item_price.toString(),
+                                                  textAlign: TextAlign.right,
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                Text(""),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text("TOTAL"),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        Sub_total.toString(),
+                                        textAlign: TextAlign.right,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+
+                          // ListTile(title: Text('This is tile number ')),
+                        ],
+                      );
+                    },
+                  ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
