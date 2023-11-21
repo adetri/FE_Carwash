@@ -53,7 +53,11 @@ class _ReportState extends State<Report> {
         total = 0;
         print("Success with order");
         for (var data in d_order) {
-          total += data['sub_total'];
+          if (data['is_cancle'] == true) {
+            total -= data['sub_total'];
+          } else {
+            total += data['sub_total'];
+          }
         }
         total = formatCurrency(total);
       } else {
@@ -254,7 +258,7 @@ class _ReportState extends State<Report> {
                       String order_cod = d_order[i]['order_code'];
                       String vehicle =
                           "${d_order[i]['vehicle_owner']} (${d_order[i]['vehicle_number']})";
-                      bool order_status = d_order[i]['order_status'];
+                      bool order_status = d_order[i]['is_cancle'];
 
                       DateTime originalDateTime =
                           DateTime.parse(d_order[i]['create_at']);
@@ -271,10 +275,10 @@ class _ReportState extends State<Report> {
 
                       dynamic total_order = 0;
                       return ExpansionTile(
-                        backgroundColor: order_status == true
+                        backgroundColor: order_status == false
                             ? Color.fromARGB(255, 143, 207, 221)
                             : Color.fromARGB(255, 173, 104, 104),
-                        collapsedBackgroundColor: order_status == true
+                        collapsedBackgroundColor: order_status == false
                             ? Color.fromARGB(255, 143, 207, 221)
                             : Color.fromARGB(255, 173, 104, 104),
                         title: Text(

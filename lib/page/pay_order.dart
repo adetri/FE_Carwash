@@ -89,13 +89,13 @@ class _PayOrderState extends State<PayOrder> {
 
   Future<Map<String, dynamic>> delete_order(order_id) async {
     String apiUrl =
-        '$APIHOST/order/delete-order/$order_id'; // Replace with your API endpoint
+        '$APIHOST/order/cancle-order/$order_id'; // Replace with your API endpoint
     final Map<String, String> headers = {
       'Authorization': 'Bearer $JWT',
       'Content-Type': 'application/json',
     };
 
-    final response = await http.delete(
+    final response = await http.put(
       Uri.parse(apiUrl),
       headers: headers,
       // body: jsonEncode(paylod),
@@ -191,6 +191,8 @@ class _PayOrderState extends State<PayOrder> {
     String formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(now);
 
     dynamic data_recipe = {
+      "id_order":
+          data != null && data['order'] != null ? data['order']['id'] : null,
       "sub_total": data != null && data['order'] != null
           ? data['order']['sub_total']
           : 0,
@@ -412,18 +414,18 @@ class _PayOrderState extends State<PayOrder> {
           int? printer_cek = await printerCheck();
 
           if (printer_cek == 1) {
-            printRecipt(data);
-            // paylod['nominal'] = nominal;
-            // Map<String, dynamic> send_req =
-            //     await pay_order(id_order);
+            paylod['nominal'] = nominal;
+            Map<String, dynamic> send_req = await pay_order(data['id_order']);
 
-            // if (send_req['status_code'] == 201) {
-            //   dialog("Success to add order data", "Success",
-            //       monitoring: "istrue");
-            // } else {
-            //   dialog(send_req['response'], "Failed");
-            // }
-            // print(send_req);
+            if (send_req['status_code'] == 201) {
+              printRecipt(data);
+
+              dialog("Success to add order data", "Success",
+                  monitoring: "istrue");
+            } else {
+              dialog(send_req['response'], "Failed");
+            }
+            print(send_req);
           } else {
             Navigator.push(
               context,
