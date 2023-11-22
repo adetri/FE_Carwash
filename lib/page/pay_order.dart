@@ -89,13 +89,13 @@ class _PayOrderState extends State<PayOrder> {
 
   Future<Map<String, dynamic>> delete_order(order_id) async {
     String apiUrl =
-        '$APIHOST/order/delete-order/$order_id'; // Replace with your API endpoint
+        '$APIHOST/order/cancle-order/$order_id'; // Replace with your API endpoint
     final Map<String, String> headers = {
       'Authorization': 'Bearer $JWT',
       'Content-Type': 'application/json',
     };
 
-    final response = await http.delete(
+    final response = await http.put(
       Uri.parse(apiUrl),
       headers: headers,
       // body: jsonEncode(paylod),

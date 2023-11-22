@@ -6,6 +6,8 @@ import '../env.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'main_menu.dart';
+
 class Report extends StatefulWidget {
   const Report({super.key});
 
@@ -53,7 +55,12 @@ class _ReportState extends State<Report> {
         total = 0;
         print("Success with order");
         for (var data in d_order) {
-          total += data['sub_total'];
+          if (data['is_cancle'] == false) {
+            total += data['sub_total'];
+            print(data['sub_total']);
+            print(data['id']);
+            print(data['is_cancle']);
+          }
         }
         total = formatCurrency(total);
       } else {
@@ -72,6 +79,40 @@ class _ReportState extends State<Report> {
       margin: EdgeInsets.only(top: 50),
       child: Column(
         children: [
+          Container(
+            width: double.infinity,
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      print("tab this");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Mainmenu()),
+                      );
+                    });
+                  },
+                  child: Container(
+                    height: 50,
+                    alignment: Alignment.topLeft,
+                    child: Image.asset('assets/back.png'),
+                  ),
+                ),
+                Container(
+                  child: Text(
+                    'Reporting',
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.left, // Apply bold font weight
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(padding: EdgeInsets.only(top: 25)),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -254,7 +295,7 @@ class _ReportState extends State<Report> {
                       String order_cod = d_order[i]['order_code'];
                       String vehicle =
                           "${d_order[i]['vehicle_owner']} (${d_order[i]['vehicle_number']})";
-                      bool order_status = d_order[i]['order_status'];
+                      bool order_status = d_order[i]['is_cancle'];
 
                       DateTime originalDateTime =
                           DateTime.parse(d_order[i]['create_at']);
@@ -271,10 +312,10 @@ class _ReportState extends State<Report> {
 
                       dynamic total_order = 0;
                       return ExpansionTile(
-                        backgroundColor: order_status == true
+                        backgroundColor: order_status == false
                             ? Color.fromARGB(255, 143, 207, 221)
                             : Color.fromARGB(255, 173, 104, 104),
-                        collapsedBackgroundColor: order_status == true
+                        collapsedBackgroundColor: order_status == false
                             ? Color.fromARGB(255, 143, 207, 221)
                             : Color.fromARGB(255, 173, 104, 104),
                         title: Text(

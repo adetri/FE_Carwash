@@ -1,6 +1,7 @@
 // TODO Implement this library.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/page/main_menu.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:ui' as ui;
@@ -79,7 +80,16 @@ class _MonitoringState extends State<Monitoring> {
                     child: Row(
                       children: [
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            setState(() {
+                              print("tab this");
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Mainmenu()),
+                              );
+                            });
+                          },
                           child: Container(
                             height: 50,
                             alignment: Alignment.topLeft,
