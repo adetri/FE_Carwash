@@ -1,6 +1,7 @@
 // TODO Implement this library.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/inc/method.dart';
 import 'package:flutter_application_1/page/main_menu.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -34,6 +35,7 @@ class _MonitoringState extends State<Monitoring> {
   @override
   void initState() {
     super.initState();
+    get_user_id(JWT);
     // Call the fetchData method when the widget is first built
     fetchData();
   }
@@ -49,6 +51,7 @@ class _MonitoringState extends State<Monitoring> {
 
     final response = await http.get(Uri.parse(apiUrl), headers: headers);
 
+    req_validation(context, response.statusCode);
     if (response.statusCode == 200) {
       setState(() {
         jsonData1 = json.decode(response.body); // Update the fetched data

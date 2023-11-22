@@ -100,6 +100,7 @@ class _PreorderState extends State<Preorder> {
     };
 
     final response = await http.get(Uri.parse(apiUrl), headers: headers);
+    req_validation(context, response.statusCode);
 
     if (response.statusCode == 200) {
       setState(() {

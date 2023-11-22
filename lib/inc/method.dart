@@ -1,6 +1,21 @@
+import 'package:flutter_application_1/page/login.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:jwt_decode/jwt_decode.dart';
+
+int get_user_id(jwt) {
+  String jwtToken = '$jwt'; // Replace this with your actual JWT token
+  dynamic userId;
+  Map<String, dynamic> decodedToken = Jwt.parseJwt(jwtToken);
+
+  if (decodedToken != null && decodedToken.containsKey('user_id')) {
+    userId = decodedToken['user_id'];
+  } else {
+    print('Invalid token or no user ID found in the token.');
+  }
+  return userId;
+}
 
 BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
 
@@ -12,17 +27,27 @@ String formatCurrency(int amount) {
 }
 
 class MyDialogHelper {
+  static String? title;
+  static String? content;
+  static dynamic page;
+
   static void showDialogMethod(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Dialog Title'),
-          content: Text('This is the content of the dialog.'),
+          title: Text(title ?? ''),
+          content: Text(content ?? ''),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                if (page != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => page),
+                  );
+                }
               },
               child: Text('Close'),
             ),
@@ -53,5 +78,25 @@ void checkDataType(dynamic data) {
     print('Data is a string.');
   } else {
     print('Data is of some other type.');
+  }
+}
+
+void to_login(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => Login()),
+  );
+}
+
+void req_validation(BuildContext context, status_code) {
+  if (status_code == 401) {
+    MyDialogHelper.title = "";
+    MyDialogHelper.content = "Session expired";
+    MyDialogHelper.page = Login();
+    MyDialogHelper.showDialogMethod(context);
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => Login()),
+    // );
   }
 }

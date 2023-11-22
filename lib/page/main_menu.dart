@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/env.dart';
+import 'package:flutter_application_1/inc/method.dart';
 import 'package:flutter_application_1/page/monitoring_page.dart';
 import 'package:flutter_application_1/page/report.dart';
 
@@ -101,6 +103,9 @@ class _MainmenuState extends State<Mainmenu> {
                 borderRadius: BorderRadius.circular(16.0),
                 child: GestureDetector(
                   onTap: () {
+                    setState(() {
+                      to_login(context);
+                    });
                     // setState(() {
                     //   print("tab this");
                     //   Navigator.push(
