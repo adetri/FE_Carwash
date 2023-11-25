@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/inc/method.dart';
 import 'package:flutter_application_1/page/monitoring_page.dart';
+import 'package:flutter_application_1/page/pre_order.dart';
 import '../env.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -16,7 +17,7 @@ class PayOrder extends StatefulWidget {
   // ignore: non_constant_identifier_names
   PayOrder({super.key, required this.id_order});
 
-  final int id_order;
+  final int? id_order;
   @override
   _PayOrderState createState() => _PayOrderState();
 }
@@ -189,7 +190,30 @@ class _PayOrderState extends State<PayOrder> {
 
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('dd/MM/yyyy HH:mm').format(now);
+    List<Map<dynamic, dynamic>> send_list_item = [];
+    for (var it in list_item) {
+      Map<dynamic, dynamic> item = {
+        'item_id': it['id'],
+        'name': it['item']['name'],
+        'price': it['price'],
+        'qty': it['qty'],
+      };
 
+      if (it['subitem_service_list'] != null &&
+          it['subitem_service_list'].isNotEmpty) {
+        List<Map<String, dynamic>> sub_it = [
+          {
+            'sub_item_id': it['subitem_service_list'][0]['sub_item']['id'],
+            'price': it['subitem_service_list'][0]['sub_item']['price'],
+            'name': it['subitem_service_list'][0]['sub_item']['name'],
+          },
+        ];
+        item['sub_item'] = sub_it;
+      }
+      send_list_item.add(item);
+    }
+
+    print("this seend_list_itm ${send_list_item}");
     dynamic data_recipe = {
       "id_order":
           data != null && data['order'] != null ? data['order']['id'] : null,
@@ -240,6 +264,19 @@ class _PayOrderState extends State<PayOrder> {
                     ),
                   ),
                 ],
+              ),
+            ),
+            Container(
+              alignment: Alignment.topLeft,
+              margin: EdgeInsets.only(left: 10),
+              child: ElevatedButton(
+                onPressed: () {
+                  nav_to(
+                      context,
+                      Preorder(
+                          spot_id: data['order']['spot'], id_order: id_order));
+                },
+                child: Text("Add more item"),
               ),
             ),
             list_itm(list_item),

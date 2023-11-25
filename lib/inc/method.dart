@@ -88,6 +88,13 @@ void to_login(BuildContext context) {
   );
 }
 
+void nav_to(BuildContext context, page) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => page),
+  );
+}
+
 void req_validation(BuildContext context, status_code) {
   if (status_code == 401) {
     MyDialogHelper.title = "";

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/page/monitoring_page.dart';
 
 import 'page/login.dart';
 import 'page/main_menu.dart';
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter List from JSON',
-      home: Mainmenu(),
+      home: Monitoring(),
     );
   }
 }

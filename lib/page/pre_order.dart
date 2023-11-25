@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/page/pay_order.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:ui' as ui;
@@ -10,13 +11,16 @@ import 'order_detail.dart';
 import 'monitoring_page.dart';
 
 class Preorder extends StatefulWidget {
-  Preorder({Key? key, List? data1, required int spot_id}) : super(key: key) {
+  Preorder({Key? key, List? data1, required int spot_id, int? id_order})
+      : super(key: key) {
     this.data1 = data1 ?? [];
     this.spot_id = spot_id;
+    this.id_order = id_order;
   }
 
   late int spot_id;
   late dynamic data1;
+  int? id_order;
 
   @override
   _PreorderState createState() => _PreorderState();
@@ -49,7 +53,7 @@ class _PreorderState extends State<Preorder> {
     fetchData();
     itemdata(requestBody, customHeaders);
 
-    print(widget.spot_id);
+    print(widget.id_order);
   }
 
   void add_list_item() {
@@ -63,7 +67,7 @@ class _PreorderState extends State<Preorder> {
       list_item.add(item);
     }
 
-    return print('Exception: $list_item');
+    return print('list item is: $list_item');
   }
 
   void count_item() {
@@ -142,6 +146,37 @@ class _PreorderState extends State<Preorder> {
     return response.statusCode;
   }
 
+  Future<int> add_more_item() async {
+    int? id_ord = widget.id_order;
+    String apiUrl =
+        '$APIHOST/order/add-item-order/'; // Replace with your API endpoint
+
+    if (id_ord != null) {
+      apiUrl += id_ord.toString();
+    }
+
+    final Map<String, String> headers = {
+      'Authorization': 'Bearer $JWT',
+      'Content-Type': 'application/json',
+      ...?customHeaders, // Include any custom headers passed as a parameter
+    };
+
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: headers,
+      body: jsonEncode(list_item),
+    );
+
+    if (response.statusCode == 201) {
+      print("Success with item");
+    } else {
+      print(
+          'Failed to load data item. Status code: ${response.statusCode} ${response.body}');
+    }
+
+    return response.statusCode;
+  }
+
   Map<String, dynamic> bookItem = {};
 
   @override
@@ -159,13 +194,18 @@ class _PreorderState extends State<Preorder> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  Monitoring(), // Ensure you pass 'data' as a named parameter
-                            ),
-                          );
+                          if (widget.id_order == null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    Monitoring(), // Ensure you pass 'data' as a named parameter
+                              ),
+                            );
+                          } else {
+                            nav_to(
+                                context, PayOrder(id_order: widget.id_order));
+                          }
                         },
                         child: Container(
                           height: 50,
@@ -353,15 +393,17 @@ class _PreorderState extends State<Preorder> {
                                                 "id_item": id_item,
                                                 "list_item": list_item
                                               };
-                                              print(payload);
+                                              print(widget.id_order);
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         ItemDetail(
                                                             data1: payload,
-                                                            spot_id: widget
-                                                                .spot_id)),
+                                                            spot_id:
+                                                                widget.spot_id,
+                                                            id_order: widget
+                                                                .id_order)),
                                               );
                                               //
                                             },
@@ -398,6 +440,7 @@ class _PreorderState extends State<Preorder> {
             sub_total: sub_total,
             list_item: list_item,
             spot_id: widget.spot_id,
+            id_order: widget.id_order,
           ),
         ],
       ),
@@ -426,12 +469,15 @@ class _PreorderState extends State<Preorder> {
 }
 
 class OrderSum extends StatelessWidget {
-  OrderSum({
-    Key? key,
-    required this.sub_total,
-    required this.list_item,
-    required this.spot_id,
-  }) : super(key: key) {
+  OrderSum(
+      {Key? key,
+      required this.sub_total,
+      required this.list_item,
+      required this.spot_id,
+      int? id_order})
+      : super(key: key) {
+    this.id_order = id_order;
+
     // Call your method here
     methodsetter();
   }
@@ -441,7 +487,8 @@ class OrderSum extends StatelessWidget {
   final List list_item;
   late final String item_count;
   late final String total;
-
+  int? id_order;
+  _PreorderState myInstance = _PreorderState();
   void methodsetter() {
     String itm = sub_total['item_count']! > 1 ? " Items" : " Item";
     item_count = sub_total['item_count'].toString() + itm;
@@ -456,12 +503,28 @@ class OrderSum extends StatelessWidget {
         offset: Offset(0.0, MediaQuery.of(context).size.height - 100),
         child: GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      OrderDetail(data1: list_item, spot_id: spot_id)),
-            );
+            if (id_order != null) {
+              Future<int> req = myInstance.add_more_item();
+              req.then((value) {
+                if (value != 200) {
+                  print("code 200");
+                }
+              });
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        OrderDetail(data1: list_item, spot_id: spot_id)),
+              );
+            }
+
+            //   Future<int> req = itemdata(requestBody, customHeaders);
+            // req.then((value) {
+            //   if (value != 200) {
+            //     ModalDialog(context);
+            //   }
+            // });
           },
           child: Container(
             margin: EdgeInsets.all(20),
