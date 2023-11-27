@@ -266,19 +266,19 @@ class _PayOrderState extends State<PayOrder> {
                 ],
               ),
             ),
-            Container(
-              alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(left: 10),
-              child: ElevatedButton(
-                onPressed: () {
-                  nav_to(
-                      context,
-                      Preorder(
-                          spot_id: data['order']['spot'], id_order: id_order));
-                },
-                child: Text("Add more item"),
-              ),
-            ),
+            // Container(
+            //   alignment: Alignment.topLeft,
+            //   margin: EdgeInsets.only(left: 10),
+            //   child: ElevatedButton(
+            //     onPressed: () {
+            //       nav_to(
+            //           context,
+            //           Preorder(
+            //               spot_id: data['order']['spot'], id_order: id_order));
+            //     },
+            //     child: Text("Add more item"),
+            //   ),
+            // ),
             list_itm(list_item),
             Container(
               margin: EdgeInsets.all(10),
