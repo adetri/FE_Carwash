@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/inc/method.dart';
+import 'package:flutter_application_1/inc/req.dart';
 import 'package:flutter_application_1/page/main_menu.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -30,37 +31,47 @@ class Monitoring extends StatefulWidget {
 }
 
 class _MonitoringState extends State<Monitoring> {
-  dynamic jsonData1;
+  dynamic jsonData1; // Make jsonData1 nullable
 
   @override
   void initState() {
     super.initState();
-    get_user_id(JWT);
-    // Call the fetchData method when the widget is first built
-    fetchData();
+    setter();
+  }
+
+  Future<void> setter() async {
+    Req req = Req(context); // Create an instance of 'Req' using the context
+    await req.init();
+    dynamic data = await req
+        .fetchMonitoring(); //a = Req(context); // Create an instance of 'Req' using the context
+    // Use 'req' instance as needed
+    setState(() {
+      jsonData1 = jsonDecode(data['response']);
+      print(jsonData1);
+    });
   }
 
   Future<void> fetchData() async {
-    const String apiUrl =
-        '$APIHOST/order/get-spot'; // Replace with your API endpoint
-    final Map<String, String> headers = {
-      'Authorization': 'Bearer $JWT',
-      'Content-Type': 'application/json',
-      // Replace with your authentication token
-    };
+    // const String apiUrl =
+    //     '$APIHOST/order/get-spot'; // Replace with your API endpoint
+    // final Map<String, String> headers = {
+    //   'Authorization': 'Bearer $JWT',
+    //   'Content-Type': 'application/json',
+    //   // Replace with your authentication token
+    // };
 
-    final response = await http.get(Uri.parse(apiUrl), headers: headers);
+    // final response = await http.get(Uri.parse(apiUrl), headers: headers);
 
-    req_validation(context, response.statusCode);
-    if (response.statusCode == 200) {
-      setState(() {
-        jsonData1 = json.decode(response.body); // Update the fetched data
-      });
-      print(jsonData1);
-      print("succes to get data"); // Print the response data to the console
-    } else {
-      print('Failed to load data. Status code: ${response.statusCode}');
-    }
+    // req_validation(context, response.statusCode);
+    // if (response.statusCode == 200) {
+    //   setState(() {
+    //     jsonData1 = json.decode(response.body); // Update the fetched data
+    //   });
+    //   print(jsonData1);
+    //   print("succes to get data"); // Print the response data to the console
+    // } else {
+    //   print('Failed to load data. Status code: ${response.statusCode}');
+    // }
   }
 
   @override

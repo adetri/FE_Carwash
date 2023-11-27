@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/env.dart';
+import 'package:flutter_application_1/inc/db.dart';
 import 'package:flutter_application_1/inc/method.dart';
+import 'package:flutter_application_1/inc/req.dart';
 import 'package:flutter_application_1/page/main_menu.dart';
-import 'package:http/http.dart' as http;
+
 import 'dart:convert';
 
 class Login extends StatefulWidget {
@@ -13,29 +15,35 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final dbHelper = DatabaseHelper();
+
   String? Username;
   String? Password;
   dynamic paylod = {"username": "", "password": ""};
 
+  Req? req;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    updateHostAndCreateReq();
   }
 
-  Future<Map<String, dynamic>> login() async {
-    String apiUrl = '$APIHOST/ath/login'; // Replace with your API endpoint
-    final Map<String, String> headers = {
-      'Content-Type': 'application/json',
-    };
+  Future<void> updateHostAndCreateReq() async {
+    await dbHelper.updateHost();
+    req = Req(context); // Create an instance of 'Req' using the context
+    // Use 'req' instance as needed
+  }
 
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: headers,
-      body: jsonEncode(paylod),
-    );
-
-    return {"status_code": response.statusCode, "response": response.body};
+  void checkhost() async {
+    List<Map<String, dynamic>> tasks = await dbHelper.getTasksById(1);
+    if (tasks.isNotEmpty) {
+      // Handle retrieved tasks here...
+      print('Task with ID 1: ${tasks.first}');
+    } else {
+      print('Task not found for ID: 1');
+    }
   }
 
   @override
@@ -110,12 +118,15 @@ class _LoginState extends State<Login> {
                   paylod['username'] = Username;
                   paylod['password'] = Password;
 
-                  Map<String, dynamic> send_req = await login();
+                  Map<String, dynamic> send_req = await req!.login(paylod);
                   String accessToken =
                       json.decode(send_req['response'])['access'];
 
                   if (send_req['status_code'] == 200) {
                     JWT = accessToken;
+
+                    int rowsAffected = await dbHelper.updateJWT(accessToken);
+                    print('Rows affected: $rowsAffected');
                     to_main_menu(context);
                   }
                 });

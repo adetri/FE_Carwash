@@ -1,4 +1,5 @@
 import 'package:flutter_application_1/page/login.dart';
+import 'package:flutter_application_1/page/main_menu.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
@@ -101,9 +102,12 @@ void req_validation(BuildContext context, status_code) {
     MyDialogHelper.content = "Session expired";
     MyDialogHelper.page = Login();
     MyDialogHelper.showDialogMethod(context);
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => Login()),
-    // );
   }
+}
+
+void request_failed(BuildContext context, e) {
+  MyDialogHelper.title = "Request Error";
+  MyDialogHelper.content = e;
+  MyDialogHelper.page = Mainmenu();
+  MyDialogHelper.showDialogMethod(context);
 }
