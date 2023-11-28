@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/inc/db.dart';
+import 'package:flutter_application_1/inc/req.dart';
 import 'package:flutter_application_1/page/pay_order.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -30,7 +32,8 @@ class _PreorderState extends State<Preorder> {
   dynamic category;
   dynamic item;
   late final list_item = [];
-
+  Req? req;
+  DatabaseHelper db = DatabaseHelper();
   @override
   final requestBody = {
     'search': {},
@@ -51,9 +54,25 @@ class _PreorderState extends State<Preorder> {
     add_list_item();
     // Call the fetchData method when the widget is first built
     fetchData();
-    itemdata(requestBody, customHeaders);
+  }
 
-    print(widget.id_order);
+  String? host;
+  Future<void> fetchData() async {
+    req = Req(context);
+    // Create an instance of 'Req' using the context
+    await req!.init();
+
+    dynamic reg_category = await req?.fetchCategory();
+    dynamic reg_item_data = await req?.itemData(requestBody, customHeaders);
+
+    setState(() {
+      category = reg_category['response'];
+      item = reg_item_data['response'];
+      host = req!.host;
+      print("this host ${host}");
+
+      // print('reg item response ${reg_item_data['response']}');
+    });
   }
 
   void add_list_item() {
@@ -66,7 +85,6 @@ class _PreorderState extends State<Preorder> {
     for (var item in widget.data1) {
       list_item.add(item);
     }
-
     return print('list item is: $list_item');
   }
 
@@ -96,55 +114,34 @@ class _PreorderState extends State<Preorder> {
     }
   }
 
-  Future<void> fetchData() async {
-    const String apiUrl =
-        '$APIHOST/item/fatch-all-category'; // Replace with your API endpoint
-    final Map<String, String> headers = {
-      'Authorization': 'Bearer  $JWT', // Replace with your authentication token
-    };
+  // Future<int> itemdata(Map<String, dynamic> requestBody,
+  //     Map<String, String> customHeaders) async {
+  //   const String apiUrl =
+  //       '$APIHOST/item/fatch-all-mainitem'; // Replace with your API endpoint
+  //   final Map<String, String> headers = {
+  //     'Authorization': 'Bearer $JWT',
+  //     'Content-Type': 'application/json',
+  //     ...?customHeaders, // Include any custom headers passed as a parameter
+  //   };
 
-    final response = await http.get(Uri.parse(apiUrl), headers: headers);
-    req_validation(context, response.statusCode);
+  //   final response = await http.post(
+  //     Uri.parse(apiUrl),
+  //     headers: headers,
+  //     body: jsonEncode(requestBody),
+  //   );
 
-    if (response.statusCode == 200) {
-      setState(() {
-        category = json.decode(response.body); // Update the fetched data
-      });
-      print("success with category"); // Print the response data to the console
-    } else {
-      print(
-          'Failed to load data category. Status code: ${response.statusCode}');
-    }
-  }
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       item = json.decode(response.body);
+  //     });
+  //     print("Success with item");
+  //   } else {
+  //     print(
+  //         'Failed to load data item. Status code: ${response.statusCode} ${response.body}');
+  //   }
 
-  Future<int> itemdata(Map<String, dynamic> requestBody,
-      Map<String, String> customHeaders) async {
-    const String apiUrl =
-        '$APIHOST/item/fatch-all-mainitem'; // Replace with your API endpoint
-    final Map<String, String> headers = {
-      'Authorization': 'Bearer $JWT',
-      'Content-Type': 'application/json',
-      ...?customHeaders, // Include any custom headers passed as a parameter
-    };
-
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: headers,
-      body: jsonEncode(requestBody),
-    );
-
-    if (response.statusCode == 200) {
-      setState(() {
-        item = json.decode(response.body);
-      });
-      print("Success with item");
-    } else {
-      print(
-          'Failed to load data item. Status code: ${response.statusCode} ${response.body}');
-    }
-
-    return response.statusCode;
-  }
+  //   return response.statusCode;
+  // }
 
   Future<int> add_more_item() async {
     int? id_ord = widget.id_order;
@@ -182,258 +179,236 @@ class _PreorderState extends State<Preorder> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: Column(
         children: [
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(top: 50),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          if (widget.id_order == null) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    Monitoring(), // Ensure you pass 'data' as a named parameter
-                              ),
-                            );
-                          } else {
-                            nav_to(
-                                context, PayOrder(id_order: widget.id_order));
-                          }
-                        },
-                        child: Container(
-                          height: 50,
-                          // margin: EdgeInsets.only(top: 50, left: 10),
-                          alignment: Alignment.topLeft,
-                          child: Image.asset('assets/back.png'),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 19.0, bottom: 19),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            'Wash Services',
-                            style: TextStyle(
-                                fontSize: 40, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 19.0, left: 10, bottom: 19),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Category',
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 25.0,
-                      top: 20,
-                      bottom: 15), // Adjust the padding as needed
-                  child: Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: 75,
-                    runSpacing: 20,
-                    children: (category != null ? category['category'] : [])
-                        .map<Widget>((category) {
-                      final categoryName = category['name'];
-                      final categoryImage = APIHOST + category['img'];
-                      final categoryId = category['id'];
-
-                      return GestureDetector(
-                        onTap: () {
-                          requestBody['search']?['category'] = categoryId;
-                          Future<int> req =
-                              itemdata(requestBody, customHeaders);
-                          req.then((value) {
-                            if (value != 200) {
-                              ModalDialog(context);
+          Expanded(
+            flex: 10,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 50),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            if (widget.id_order == null) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      Monitoring(), // Ensure you pass 'data' as a named parameter
+                                ),
+                              );
+                            } else {
+                              nav_to(
+                                  context, PayOrder(id_order: widget.id_order));
                             }
-                          });
-                        },
-                        child: Container(
-                          width: 85,
-                          height: 75,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage(categoryImage),
-                              fit: BoxFit.fill,
-                            ),
-                            borderRadius: BorderRadius.circular(
-                                10.0), // Adjust the radius as needed
+                          },
+                          child: Container(
+                            height: 50,
+                            // margin: EdgeInsets.only(top: 50, left: 10),
+                            alignment: Alignment.topLeft,
+                            child: Image.asset('assets/back.png'),
                           ),
                         ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 19.0, left: 10, bottom: 19),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Services',
-                      style:
-                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                        Padding(
+                          padding: EdgeInsets.only(top: 19.0, bottom: 19),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Wash Services',
+                              style: TextStyle(
+                                  fontSize: 40, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                Center(
-                  child: Padding(
+                  Padding(
+                    padding: EdgeInsets.only(top: 19.0, left: 10, bottom: 19),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Category',
+                        style: TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  Padding(
                     padding: const EdgeInsets.only(
-                        left: 15.0,
-                        right: 15,
-                        top: 10,
-                        bottom: 100), // Adjust the padding as needed
+                        left: 25.0,
+                        top: 20,
+                        bottom: 15), // Adjust the padding as needed
                     child: Wrap(
                       alignment: WrapAlignment.center,
-                      spacing: 15,
+                      spacing: 75,
                       runSpacing: 20,
-                      children:
-                          (item != null ? item['results']['mainitem'] : [])
-                              .map<Widget>((item) {
-                        final itemName = item['name'].toUpperCase();
-                        final itemImg = APIHOST + item['img'];
-                        final itemPrice =
-                            formatCurrency(item['price']).toString();
+                      children: (category != null ? category['category'] : [])
+                          .map<Widget>((category) {
+                        final categoryName = category['name'];
 
-                        return ClipRRect(
-                          borderRadius: BorderRadius.circular(16.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              print("this pushed $itemName");
-                              // Handle category selection
-                            },
-                            child: Container(
-                              width: 220,
-                              height: 300,
-                              color: const Color.fromARGB(255, 207, 204, 203),
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    flex: 4,
-                                    child: Container(
-                                      color: Colors.red,
-                                      child: Center(
-                                        child: Image.network(
-                                          itemImg,
-                                          fit: BoxFit.cover,
-                                          height: double.infinity,
-                                          width: double.infinity,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Container(
-                                      padding: EdgeInsets.all(8),
-                                      child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          itemName,
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Container(
-                                      padding: EdgeInsets.all(8),
-                                      child: Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          itemPrice,
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(20.0),
-                                      ),
-                                      padding: EdgeInsets.all(8),
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Container(
-                                          width: 210,
-                                          height: 50,
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              print("btn press");
+                        final categoryImage = host! + category['img'];
+                        final categoryId = category['id'];
 
-                                              int id_item = item['id'];
+                        return GestureDetector(
+                          onTap: () async {
+                            requestBody['search']?['category'] = categoryId;
 
-                                              dynamic payload = {
-                                                "id_item": id_item,
-                                                "list_item": list_item
-                                              };
-                                              print(widget.id_order);
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ItemDetail(
-                                                            data1: payload,
-                                                            spot_id:
-                                                                widget.spot_id,
-                                                            id_order: widget
-                                                                .id_order)),
-                                              );
-                                              //
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              primary: Colors.blue,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        100.0),
-                                              ),
-                                            ),
-                                            child: Text('Open Dialog'),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                            Map<String, dynamic> req_item =
+                                await req!.itemData(requestBody, customHeaders);
+                            setState(() {
+                              if (req_item['status_code'] != 200) {
+                                ModalDialog(context);
+                              } else {
+                                item = req_item['response'];
+                              }
+                            });
+                            // Future<int> req_item =
+                            //     itemdata(requestBody, customHeaders);
+                            // req.then((value) {
+                            //   if (value != 200) {
+                            //     ModalDialog(context);
+                            //   }
+                            // });
+                          },
+                          child: Container(
+                            width: 85,
+                            height: 75,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: NetworkImage(categoryImage),
+                                fit: BoxFit.fill,
                               ),
+                              borderRadius: BorderRadius.circular(
+                                  10.0), // Adjust the radius as needed
                             ),
                           ),
                         );
                       }).toList(),
                     ),
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 75),
-                )
-              ],
+                  const Padding(
+                    padding: EdgeInsets.only(top: 19.0, left: 10, bottom: 19),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Services',
+                        style: TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 15.0,
+                          right: 15,
+                          top: 10,
+                          bottom: 100), // Adjust the padding as needed
+                      child: Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 15,
+                        runSpacing: 20,
+                        children:
+                            (item != null ? item['results']['mainitem'] : [])
+                                .map<Widget>((item) {
+                          final itemName = item['name'].toUpperCase();
+                          final itemImg = host! + item['img'];
+                          final itemPrice =
+                              formatCurrency(item['price']).toString();
+
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(16.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                int id_item = item['id'];
+
+                                dynamic payload = {
+                                  "id_item": id_item,
+                                  "list_item": list_item
+                                };
+                                print(widget.id_order);
+                                setState(() {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ItemDetail(
+                                            data1: payload,
+                                            spot_id: widget.spot_id,
+                                            id_order: widget.id_order)),
+                                  );
+                                });
+                              },
+                              child: Container(
+                                width: 220,
+                                height: 300,
+                                color: const Color.fromARGB(255, 207, 204, 203),
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      flex: 4,
+                                      child: Container(
+                                        color: Colors.red,
+                                        child: Center(
+                                          child: Image.network(
+                                            itemImg,
+                                            fit: BoxFit.cover,
+                                            height: double.infinity,
+                                            width: double.infinity,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Container(
+                                        padding: EdgeInsets.all(8),
+                                        child: Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text(
+                                            itemName,
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Container(
+                                        padding: EdgeInsets.all(8),
+                                        child: Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text(
+                                            itemPrice,
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 75),
+                  )
+                ],
+              ),
             ),
           ),
           OrderSum(
@@ -499,8 +474,7 @@ class OrderSum extends StatelessWidget {
   Widget build(BuildContext context) {
     return Visibility(
       visible: sub_total['item_count']! > 0 ? true : false,
-      child: Transform.translate(
-        offset: Offset(0.0, MediaQuery.of(context).size.height - 100),
+      child: Expanded(
         child: GestureDetector(
           onTap: () {
             if (id_order != null) {
@@ -527,7 +501,7 @@ class OrderSum extends StatelessWidget {
             // });
           },
           child: Container(
-            margin: EdgeInsets.all(20),
+            margin: EdgeInsets.only(bottom: 20, left: 10, right: 10),
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(20)),
               color: Color.fromARGB(

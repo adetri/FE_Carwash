@@ -1,3 +1,4 @@
+import 'package:flutter_application_1/env.dart';
 import 'package:flutter_application_1/page/login.dart';
 import 'package:flutter_application_1/page/main_menu.dart';
 import 'package:intl/intl.dart';
@@ -108,6 +109,12 @@ void req_validation(BuildContext context, status_code) {
 void request_failed(BuildContext context, e) {
   MyDialogHelper.title = "Request Error";
   MyDialogHelper.content = e;
-  MyDialogHelper.page = Mainmenu();
+  MyDialogHelper.page = Login();
   MyDialogHelper.showDialogMethod(context);
+}
+
+void dbg(object) {
+  if (DEBUG == true) {
+    print(object);
+  }
 }

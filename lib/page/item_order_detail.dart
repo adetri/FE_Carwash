@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/inc/req.dart';
 import '../env.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -26,7 +27,7 @@ class _ItemDetailState extends State<ItemDetail> {
   late final requestBody = [];
   // Corrected the class name
   dynamic item;
-
+  Req? req;
   int qty = 1;
   int sub_itm_id = 0;
   late int sub_item_price;
@@ -34,14 +35,28 @@ class _ItemDetailState extends State<ItemDetail> {
 
   void initState() {
     super.initState();
+    fetchData();
     add_existing_item();
-    itemdata();
-    testmethod();
-    print(widget.spot_id);
 
-    print(widget.id_order);
+    // debug(widget.spot_id);
+
+    // debug(widget.id_order);
 
     // Call the fetchData method when the widget is first built
+  }
+
+  Future<void> fetchData() async {
+    req = Req(context);
+
+    await req!.init();
+
+    dynamic req_item =
+        await req!.dataDetaiItem(widget.data1['id_item'].toString());
+
+    setState(() {
+      // debug(req_item['response']);
+      item = req_item['response'];
+    });
   }
 
   void testmethod() {
@@ -163,7 +178,7 @@ class _ItemDetailState extends State<ItemDetail> {
                                       item['mainitem'] != null &&
                                       item['mainitem']['img'] != null
                                   ? Image.network(
-                                      APIHOST + item['mainitem']['img'],
+                                      req!.host! + item['mainitem']['img'],
                                       fit: BoxFit.cover,
                                       height: double.infinity,
                                       width: double.infinity,

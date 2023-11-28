@@ -4,14 +4,17 @@ import 'package:path/path.dart';
 class DatabaseHelper {
   static Database? _database;
   final String tableName = 'con';
-  final String host = "http://192.168.18.20:8000";
+  final String host = "http://192.168.137.1:8000";
 
   Future<Database> get database async {
     if (_database != null) {
+      print("init exec2");
       return _database!;
     }
 
     _database = await initializeDatabase();
+    print("init exec");
+
     return _database!;
   }
 
@@ -95,6 +98,7 @@ class DatabaseHelper {
 
   Future<int> updateHost() async {
     final Database db = await database;
+    print("sadasdnasjndjsads ");
     return db.update(
       tableName,
       {'host': host},

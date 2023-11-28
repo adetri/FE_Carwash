@@ -47,7 +47,7 @@ class _MonitoringState extends State<Monitoring> {
     // Use 'req' instance as needed
     setState(() {
       jsonData1 = jsonDecode(data['response']);
-      print(jsonData1);
+      // print(jsonData1);
     });
   }
 
