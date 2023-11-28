@@ -1,10 +1,11 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import '../env.dart';
 
 class DatabaseHelper {
   static Database? _database;
   final String tableName = 'con';
-  final String host = "http://192.168.137.1:8000";
+  final String host = APIHOST;
 
   Future<Database> get database async {
     if (_database != null) {

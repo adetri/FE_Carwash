@@ -113,6 +113,12 @@ void request_failed(BuildContext context, e) {
   MyDialogHelper.showDialogMethod(context);
 }
 
+void show_dialog(BuildContext context, title, content) {
+  MyDialogHelper.title = title;
+  MyDialogHelper.content = content;
+  MyDialogHelper.showDialogMethod(context);
+}
+
 void dbg(object) {
   if (DEBUG == true) {
     print(object);

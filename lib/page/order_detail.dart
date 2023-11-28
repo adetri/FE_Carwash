@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_application_1/inc/req.dart';
 import 'package:flutter_application_1/page/pre_order.dart';
 import 'monitoring_page.dart';
 import '../inc/method.dart';
@@ -15,7 +16,6 @@ class OrderDetail extends StatefulWidget {
   final int spot_id;
 
   late dynamic data1;
-
   @override
   _OrderDetailState createState() => _OrderDetailState();
 }
@@ -24,57 +24,27 @@ class _OrderDetailState extends State<OrderDetail> {
   bool isKeyboardVisible = false;
   late final list_item = [];
   dynamic p_washer;
+  Req? req;
 
   @override
   void initState() {
     super.initState();
+    init();
+
     add_list_item();
-    call_washer();
 
     // initializeWasherValues();
     // Add a listener to check keyboard visibility
   }
 
-  Future<void> call_washer() async {
-    String apiUrl =
-        '$APIHOST/pegawai/get-washer-pegawai'; // Replace with your API endpoint
-    final Map<String, String> headers = {
-      'Authorization': 'Bearer $JWT',
-      'Content-Type': 'application/json',
-    };
-
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: headers,
-    );
-
-    if (response.statusCode == 200) {
-      setState(() {
-        p_washer = json.decode(response.body);
-      });
-      print(p_washer['pegawai']);
-      print("Success with item");
-    } else {
-      print(
-          'Failed to load data item. Status code: ${response.statusCode} ${response.body}');
-    }
-  }
-
-  Future<Map<String, dynamic>> add_order(paylod, spot_id) async {
-    String apiUrl =
-        '$APIHOST/order/create-order/$spot_id'; // Replace with your API endpoint
-    final Map<String, String> headers = {
-      'Authorization': 'Bearer $JWT',
-      'Content-Type': 'application/json',
-    };
-
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: headers,
-      body: jsonEncode(paylod),
-    );
-
-    return {"status_code": response.statusCode, "response": response.body};
+  Future<void> init() async {
+    req = Req(context);
+    await req?.init();
+    var req_wash = await req?.call_wash();
+    print("reqwash output ${req_wash}");
+    setState(() {
+      p_washer = req_wash?['response'];
+    });
   }
 
   void add_list_item() {
@@ -500,7 +470,7 @@ class _OrderDetailState extends State<OrderDetail> {
           };
 
           Map<String, dynamic> send_req =
-              await add_order(payload, widget.spot_id);
+              await req!.addOrder(payload, widget.spot_id);
 
           if (send_req['status_code'] == 201) {
             dialog("Success to add order data", "Success",

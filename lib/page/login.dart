@@ -125,10 +125,12 @@ class _LoginState extends State<Login> {
                       json.decode(send_req['response'])['access'];
 
                   if (send_req['status_code'] == 200) {
+                    dbg(send_req['status_code']);
                     JWT = accessToken;
 
                     int rowsAffected = await dbHelper.updateJWT(accessToken);
                     print('Rows affected: $rowsAffected');
+
                     to_main_menu(context);
                   }
                 });

@@ -14,14 +14,76 @@ class Req {
   final BuildContext context;
   final timeout = 5;
   final debug = true;
-
+  int? status_cido;
+  Map<String, String>? headers;
+  String apiUrl = "";
   Req(this.context) {}
 
   Future<void> init() async {
     dynamic data = await dbHelper.getJwtHost();
     host = data['host'];
     jwt = data['jwt'];
-    print("this execute");
+    apiUrl = host!;
+    headers = {
+      'Authorization': 'Bearer $jwt',
+      'Content-Type': 'application/json',
+    };
+    dbg("init req execute");
+  }
+
+  Future<Map<String, dynamic>> get_req(apiUrl,
+      {dynamic? reqBody, String req_type = "get"}) async {
+    dbg("apiurl is : $apiUrl");
+    // dbg("headers is : $headers");
+
+    if (req_type == "post" && reqBody == null) {
+      show_dialog(context, "POST req", "type req post. reqbody cant be null");
+      return {
+        "status_code": -1, // You can set a custom status code for failure
+        "response": "Error occurred: type req post. reqbody cant be null",
+      };
+    }
+
+    try {
+      var response;
+      if (req_type == "get") {
+        response = await http
+            .get(
+              Uri.parse(apiUrl),
+              headers: headers,
+            )
+            .timeout(Duration(seconds: timeout));
+      } else {
+        response = await http
+            .post(
+              Uri.parse(apiUrl),
+              headers: headers,
+              body: jsonEncode(reqBody),
+            )
+            .timeout(Duration(seconds: timeout));
+      }
+
+      req_validation(context, response.statusCode);
+
+      if (response.statusCode == 200) {
+        return {
+          "status_code": response.statusCode,
+          "response": json.decode(response.body),
+        };
+      } else {
+        return {
+          "status_code": response.statusCode,
+          "response":
+              "Failed to load data. Status code: ${response.statusCode}",
+        };
+      }
+    } catch (e) {
+      request_failed(context, e.toString());
+      return {
+        "status_code": -1, // You can set a custom status code for failure
+        "response": "Error occurred: $e",
+      };
+    }
   }
 
   Future<String> getHost() async {
@@ -29,7 +91,7 @@ class Req {
       return host!;
     }
     host = await dbHelper.getHost() ?? 'cantgethost';
-    print("host init");
+    dbg("host init");
     return host!;
   }
 
@@ -38,26 +100,32 @@ class Req {
       return jwt!;
     }
     jwt = await dbHelper.getJWT() ?? 'cantgetjwt';
-    print("jwt init");
+    dbg("jwt init");
 
     return jwt!;
   }
 
   Future<Map<String, dynamic>> login(dynamic paylod) async {
     String apiUrl = '$host/ath/login'; // Replace with your API endpoint
-    print("this host $apiUrl");
+    dbg("this host $apiUrl");
 
     final Map<String, String> headers = {
       'Content-Type': 'application/json',
     };
 
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: headers,
-      body: jsonEncode(paylod),
-    );
-
-    return {"status_code": response.statusCode, "response": response.body};
+    try {
+      final response = await http
+          .post(
+            Uri.parse(apiUrl),
+            headers: headers,
+            body: jsonEncode(paylod),
+          )
+          .timeout(Duration(seconds: timeout));
+      return {"status_code": response.statusCode, "response": response.body};
+    } catch (e) {
+      request_failed(context, e.toString());
+      return {"status_code": -1, "response": "Request Error ${e.toString()}"};
+    }
   }
 
   dynamic fetchMonitoring() async {
@@ -67,7 +135,7 @@ class Req {
       'Content-Type': 'application/json',
       // Replace with your authentication token
     };
-    print("this host $apiUrl");
+    dbg("this host $apiUrl");
     try {
       final response = await http
           .get(Uri.parse(apiUrl), headers: headers)
@@ -125,7 +193,7 @@ class Req {
       ...?customHeaders, // Include any custom headers passed as a parameter
     };
     if (DEBUG == true) {
-      // print(jwt);
+      // dbg(jwt);
     }
     try {
       final response = await http.post(
@@ -158,50 +226,33 @@ class Req {
   }
 
   Future<Map<String, dynamic>> dataDetaiItem(id_item) async {
-    String apiUrl =
-        '$host/item/get-mainitem/$id_item'; // Replace with your API endpoint
-    final Map<String, String> headers = {
-      'Authorization': 'Bearer $jwt',
-      'Content-Type': 'application/json',
+    String url = apiUrl + '/item/get-mainitem/$id_item';
+    dynamic req = await get_req(url);
+
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
     };
-    dbg(id_item);
+  }
 
-    dbg(apiUrl);
-    try {
-      final response = await http.get(
-        Uri.parse(apiUrl),
-        headers: headers,
-      );
-      req_validation(context, response.statusCode);
+  Future<Map<String, dynamic>> call_wash() async {
+    String url = apiUrl + '/pegawai/get-washer-pegawai';
+    dynamic req = await get_req(url);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
 
-      if (response.statusCode == 200) {
-        return {
-          "status_code": response.statusCode,
-          "response": json.decode(response.body),
-        };
-      } else {
-        return {
-          "status_code": response.statusCode,
-          "response":
-              "Failed to load data. Status code: ${response.statusCode}",
-        };
-      }
-    } catch (e) {
-      request_failed(context, e.toString());
-      return {
-        "status_code": -1, // You can set a custom status code for failure
-        "response": "Error occurred: $e",
-      };
-    }
-    // if (response.statusCode == 200) {
-    //   setState(() {
-    //     item = json.decode(response.body);
-    //   });
-    //   print(item);
-    //   print("Success with item");
-    // } else {
-    //   print(
-    //       'Failed to load data item. Status code: ${response.statusCode} ${response.body}');
-    // }
+  Future<Map<String, dynamic>> addOrder(paylod, spot_id) async {
+    String url = apiUrl + '/order/create-order/$spot_id';
+    dynamic req = await get_req(url, req_type: 'post', reqBody: paylod);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
   }
 }
