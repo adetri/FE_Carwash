@@ -31,7 +31,9 @@ class _LoginState extends State<Login> {
   }
 
   Future<void> updateHostAndCreateReq() async {
+    dbHelper.checkvalid();
     await dbHelper.updateHost();
+
     req = Req(context); // Create an instance of 'Req' using the context
     await req?.init();
     dbg(req?.host);

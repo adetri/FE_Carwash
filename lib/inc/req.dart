@@ -330,4 +330,14 @@ class Req {
       "response": req['response'],
     };
   }
+
+  Future<Map<String, dynamic>> fetchCategory2() async {
+    String url = apiUrl + '/item/fatch-all-category';
+    dynamic req = await get_req(url);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
 }

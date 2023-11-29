@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/page/category.dart';
+import 'package:flutter_application_1/page/category_form.dart';
 import 'package:flutter_application_1/page/monitoring_page.dart';
 import 'package:flutter_application_1/page/pay_order.dart';
+import 'package:flutter_application_1/page/setting.dart';
 import 'package:flutter_application_1/page/test/test_init_db.dart';
 import 'package:flutter_application_1/page/print.dart';
 
-import 'page/login.dart';
-import 'page/main_menu.dart';
 // import 'package:flutter_application_1/page/login.dart';
 // import 'package:flutter_application_1/page/monitoring_page.dart';
 // import 'package:flutter_application_1/page/test_print.dart';
@@ -29,9 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter List from JSON',
-      home: PayOrder(
-        id_order: 39,
-      ),
+      home: CategoryForm(),
     );
   }
 }

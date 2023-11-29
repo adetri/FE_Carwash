@@ -15,8 +15,22 @@ class DatabaseHelper {
 
     _database = await initializeDatabase();
     print("init exec");
-
     return _database!;
+  }
+
+  void checkvalid() async {
+    var check_id = await getTasksById(1);
+    if (check_id.isEmpty) {
+      // Handle retrieved tasks here...
+
+      Map<String, dynamic> task = {
+        'jwt': '',
+        'host': APIHOST,
+      };
+
+      int insertedId = await insertTask(task);
+      print("insert init db $insertedId");
+    }
   }
 
   Future<Database> initializeDatabase() async {

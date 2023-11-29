@@ -179,6 +179,7 @@ class _PreorderState extends State<Preorder> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
         children: [
           Expanded(
