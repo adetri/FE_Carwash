@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_application_1/inc/method.dart';
+import 'package:flutter_application_1/inc/req.dart';
 import 'package:intl/intl.dart';
 import '../env.dart';
 import 'package:http/http.dart' as http;
@@ -25,52 +26,72 @@ class _ReportState extends State<Report> {
   String? field_enddate;
   dynamic total = 0;
   dynamic d_order;
-
+  Req? req;
   @override
   void initState() {
     super.initState();
-    call_order();
+    init();
+    // call_order();
   }
 
-  void call_order() async {
-    String apiUrl =
-        '$APIHOST/order/order-report'; // Replace with your API endpoint
-    final Map<String, String> headers = {
-      'Authorization': 'Bearer $JWT',
-      'Content-Type': 'application/json',
-    };
+  void init() async {
+    req = Req(context);
+    await req?.init();
+    orderReport();
+  }
 
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: headers,
-        body: jsonEncode(payload),
-      );
+  void orderReport() async {
+    var req_order = await req?.orderReporting(payload);
+    setState(() {
+      d_order = req_order?['response'];
 
-      if (response.statusCode == 200) {
-        setState(() {
-          d_order = json.decode(response.body);
-        });
-        print(d_order);
-        total = 0;
-        print("Success with order");
+      total = 0;
+      if (req_order?['status_code'] == 200) {
         for (var data in d_order) {
           if (data['is_cancle'] == false) {
             total += data['sub_total'];
-            print(data['sub_total']);
-            print(data['id']);
-            print(data['is_cancle']);
           }
         }
         total = formatCurrency(total);
-      } else {
-        print(
-            'Failed to load data item. Status code: ${response.statusCode} ${response.body}');
       }
-    } catch (e) {
-      print('Error: $e');
-    }
+    });
   }
+  // void call_order() async {
+  //   String apiUrl =
+  //       '$APIHOST/order/order-report'; // Replace with your API endpoint
+  //   final Map<String, String> headers = {
+  //     'Authorization': 'Bearer $JWT',
+  //     'Content-Type': 'application/json',
+  //   };
+
+  //   try {
+  //     final response = await http.post(
+  //       Uri.parse(apiUrl),
+  //       headers: headers,
+  //       body: jsonEncode(payload),
+  //     );
+
+  //     if (response.statusCode == 200) {
+  //       setState(() {
+  //         d_order = json.decode(response.body);
+  //       });
+
+  //       total = 0;
+  //       print("Success with order");
+  //       for (var data in d_order) {
+  //         if (data['is_cancle'] == false) {
+  //           total += data['sub_total'];
+  //         }
+  //       }
+  //       total = formatCurrency(total);
+  //     } else {
+  //       print(
+  //           'Failed to load data item. Status code: ${response.statusCode} ${response.body}');
+  //     }
+  //   } catch (e) {
+  //     print('Error: $e');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -209,11 +230,11 @@ class _ReportState extends State<Report> {
             child: TextButton(
               onPressed: () {
                 setState(() {
-                  payload['start_date'] = field_startdate;
-                  payload['end_date'] = field_startdate;
-                  call_order();
-                  print(payload);
+                  payload['start_date'] = field_startdate.toString();
+                  payload['end_date'] = field_enddate.toString();
                 });
+                orderReport();
+                print(payload);
               },
               child: Text(
                 "Search",

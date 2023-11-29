@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/inc/method.dart';
+import 'package:flutter_application_1/inc/req.dart';
 import 'package:flutter_application_1/page/monitoring_page.dart';
 import 'package:flutter_application_1/page/pre_order.dart';
 import '../env.dart';
@@ -26,86 +27,55 @@ class _PayOrderState extends State<PayOrder> {
   dynamic d_order;
   dynamic paylod = {};
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
-
+  Req? req;
   @override
   void initState() {
     super.initState();
-    call_order();
+
+    init();
   }
 
-  // dynamic printer_check() async {
-  //   bluetooth.isConnected.then((isConnected) {
-  //     if (isConnected == true) {
-  //       print("bluetooth is conect");
+  void init() async {
+    req = Req(context);
+    await req?.init();
+    order();
+  }
 
-  //       return 1;
-  //     } else {
-  //       print("bluetooth is not conect");
-  //       return 0;
-  //     }
-  //   });
+  void order() async {
+    var req_order = await req?.callPreogresOrder(widget.id_order);
+
+    setState(() {
+      d_order = req_order?['response'];
+    });
+  }
+
+  // void call_order() async {
+  //   String apiUrl =
+  //       '$APIHOST/order/preogres-order/${widget.id_order}'; // Replace with your API endpoint
+  //   final Map<String, String> headers = {
+  //     'Authorization': 'Bearer $JWT',
+  //     'Content-Type': 'application/json',
+  //   };
+
+  //   final response = await http.get(
+  //     Uri.parse(apiUrl),
+  //     headers: headers,
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       d_order = json.decode(response.body);
+  //     });
+  //     print(d_order);
+  //     print("Success with order");
+  //   } else {
+  //     print(
+  //         'Failed to load data item. Status code: ${response.statusCode} ${response.body}');
+  //   }
   // }
 
-  void call_order() async {
-    String apiUrl =
-        '$APIHOST/order/preogres-order/${widget.id_order}'; // Replace with your API endpoint
-    final Map<String, String> headers = {
-      'Authorization': 'Bearer $JWT',
-      'Content-Type': 'application/json',
-    };
-
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: headers,
-    );
-
-    if (response.statusCode == 200) {
-      setState(() {
-        d_order = json.decode(response.body);
-      });
-      print(d_order);
-      print("Success with order");
-    } else {
-      print(
-          'Failed to load data item. Status code: ${response.statusCode} ${response.body}');
-    }
-  }
-
-  Future<Map<String, dynamic>> pay_order(order_id) async {
-    String apiUrl =
-        '$APIHOST/order/pay-order/$order_id'; // Replace with your API endpoint
-    final Map<String, String> headers = {
-      'Authorization': 'Bearer $JWT',
-      'Content-Type': 'application/json',
-    };
-
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: headers,
-      body: jsonEncode(paylod),
-    );
-
-    return {"status_code": response.statusCode, "response": response.body};
-  }
-
-  Future<Map<String, dynamic>> delete_order(order_id) async {
-    String apiUrl =
-        '$APIHOST/order/cancle-order/$order_id'; // Replace with your API endpoint
-    final Map<String, String> headers = {
-      'Authorization': 'Bearer $JWT',
-      'Content-Type': 'application/json',
-    };
-
-    final response = await http.put(
-      Uri.parse(apiUrl),
-      headers: headers,
-      // body: jsonEncode(paylod),
-    );
-
-    return {"status_code": response.statusCode, "response": response.body};
-  }
-
   void printRecipt(data) {
+    String sperator = "================================";
     bluetooth.isConnected.then((isConnected) {
       bluetooth.printCustom(data['outlet_name'], 2, 1);
       bluetooth.printCustom(data['outlet_alamt'], 1, 1);
@@ -116,7 +86,7 @@ class _PayOrderState extends State<PayOrder> {
 
       bluetooth.printCustom("No order : ${data['no_order']}", 0, 0);
 
-      bluetooth.printCustom("==========================================", 0, 0);
+      bluetooth.printCustom(sperator, 0, 0);
 
       for (var d in data['list_item']) {
         String item_name = d['item']['name'];
@@ -135,7 +105,7 @@ class _PayOrderState extends State<PayOrder> {
             0);
       }
 
-      bluetooth.printCustom("==========================================", 0, 0);
+      bluetooth.printCustom(sperator, 0, 0);
       // checkDataType(data['nominal'] as int);
       // checkDataType(data['total'] as int);
       // data['nominal'] as int;
@@ -161,7 +131,7 @@ class _PayOrderState extends State<PayOrder> {
   }
 
   int? nominal = 0;
-
+  bool plus_btn = true;
   @override
   Widget build(BuildContext context) {
     String inputText = "";
@@ -274,7 +244,9 @@ class _PayOrderState extends State<PayOrder> {
                   nav_to(
                       context,
                       Preorder(
-                          spot_id: data['order']['spot'], id_order: id_order));
+                        spot_id: data['order']['spot'],
+                        id_order: id_order,
+                      ));
                 },
                 child: Text("Add more item"),
               ),
@@ -381,15 +353,15 @@ class _PayOrderState extends State<PayOrder> {
                                       Navigator.of(context)
                                           .pop(); // Close the dialog
 
-                                      Map<String, dynamic> send_req =
-                                          await delete_order(id_order);
+                                      Map<String, dynamic>? send_req =
+                                          await req?.cancleOrder(id_order);
 
-                                      if (send_req['status_code'] == 202) {
+                                      if (send_req?['status_code'] == 202) {
                                         dialog("Success to delete order data",
                                             "Success",
                                             monitoring: "istrue");
                                       } else {
-                                        dialog(send_req['response'], "Failed");
+                                        dialog(send_req?['response'], "Failed");
                                       }
                                     },
                                     child: Text('OK'),
@@ -452,15 +424,16 @@ class _PayOrderState extends State<PayOrder> {
 
           if (printer_cek == 1) {
             paylod['nominal'] = nominal;
-            Map<String, dynamic> send_req = await pay_order(data['id_order']);
+            Map<String, dynamic>? send_req =
+                await req?.payOrder(data['id_order'], paylod);
 
-            if (send_req['status_code'] == 201) {
+            if (send_req?['status_code'] == 201) {
               printRecipt(data);
 
               dialog("Success to add order data", "Success",
                   monitoring: "istrue");
             } else {
-              dialog(send_req['response'], "Failed");
+              dialog(send_req?['response'], "Failed");
             }
             print(send_req);
           } else {
@@ -619,6 +592,7 @@ class _PayOrderState extends State<PayOrder> {
   }
 
   Column list_itm(list_item) {
+    dbg(list_item);
     return Column(
       children: List<Widget>.generate(
         (list_item != null ? list_item.length : 0),
@@ -636,6 +610,8 @@ class _PayOrderState extends State<PayOrder> {
               ? (list_item[i]['price'] +
                   list_item[i]['subitem_service_list'][0]['price'])
               : list_item[i]['price'];
+
+          int id_service_list = list_item[i]['id'];
 
           String harga_item = formatCurrency(harga);
           return Container(
@@ -671,12 +647,46 @@ class _PayOrderState extends State<PayOrder> {
                             ),
                           ),
                           Expanded(
-                            flex: 1,
-                            child: Text(
-                              qty.toString(),
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w500),
-                              textAlign: TextAlign.center,
+                            flex: 5,
+                            child: Row(
+                              children: [
+                                Visibility(
+                                  visible: plus_btn,
+                                  child: IconButton(
+                                    icon: Icon(Icons
+                                        .add_circle_outline), // Icon widget with the 'add' icon
+                                    onPressed: () async {
+                                      setState(() {
+                                        plus_btn = false;
+                                      });
+                                      dynamic payload = {
+                                        "id_service_list":
+                                            id_service_list.toInt()
+                                      };
+                                      var add_req =
+                                          await req?.addQtyServiceList(payload);
+                                      dbg(add_req);
+                                      if (add_req?['status_code'] == 202) {
+                                        setState(() {
+                                          order();
+                                        });
+                                      }
+                                      setState(() {
+                                        plus_btn = true;
+                                      });
+                                      // Handle button press
+                                      // Add your logic here
+                                    },
+                                  ),
+                                ),
+                                Text(
+                                  qty.toString(),
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
                             ),
                           ),
                           Expanded(

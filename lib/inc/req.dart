@@ -44,6 +44,8 @@ class Req {
       };
     }
 
+    dbg("this req body  $reqBody");
+
     try {
       var response;
       if (req_type == "get") {
@@ -53,6 +55,12 @@ class Req {
               headers: headers,
             )
             .timeout(Duration(seconds: timeout));
+      } else if (req_type == "put") {
+        response = await http.put(
+          Uri.parse(apiUrl),
+          headers: headers,
+          body: jsonEncode(reqBody),
+        );
       } else {
         response = await http
             .post(
@@ -65,7 +73,9 @@ class Req {
 
       req_validation(context, response.statusCode);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 ||
+          response.statusCode == 201 ||
+          response.statusCode == 202) {
         return {
           "status_code": response.statusCode,
           "response": json.decode(response.body),
@@ -74,7 +84,7 @@ class Req {
         return {
           "status_code": response.statusCode,
           "response":
-              "Failed to load data. Status code: ${response.statusCode}",
+              "Failed to load data. Status msg:${response.body}  code: ${response.statusCode}",
         };
       }
     } catch (e) {
@@ -249,6 +259,71 @@ class Req {
   Future<Map<String, dynamic>> addOrder(paylod, spot_id) async {
     String url = apiUrl + '/order/create-order/$spot_id';
     dynamic req = await get_req(url, req_type: 'post', reqBody: paylod);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> callPreogresOrder(id_order) async {
+    String url = apiUrl + '/order/preogres-order/$id_order';
+    dynamic req = await get_req(url);
+
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: headers,
+    );
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> payOrder(order_id, payload) async {
+    String url = apiUrl + '/order/pay-order/$order_id';
+    dynamic req = await get_req(url, req_type: 'post', reqBody: payload);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> cancleOrder(order_id) async {
+    String url = apiUrl + '/order/cancle-order/$order_id';
+    dynamic req = await get_req(url, req_type: 'put');
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> orderReporting(payload) async {
+    String url = apiUrl + '/order/order-report';
+    dynamic req = await get_req(url, req_type: 'post', reqBody: payload);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> addMoreItem(id_order, payload) async {
+    String url = apiUrl + '/order/add-item-order/$id_order';
+    dynamic req = await get_req(url, req_type: 'post', reqBody: payload);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> addQtyServiceList(payload) async {
+    String url = apiUrl + '/order/edit-at-order';
+    dynamic req = await get_req(url, req_type: 'put', reqBody: payload);
     return {
       "status_code":
           req['status_code'], // You can set a custom status code for failure

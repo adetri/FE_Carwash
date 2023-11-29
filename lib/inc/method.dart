@@ -119,6 +119,14 @@ void show_dialog(BuildContext context, title, content) {
   MyDialogHelper.showDialogMethod(context);
 }
 
+void showDialogAndMove(BuildContext context, title, content, page) {
+  MyDialogHelper.title = title;
+  MyDialogHelper.content = content;
+  MyDialogHelper.page = page;
+
+  MyDialogHelper.showDialogMethod(context);
+}
+
 void dbg(object) {
   if (DEBUG == true) {
     print(object);

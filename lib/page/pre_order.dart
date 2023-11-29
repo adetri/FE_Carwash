@@ -443,7 +443,7 @@ class _PreorderState extends State<Preorder> {
   }
 }
 
-class OrderSum extends StatelessWidget {
+class OrderSum extends StatefulWidget {
   OrderSum(
       {Key? key,
       required this.sub_total,
@@ -454,42 +454,81 @@ class OrderSum extends StatelessWidget {
     this.id_order = id_order;
 
     // Call your method here
-    methodsetter();
   }
   final Map<String, int> sub_total;
   final int spot_id;
 
   final List list_item;
-  late final String item_count;
-  late final String total;
   int? id_order;
+
+  @override
+  State<OrderSum> createState() => _OrderSumState();
+}
+
+class _OrderSumState extends State<OrderSum> {
+  late final String item_count;
+
+  late final String total;
+
+  dynamic payload = {};
+
   _PreorderState myInstance = _PreorderState();
-  void methodsetter() {
-    String itm = sub_total['item_count']! > 1 ? " Items" : " Item";
-    item_count = sub_total['item_count'].toString() + itm;
-    total = formatCurrency(sub_total['sub_total']!);
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    methodsetter();
   }
 
+  void methodsetter() {
+    String itm = widget.sub_total['item_count']! > 1 ? " Items" : " Item";
+    item_count = widget.sub_total['item_count'].toString() + itm;
+    total = formatCurrency(widget.sub_total['sub_total']!);
+  }
+
+  void addMore() {}
+  bool content = true;
   @override
   Widget build(BuildContext context) {
     return Visibility(
-      visible: sub_total['item_count']! > 0 ? true : false,
+      visible:
+          widget.sub_total['item_count']! > 0 && content == true ? true : false,
       child: Expanded(
         child: GestureDetector(
-          onTap: () {
-            if (id_order != null) {
-              Future<int> req = myInstance.add_more_item();
-              req.then((value) {
-                if (value != 200) {
-                  print("code 200");
-                }
+          onTap: () async {
+            if (widget.id_order != null) {
+              setState(() {
+                content = false;
               });
+
+              Req req = Req(context);
+              await req.init();
+              payload['payload'] = widget.list_item;
+
+              var req_add_more_item =
+                  await req.addMoreItem(widget.id_order, payload);
+              if (req_add_more_item['status_code'] == 201) {
+                showDialogAndMove(context, "Succes", "Add Item Success",
+                    PayOrder(id_order: widget.id_order));
+              }
+
+              setState(() {
+                content = true;
+              });
+
+              // Future<int> req = myInstance.add_more_item();
+              // req.then((value) {
+              //   if (value != 200) {
+              //     print("code 200");
+              //   }
+              // }
+              // );
             } else {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        OrderDetail(data1: list_item, spot_id: spot_id)),
+                    builder: (context) => OrderDetail(
+                        data1: widget.list_item, spot_id: widget.spot_id)),
               );
             }
 

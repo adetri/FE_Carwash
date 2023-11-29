@@ -34,6 +34,7 @@ class _LoginState extends State<Login> {
     await dbHelper.updateHost();
     req = Req(context); // Create an instance of 'Req' using the context
     await req?.init();
+    dbg(req?.host);
 
     // Use 'req' instance as needed
   }

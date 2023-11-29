@@ -30,21 +30,8 @@ class _ThermalPrintState extends State<ThermalPrint> {
   }
 
   Future<void> initPlatformState() async {
-    // TODO here add a permission request using permission_handler
-    // if permission is not granted, kzaki's thermal print plugin will ask for location permission
-    // which will invariably crash the app even if user agrees so we'd better ask it upfront
-
-    // var statusLocation = Permission.location;
-    // if (await statusLocation.isGranted != true) {
-    //   await Permission.location.request();
-    // }
-    // if (await statusLocation.isGranted) {
-    // ...
-    // } else {
-    // showDialogSayingThatThisPermissionIsRequired());
-    // }
-
     bool? isConnected = await bluetooth.isConnected;
+
     List<BluetoothDevice> devices = [];
     try {
       devices = await bluetooth.getBondedDevices();
@@ -125,7 +112,14 @@ class _ThermalPrintState extends State<ThermalPrint> {
       print("devices empty");
     } else {
       _devices.forEach((device) {
-        items.add({"device_name": device.name, "device": device});
+        print(device.address);
+        print(device);
+
+        items.add({
+          "device_name": device.name,
+          "device": device,
+          "adress": device.address
+        });
       });
     }
 
@@ -144,6 +138,7 @@ class _ThermalPrintState extends State<ThermalPrint> {
   void _disconnect() {
     bluetooth.disconnect();
     setState(() => _connected = false);
+    dbg("object");
   }
 
   void _connect() {
@@ -152,8 +147,10 @@ class _ThermalPrintState extends State<ThermalPrint> {
         if (isConnected == false) {
           bluetooth.connect(_device!).catchError((error) {
             setState(() => _connected = false);
+            print("state when error bluetoh");
           });
           setState(() => _connected = true);
+          print("state when succes bluetoh");
         }
       });
     } else {
@@ -187,6 +184,7 @@ class _ThermalPrintState extends State<ThermalPrint> {
 
   @override
   Widget build(BuildContext context) {
+    print("this connected state $_connected");
     return Scaffold(
         body: Column(
       children: [
@@ -242,6 +240,7 @@ class _ThermalPrintState extends State<ThermalPrint> {
                           },
                           child: ListTile(
                             title: Text(items[index]['device_name']),
+                            subtitle: Text(items[index]['adress']),
                           ),
                         ))
                   ],
@@ -262,6 +261,7 @@ class _ThermalPrintState extends State<ThermalPrint> {
                       initPlatformState();
                       selected_tile = null;
                       _device = null;
+                      print(_connected);
                     });
                   },
                   child: const Text(
@@ -277,7 +277,15 @@ class _ThermalPrintState extends State<ThermalPrint> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       primary: _connected ? Colors.red : Colors.green),
-                  onPressed: _connected ? _disconnect : _connect,
+                  onPressed: () {
+                    if (_connected) {
+                      print(_connected);
+                      _disconnect();
+                    } else {
+                      print(_connected);
+                      _connect();
+                    }
+                  },
                   child: Text(
                     _connected ? 'Disconnect' : 'Connect',
                     style: TextStyle(color: Colors.white),
