@@ -350,4 +350,26 @@ class Req {
       "response": req['response'],
     };
   }
+
+  Future<Map<String, dynamic>> getCategory(id_category) async {
+    id_category = id_category.toString();
+    String url = apiUrl + '/item/get-category/$id_category';
+    dynamic req = await get_req(url);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> updateCategory(id_category, payload) async {
+    id_category = id_category.toString();
+    String url = apiUrl + '/item/edit-category/$id_category';
+    dynamic req = await get_req(url, req_type: "put", reqBody: payload);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/inc/method.dart';
 import 'package:flutter_application_1/inc/req.dart';
 import 'package:flutter_application_1/page/category.dart';
-import 'package:flutter_application_1/page/component/Img_field_input.dart';
+import 'package:flutter_application_1/page/component/img_field_input.dart';
 import 'package:flutter_application_1/page/component/text_field_input.dart';
 // import 'package:flutter_application_1/page/test/test_img_field.dart';
 
@@ -69,14 +69,14 @@ class CatForm extends StatefulWidget {
 
 class _CatFormState extends State<CatForm> {
   TextEditingController _categoryController = TextEditingController();
-  ImageInputField imgField = ImageInputField(base64: null);
+  ImageInputField? imgField;
 
   Req? req;
   TextFieldInput? category_name;
 
   @override
   void initState() {
-    // TODO: implement initState
+    // TODO: implement initStateR
     super.initState();
     init();
   }
@@ -84,17 +84,30 @@ class _CatFormState extends State<CatForm> {
   void init() async {
     req = Req(context);
     await req?.init();
+
     if (widget.id_category != null) {
-      dbg(widget.id_category);
+      var req_category = await req?.getCategory(widget.id_category);
+      dbg(req?.host);
 
       setState(() {
+        imgField = ImageInputField(
+          base64: null,
+          imgUrl:
+              "${req?.host}${req_category?['response']['category']['img'].toString()}",
+        );
         category_name = TextFieldInput(
-            initialValue: "asdnuasdnsaudasudnasudnsaudnu",
+            initialValue:
+                req_category?['response']['category']['name'].toString(),
             field_name: "Category Name");
+        category_name?.value =
+            req_category?['response']['category']['name'].toString();
       });
     } else {
       setState(() {
         category_name = TextFieldInput(field_name: "Category Name");
+        imgField = ImageInputField(
+          base64: null,
+        );
       });
     }
   }
@@ -130,21 +143,41 @@ class _CatFormState extends State<CatForm> {
                 child: ElevatedButton(
                   onPressed: () async {
                     // print(imgField.base64)
-
+                    dynamic payload = {};
                     setState(() {
                       btn_status = false;
+
+                      payload['name'] = category_name?.value;
+                      // if (widget.id_category == null) {
+                      if (imgField?.base64 != null) {
+                        payload['img'] = imgField?.base64;
+                      }
+                      // }
                     });
 
-                    dynamic payload = {
-                      "name": category_name?.value,
-                      "img": imgField.base64
-                    };
                     print(payload);
-                    // var req_ins_category = await req?.insertCategory(payload);
-                    // if (req_ins_category?['status_code'] == 201) {
-                    //   showDialogAndMove(context, "Success",
-                    //       "Insert Data Success", CategoryList());
-                    // }
+
+                    if (widget.id_category == null) {
+                      var req_ins_category = await req?.insertCategory(payload);
+                      if (req_ins_category?['status_code'] == 201) {
+                        showDialogAndMove(context, "Success",
+                            "Insert Data Success", CategoryList());
+                      } else {
+                        show_dialog(context, "Failed",
+                            req_ins_category?['response'].toString());
+                      }
+                    } else {
+                      var req_update_category = await req?.updateCategory(
+                          widget.id_category, payload);
+                      if (req_update_category?['status_code'] == 202) {
+                        showDialogAndMove(context, "Success",
+                            "Update Data Success", CategoryList());
+                      } else {
+                        show_dialog(context, "Failed",
+                            req_update_category?['response'].toString());
+                      }
+                    }
+
                     setState(() {
                       btn_status = true;
                     });

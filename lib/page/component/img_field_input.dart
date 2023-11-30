@@ -6,7 +6,9 @@ import 'package:image_picker/image_picker.dart';
 
 class ImageInputField extends StatefulWidget {
   String? base64;
-  ImageInputField({this.base64});
+  String? imgUrl;
+
+  ImageInputField({this.base64, this.imgUrl});
   @override
   _ImageInputFieldState createState() => _ImageInputFieldState();
 }
@@ -15,10 +17,17 @@ class _ImageInputFieldState extends State<ImageInputField> {
   File? _imageFile;
   String? _base64Image;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    dbg(widget.imgUrl);
+  }
+
   void _updateBase64(String? newBase64) {
     setState(() {
       widget.base64 = 'data:image/png;base64,$newBase64';
-      dbg(widget.base64);
     });
   }
 
@@ -62,7 +71,12 @@ class _ImageInputFieldState extends State<ImageInputField> {
                     _imageFile!,
                     fit: BoxFit.cover,
                   )
-                : Icon(Icons.add_a_photo, size: 40, color: Colors.grey),
+                : widget.imgUrl != null
+                    ? Image.network(
+                        widget.imgUrl ?? "",
+                        fit: BoxFit.cover,
+                      )
+                    : Icon(Icons.add_a_photo, size: 40, color: Colors.grey),
           ),
         ),
       ),

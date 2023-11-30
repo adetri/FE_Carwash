@@ -32,7 +32,7 @@ class StratAt extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter List from JSON',
-      home: CategoryForm(),
+      home: Settings(),
     );
   }
 }
