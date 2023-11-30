@@ -3,6 +3,7 @@ import 'package:flutter_application_1/env.dart';
 import 'package:flutter_application_1/inc/method.dart';
 import 'package:flutter_application_1/page/monitoring_page.dart';
 import 'package:flutter_application_1/page/report.dart';
+import 'package:flutter_application_1/page/setting.dart';
 
 class Mainmenu extends StatefulWidget {
   const Mainmenu({super.key});
@@ -104,7 +105,7 @@ class _MainmenuState extends State<Mainmenu> {
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
-                      to_login(context);
+                      nav_to(context, Settings());
                     });
                     // setState(() {
                     //   print("tab this");
@@ -127,7 +128,7 @@ class _MainmenuState extends State<Mainmenu> {
                         Image.asset('assets/setting.png'),
                         Padding(padding: EdgeInsets.only(top: 10)),
                         Text(
-                          "SettingS",
+                          "Setting",
                           style: TextStyle(fontWeight: FontWeight.w600),
                         )
                       ],

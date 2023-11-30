@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/inc/method.dart';
+import 'package:flutter_application_1/page/category.dart';
+import 'package:flutter_application_1/page/main_menu.dart';
 
 class Settings extends StatelessWidget {
   const Settings({super.key});
@@ -9,9 +12,12 @@ class Settings extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          Container(
-            alignment: Alignment.center,
-            child: Image.asset('assets/logo.png'),
+          SizedBox(
+            height: 50,
+          ),
+          header(context),
+          SizedBox(
+            height: 50,
           ),
           Wrap(
             alignment: WrapAlignment.center,
@@ -21,7 +27,9 @@ class Settings extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(16.0),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    nav_to(context, CategoryList());
+                  },
                   child: Container(
                     alignment: Alignment.center,
                     height: 200,
@@ -97,6 +105,33 @@ class Settings extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget header(context) {
+    print("this exec");
+    return Row(
+      children: [
+        GestureDetector(
+          onTap: () {
+            // Handle back button tap
+            nav_to(context, Mainmenu());
+          },
+          child: Container(
+            height: 50,
+            alignment: Alignment.topLeft,
+            child: Image.asset('assets/back.png'),
+          ),
+        ),
+        SizedBox(width: 10),
+        Text(
+          'Setting',
+          style: TextStyle(
+            fontSize: 40,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
     );
   }
 }

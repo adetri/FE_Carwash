@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_1/inc/method.dart';
 import 'package:flutter_application_1/inc/req.dart';
 import 'package:flutter_application_1/page/category_form.dart';
+import 'package:flutter_application_1/page/setting.dart';
 
 class CategoryList extends StatelessWidget {
   CategoryList({Key? key});
@@ -19,6 +20,7 @@ class CategoryList extends StatelessWidget {
                 GestureDetector(
                   onTap: () {
                     // Handle back button tap
+                    nav_to(context, Settings());
                   },
                   child: Container(
                     height: 50,
@@ -96,7 +98,11 @@ class _ListCategoryState extends State<ListCategory> {
                     ListTile(
                       title: Text('Edit'),
                       onTap: () {
-                        // Handle edit tap
+                        nav_to(
+                            context,
+                            CategoryForm(
+                              id_category: category_id,
+                            ));
                         print('Tapped on Edit for ');
                       },
                     ),

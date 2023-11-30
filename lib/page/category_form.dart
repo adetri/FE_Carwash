@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/inc/method.dart';
+import 'package:flutter_application_1/inc/req.dart';
+import 'package:flutter_application_1/page/category.dart';
+import 'package:flutter_application_1/page/component/Img_field_input.dart';
+import 'package:flutter_application_1/page/component/text_field_input.dart';
+// import 'package:flutter_application_1/page/test/test_img_field.dart';
 
 class CategoryForm extends StatelessWidget {
-  const CategoryForm({Key? key}) : super(key: key);
+  CategoryForm({Key? key, int? id_category}) : super(key: key) {
+    this.id_category = id_category;
+  }
+  int? id_category;
 
   @override
   Widget build(BuildContext context) {
@@ -12,22 +21,23 @@ class CategoryForm extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            header(),
+            header(context),
             SizedBox(height: 25),
-            CatForm(),
+            CatForm(id_category: id_category),
           ],
         ),
       ),
     );
   }
 
-  Widget header() {
+  Widget header(context) {
     print("this exec");
     return Row(
       children: [
         GestureDetector(
           onTap: () {
             // Handle back button tap
+            nav_to(context, CategoryList());
           },
           child: Container(
             height: 50,
@@ -49,14 +59,45 @@ class CategoryForm extends StatelessWidget {
 }
 
 class CatForm extends StatefulWidget {
-  const CatForm({Key? key}) : super(key: key);
-
+  CatForm({Key? key, int? id_category}) : super(key: key) {
+    this.id_category = id_category;
+  }
+  int? id_category;
   @override
   State<CatForm> createState() => _CatFormState();
 }
 
 class _CatFormState extends State<CatForm> {
   TextEditingController _categoryController = TextEditingController();
+  ImageInputField imgField = ImageInputField(base64: null);
+
+  Req? req;
+  TextFieldInput? category_name;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    init();
+  }
+
+  void init() async {
+    req = Req(context);
+    await req?.init();
+    if (widget.id_category != null) {
+      dbg(widget.id_category);
+
+      setState(() {
+        category_name = TextFieldInput(
+            initialValue: "asdnuasdnsaudasudnasudnsaudnu",
+            field_name: "Category Name");
+      });
+    } else {
+      setState(() {
+        category_name = TextFieldInput(field_name: "Category Name");
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -64,36 +105,53 @@ class _CatFormState extends State<CatForm> {
     super.dispose();
   }
 
+  bool btn_status = true;
   @override
   Widget build(BuildContext context) {
     return Expanded(
       flex: 1,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            flex: 10,
-            child: TextField(
-              controller: _categoryController,
-              onChanged: (value) {
-                // Handle text changes
-              },
-              decoration: InputDecoration(
-                labelText: 'Category Name',
-                hintText: 'Category Name',
-                border: OutlineInputBorder(),
-              ),
+            flex: 3,
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: imgField,
             ),
           ),
+          Expanded(flex: 7, child: category_name ?? Text("")),
           Expanded(
-            child: Container(
-              margin: EdgeInsets.all(10),
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  String categoryName = _categoryController.text;
-                  print('Category Name: $categoryName');
-                },
-                child: Text('Submit'),
+            child: Visibility(
+              visible: btn_status,
+              child: Container(
+                margin: EdgeInsets.all(10),
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    // print(imgField.base64)
+
+                    setState(() {
+                      btn_status = false;
+                    });
+
+                    dynamic payload = {
+                      "name": category_name?.value,
+                      "img": imgField.base64
+                    };
+                    print(payload);
+                    // var req_ins_category = await req?.insertCategory(payload);
+                    // if (req_ins_category?['status_code'] == 201) {
+                    //   showDialogAndMove(context, "Success",
+                    //       "Insert Data Success", CategoryList());
+                    // }
+                    setState(() {
+                      btn_status = true;
+                    });
+                    // print('Category Name: $categoryName');
+                  },
+                  child: Text('Submit'),
+                ),
               ),
             ),
           ),

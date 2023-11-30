@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/page/category.dart';
 import 'package:flutter_application_1/page/category_form.dart';
+import 'package:flutter_application_1/page/component/text_field_input.dart';
 import 'package:flutter_application_1/page/monitoring_page.dart';
 import 'package:flutter_application_1/page/pay_order.dart';
 import 'package:flutter_application_1/page/setting.dart';
+import 'package:flutter_application_1/page/test/test_img_field.dart';
 import 'package:flutter_application_1/page/test/test_init_db.dart';
 import 'package:flutter_application_1/page/print.dart';
 
@@ -20,11 +22,11 @@ import 'package:flutter_application_1/page/print.dart';
 // import 'page/item_order_detail.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(StratAt());
 }
 
-class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+class StratAt extends StatelessWidget {
+  StratAt({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
