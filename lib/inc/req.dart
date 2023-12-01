@@ -382,4 +382,34 @@ class Req {
       "response": req['response'],
     };
   }
+
+  Future<Map<String, dynamic>> insertItem(payload) async {
+    String url = apiUrl + '/item/create-mainitem';
+    dynamic req = await get_req(url, req_type: "post", reqBody: payload);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> updateItem(id_item, payload) async {
+    String url = apiUrl + ' /item/edit-mainitem/$id_item';
+    dynamic req = await get_req(url, req_type: "put", reqBody: payload);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> getItem(id_item) async {
+    String url = apiUrl + '/item/get-mainitem/$id_item';
+    dynamic req = await get_req(url);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
 }

@@ -9,8 +9,10 @@ import 'package:flutter_application_1/page/component/text_field_input.dart';
 import 'package:flutter_application_1/page/item.dart';
 
 class ItemForm extends StatelessWidget {
-  const ItemForm({super.key});
-
+  ItemForm({Key? key, int? id_item}) : super(key: key) {
+    this.id_item = id_item;
+  }
+  int? id_item;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +20,12 @@ class ItemForm extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(20, 50, 20, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [header(context), Myform()],
+          children: [
+            header(context),
+            Myform(
+              idItem: id_item,
+            )
+          ],
         ),
       ),
     );
@@ -53,8 +60,10 @@ class ItemForm extends StatelessWidget {
 }
 
 class Myform extends StatefulWidget {
-  const Myform({super.key});
-
+  Myform({Key? key, int? idItem}) : super(key: key) {
+    this.idItem = idItem;
+  }
+  int? idItem;
   @override
   State<Myform> createState() => _MyformState();
 }
@@ -67,12 +76,17 @@ class _MyformState extends State<Myform> {
   Req? req;
   TextFieldInput? subItemName;
   TextFieldInput? subItemPrice;
-
   List<dynamic>? category_list;
-
-  int sub_item_count = 0;
+  int sub_item_count = 1;
+  int sub_item_minum_form = 1;
   List<dynamic> sub_item = [{}];
-  Map<String, dynamic>? payload;
+  List<dynamic> sub_item_existing = [{}];
+
+  Map<String, dynamic>? payload = {'main_item': {}};
+  Map<String, dynamic>? payload_update = {'mainitem': {}};
+
+  dynamic subItems;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -81,29 +95,72 @@ class _MyformState extends State<Myform> {
   }
 
   init() async {
-    dbg("init Page Start");
+    dbg("init Page Start ${widget.idItem}");
     req = Req(context);
     await req?.init();
     var req_category = await req?.fetchCategory2();
 
-    setState(() {
-      subItemName = TextFieldInput(field_name: "Sub Item Name");
-      subItemPrice = TextFieldInput(
-        field_name: "Sub Item Price",
-        inputType: "number",
-      );
+    if (widget.idItem != null) {
+      var req_get_item = await req?.getItem(widget.idItem);
+      dbg(req_get_item);
 
-      category_list = req_category?['response']['category'];
-      categoryItem = DropdownInputField(listItem: category_list);
-      item_name = TextFieldInput(field_name: "Item Name");
-      price = TextFieldInput(
-        field_name: "Item Price",
-        inputType: "number",
-      );
-      imgField = ImageInputField(
-        base64: null,
-      );
-    });
+      setState(() {
+        category_list = req_category?['response']['category'];
+        sub_item_count = 0;
+        sub_item_minum_form = 0;
+      });
+
+      setState(() {
+        subItems = req_get_item?['response']['mainitem']['sub_item'];
+        sub_item_existing = subItems;
+        dbg("subItems is ${subItems}");
+
+        item_name = TextFieldInput(
+          field_name: "Item Name",
+          initialValue: req_get_item?['response']['mainitem']['name'],
+        );
+        item_name?.value =
+            req_get_item?['response']['mainitem']['name'].toString();
+
+        price = TextFieldInput(
+            field_name: "Item Price",
+            inputType: "number",
+            initialValue:
+                req_get_item?['response']['mainitem']['price'].toString());
+        price?.value =
+            req_get_item?['response']['mainitem']['price'].toString();
+
+        categoryItem = DropdownInputField(
+            listItem: category_list,
+            id_category: req_get_item?['response']['mainitem']['category']
+                ['id']);
+        categoryItem?.value =
+            req_get_item?['response']['mainitem']['category']['id'].toString();
+
+        imgField = ImageInputField(
+            base64: null,
+            imgUrl:
+                "${req?.host}${req_get_item?['response']['mainitem']['img']}");
+      });
+    } else {
+      setState(() {
+        subItemName = TextFieldInput(field_name: "Sub Item Name");
+        subItemPrice = TextFieldInput(
+          field_name: "Sub Item Price",
+          inputType: "number",
+        );
+
+        categoryItem = DropdownInputField(listItem: category_list);
+        item_name = TextFieldInput(field_name: "Item Name");
+        price = TextFieldInput(
+          field_name: "Item Price",
+          inputType: "number",
+        );
+        imgField = ImageInputField(
+          base64: null,
+        );
+      });
+    }
 
     dbg("init Page End");
   }
@@ -141,6 +198,7 @@ class _MyformState extends State<Myform> {
                 child: Row(
                   children: [
                     Expanded(
+                      flex: 6,
                       child: Text(
                         "Sub Item",
                         style: TextStyle(
@@ -150,6 +208,7 @@ class _MyformState extends State<Myform> {
                       ),
                     ),
                     Expanded(
+                      flex: 2,
                       child: Container(
                         // color: Colors.amberAccent,
                         alignment: Alignment.topRight,
@@ -173,13 +232,14 @@ class _MyformState extends State<Myform> {
                       ),
                     ),
                     Expanded(
+                      flex: 2,
                       child: Container(
                         // color: Colors.amberAccent,
                         alignment: Alignment.topRight,
                         child: IconButton(
                           onPressed: () {
                             setState(() {
-                              if (sub_item_count > 1) {
+                              if (sub_item_count > sub_item_minum_form) {
                                 sub_item_count -= 1;
 
                                 sub_item.removeLast();
@@ -195,12 +255,60 @@ class _MyformState extends State<Myform> {
                   ],
                 ),
               ),
+              widget.idItem != null ? subItemFormExisting() : SizedBox.shrink(),
               subItemForm(),
               Container(
                 margin: EdgeInsets.only(top: 10),
                 child: ElevatedButton(
-                  onPressed: () {
-                    dbg(subItemName?.value);
+                  onPressed: () async {
+                    if (widget.idItem != null) {
+                      setState(() {
+                        payload_update!['mainitem']['sub_item'] =
+                            sub_item_existing;
+
+                        if (sub_item[0].length > 1) {
+                          payload_update!['mainitem']['new_sub_item'] =
+                              sub_item;
+                        }
+                        dbg("subleb : ${sub_item[0].length}");
+                        payload_update!['mainitem']['name'] = item_name?.value;
+                        payload_update!['mainitem']['price'] = price?.value;
+                        payload_update!['mainitem']['category'] =
+                            categoryItem?.value;
+                        if (imgField?.base64 != null) {
+                          payload_update!['mainitem']['img'] = imgField?.base64;
+                        }
+                      });
+                      var req_upd_item =
+                          await req?.updateItem(widget.idItem, payload_update);
+
+                      if (req_upd_item!['status_code'] == 202) {
+                        showDialogAndMove(context, 'Succes',
+                            'Insert data success', ItemList());
+                      } else {
+                        show_dialog(context, 'Fail to insert',
+                            req_upd_item['response']);
+                      }
+                      dbg(payload_update);
+
+                      dbg(req_upd_item);
+                    } else {
+                      payload!['main_item']['sub_item'] = sub_item;
+                      payload!['main_item']['name'] = item_name?.value;
+                      payload!['main_item']['price'] = price?.value;
+                      payload!['main_item']['category'] = categoryItem?.value;
+                      payload!['main_item']['img'] = imgField?.base64;
+
+                      var req_ins_item = await req?.insertItem(payload);
+                      if (req_ins_item!['status_code'] == 201) {
+                        showDialogAndMove(context, 'Succes',
+                            'Insert data success', ItemList());
+                      } else {
+                        show_dialog(context, 'Fail to insert',
+                            req_ins_item['response']);
+                      }
+                      dbg(payload);
+                    }
                   },
                   child: Text("Submit"),
                 ),
@@ -212,6 +320,73 @@ class _MyformState extends State<Myform> {
           ),
         ),
       ),
+    );
+  }
+
+  Column subItemFormExisting() {
+    return Column(
+      children: List.generate(subItems != null ? subItems.length : 0, (index) {
+        return Container(
+          margin: EdgeInsets.only(top: 10),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 9,
+                child: Column(children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 10),
+                    child: TextField(
+                      controller:
+                          TextEditingController(text: subItems[index]['name']),
+                      onChanged: (value) {
+                        sub_item_existing[index]['name'] = value;
+                        dbg(sub_item);
+                      },
+                      decoration: InputDecoration(
+                        labelText: "Sub Item Name",
+                        hintText: "Sub Item Name",
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 10),
+                    child: TextField(
+                        controller: TextEditingController(
+                            text: subItems[index]['price'].toString()),
+                        onChanged: (value) {
+                          sub_item_existing[index]['price'] = value;
+                          dbg(sub_item);
+                        },
+                        decoration: InputDecoration(
+                          labelText: "Sub Item Price",
+                          hintText: "Sub Item Price",
+                          border: OutlineInputBorder(),
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                          // You can add more formatters if needed, for instance, to limit the length
+                          // LengthLimitingTextInputFormatter(5), // Allows only 5 characters
+                        ]
+
+                        // Additional properties and handlers for the TextField
+                        ),
+                  ),
+                ]),
+              ),
+              Expanded(
+                child: IconButton(
+                  onPressed: () {
+                    dbg("object");
+                  },
+                  icon: Icon(Icons.delete),
+                ),
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 
@@ -234,17 +409,6 @@ class _MyformState extends State<Myform> {
                     hintText: "Sub Item Name",
                     border: OutlineInputBorder(),
                   ),
-                  // keyboardType: input_type == 'number'
-                  //     ? TextInputType.number
-                  //     : TextInputType.text,
-                  // inputFormatters: input_type == 'number'
-                  //     ? <TextInputFormatter>[
-                  //         FilteringTextInputFormatter.digitsOnly,
-                  //         // You can add more formatters if needed, for instance, to limit the length
-                  //         // LengthLimitingTextInputFormatter(5), // Allows only 5 characters
-                  //       ]
-                  //     : null
-                  // // Additional properties and handlers for the TextField
                 ),
               ),
               Container(
@@ -276,3 +440,71 @@ class _MyformState extends State<Myform> {
     );
   }
 }
+
+  // Column subItemFormExisting() {
+  //   return Column(
+  //     children: List.generate(subItems != null ? subItems.length : 0, (index) {
+  //       return Container(
+  //         margin: EdgeInsets.only(top: 10),
+  //         child: Column(
+  //           children: [
+  //             Row(
+  //               children: [
+  //                 Expanded(
+  //                   flex: 9,
+  //                   child: Container(
+  //                     margin: EdgeInsets.only(top: 10),
+  //                     child: TextField(
+  //                       controller: TextEditingController(
+  //                           text: subItems[index]['name']),
+  //                       onChanged: (value) {
+  //                         sub_item_existing[index]['name'] = value;
+  //                         dbg(sub_item);
+  //                       },
+  //                       decoration: InputDecoration(
+  //                         labelText: "Sub Item Name",
+  //                         hintText: "Sub Item Name",
+  //                         border: OutlineInputBorder(),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 Expanded(
+  //                     child: IconButton(
+  //                         onPressed: () {
+  //                           dbg("object");
+  //                         },
+  //                         icon: Icon(Icons.delete)))
+  //               ],
+  //             ),
+  //             Container(
+  //               margin: EdgeInsets.only(top: 10),
+  //               child: TextField(
+  //                   controller: TextEditingController(
+  //                       text: subItems[index]['price'].toString()),
+  //                   onChanged: (value) {
+  //                     sub_item_existing[index]['price'] = value;
+  //                     dbg(sub_item);
+  //                   },
+  //                   decoration: InputDecoration(
+  //                     labelText: "Sub Item Price",
+  //                     hintText: "Sub Item Price",
+  //                     border: OutlineInputBorder(),
+  //                   ),
+  //                   keyboardType: TextInputType.number,
+  //                   inputFormatters: <TextInputFormatter>[
+  //                     FilteringTextInputFormatter.digitsOnly,
+  //                     You can add more formatters if needed, for instance, to limit the length
+  //                     LengthLimitingTextInputFormatter(5), // Allows only 5 characters
+  //                   ]
+
+  //                   Additional properties and handlers for the TextField
+  //                   ),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     }),
+  //   );
+  // }
+

@@ -108,12 +108,11 @@ class _ListItemState extends State<ListItem> {
                     ListTile(
                       title: Text('Edit'),
                       onTap: () {
-                        // nav_to(
-                        //     context,
-                        //     CategoryForm(
-                        //       id_category: category_id,
-                        //     ));
-                        // print('Tapped on Edit for ');
+                        nav_to(
+                            context,
+                            ItemForm(
+                              id_item: item![index]['id'],
+                            ));
                       },
                     ),
                     // ListTile(

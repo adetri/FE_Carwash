@@ -35,7 +35,9 @@ class StratAt extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter List from JSON',
-      home: ItemForm(),
+      home: ItemForm(
+        id_item: 5,
+      ),
     );
   }
 }
