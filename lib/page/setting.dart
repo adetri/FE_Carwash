@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/inc/method.dart';
 import 'package:flutter_application_1/page/category.dart';
+import 'package:flutter_application_1/page/item.dart';
 import 'package:flutter_application_1/page/main_menu.dart';
 
 class Settings extends StatelessWidget {
@@ -40,7 +41,11 @@ class Settings extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        Image.asset('assets/setting.png'),
+                        Image.asset(
+                          'assets/category.png',
+                          height: 100,
+                          width: 100,
+                        ),
                         Padding(padding: EdgeInsets.only(top: 10)),
                         Text(
                           "Category",
@@ -55,7 +60,7 @@ class Settings extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16.0),
                 child: GestureDetector(
                   onTap: () {
-                    nav_to(context, CategoryList());
+                    nav_to(context, ItemList());
                   },
                   child: Container(
                     alignment: Alignment.center,
@@ -67,7 +72,11 @@ class Settings extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        Image.asset('assets/setting.png'),
+                        Image.asset(
+                          'assets/items.png',
+                          height: 100,
+                          width: 100,
+                        ),
                         Padding(padding: EdgeInsets.only(top: 10)),
                         Text(
                           "Item",

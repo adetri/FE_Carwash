@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/page/category.dart';
 import 'package:flutter_application_1/page/category_form.dart';
+import 'package:flutter_application_1/page/component/dropdown_field_input.dart';
 import 'package:flutter_application_1/page/component/text_field_input.dart';
+import 'package:flutter_application_1/page/item.dart';
+import 'package:flutter_application_1/page/item_form.dart';
 import 'package:flutter_application_1/page/monitoring_page.dart';
 import 'package:flutter_application_1/page/pay_order.dart';
 import 'package:flutter_application_1/page/setting.dart';
@@ -32,7 +35,7 @@ class StratAt extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter List from JSON',
-      home: Settings(),
+      home: ItemForm(),
     );
   }
 }

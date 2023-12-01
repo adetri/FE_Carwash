@@ -52,32 +52,30 @@ class _ImageInputFieldState extends State<ImageInputField> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GestureDetector(
-        onTap: _getImageFromGallery,
-        child: Center(
-          child: Container(
-            width: 300,
-            height: 300,
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              border: Border.all(
-                color: Colors.grey,
-                width: 1,
-              ),
+    return GestureDetector(
+      onTap: _getImageFromGallery,
+      child: Center(
+        child: Container(
+          width: 300,
+          height: 300,
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            border: Border.all(
+              color: Colors.grey,
+              width: 1,
             ),
-            child: _imageFile != null
-                ? Image.file(
-                    _imageFile!,
-                    fit: BoxFit.cover,
-                  )
-                : widget.imgUrl != null
-                    ? Image.network(
-                        widget.imgUrl ?? "",
-                        fit: BoxFit.cover,
-                      )
-                    : Icon(Icons.add_a_photo, size: 40, color: Colors.grey),
           ),
+          child: _imageFile != null
+              ? Image.file(
+                  _imageFile!,
+                  fit: BoxFit.cover,
+                )
+              : widget.imgUrl != null
+                  ? Image.network(
+                      widget.imgUrl ?? "",
+                      fit: BoxFit.cover,
+                    )
+                  : Icon(Icons.add_a_photo, size: 40, color: Colors.grey),
         ),
       ),
     );
