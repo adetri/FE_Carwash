@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/inc/method.dart';
+import 'package:MrCarwash/inc/method.dart';
 
 class DropdownMenuApp extends StatelessWidget {
   DropdownMenuApp({super.key});

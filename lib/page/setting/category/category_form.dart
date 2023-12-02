@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/inc/method.dart';
-import 'package:flutter_application_1/inc/req.dart';
-import 'package:flutter_application_1/page/category.dart';
-import 'package:flutter_application_1/page/component/img_field_input.dart';
-import 'package:flutter_application_1/page/component/text_field_input.dart';
-// import 'package:flutter_application_1/page/test/test_img_field.dart';
+import 'package:MrCarwash/inc/method.dart';
+import 'package:MrCarwash/inc/req.dart';
+import 'package:MrCarwash/page/setting/category/category.dart';
+import 'package:MrCarwash/page/component/img_field_input.dart';
+import 'package:MrCarwash/page/component/text_field_input.dart';
+// import 'package:MrCarwash/page/test/test_img_field.dart';
 
 class CategoryForm extends StatelessWidget {
   CategoryForm({Key? key, int? id_category}) : super(key: key) {

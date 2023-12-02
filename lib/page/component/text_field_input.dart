@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_1/inc/method.dart';
+import 'package:MrCarwash/inc/method.dart';
 
 class TextFieldInput extends StatefulWidget {
   TextFieldInput(

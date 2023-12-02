@@ -1,17 +1,17 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/inc/method.dart';
-import 'package:flutter_application_1/inc/req.dart';
-import 'package:flutter_application_1/page/monitoring_page.dart';
-import 'package:flutter_application_1/page/pre_order.dart';
-import '../env.dart';
+import 'package:MrCarwash/inc/method.dart';
+import 'package:MrCarwash/inc/req.dart';
+import 'package:MrCarwash/page/wash_service/monitoring_page.dart';
+import 'package:MrCarwash/page/wash_service/pre_order.dart';
+import '../../env.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
-import 'print.dart';
+import '../print.dart';
 import 'package:intl/intl.dart';
 
 class PayOrder extends StatefulWidget {

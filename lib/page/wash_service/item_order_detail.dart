@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/inc/req.dart';
-import '../env.dart';
+import 'package:MrCarwash/inc/req.dart';
+import '../../env.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../inc/method.dart';
+import '../../inc/method.dart';
 import 'pre_order.dart';
 
 class ItemDetail extends StatefulWidget {

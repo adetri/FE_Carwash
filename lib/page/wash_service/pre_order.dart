@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/inc/db.dart';
-import 'package:flutter_application_1/inc/req.dart';
-import 'package:flutter_application_1/page/pay_order.dart';
+import 'package:MrCarwash/inc/db.dart';
+import 'package:MrCarwash/inc/req.dart';
+import 'package:MrCarwash/page/wash_service/pay_order.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:ui' as ui;
 import 'package:intl/intl.dart';
-import '../inc/method.dart';
-import '../env.dart';
+import '../../inc/method.dart';
+import '../../env.dart';
 import 'item_order_detail.dart';
 import 'order_detail.dart';
 import 'monitoring_page.dart';

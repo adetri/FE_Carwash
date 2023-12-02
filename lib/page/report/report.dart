@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_1/inc/method.dart';
-import 'package:flutter_application_1/inc/req.dart';
+import 'package:MrCarwash/inc/method.dart';
+import 'package:MrCarwash/inc/req.dart';
 import 'package:intl/intl.dart';
-import '../env.dart';
+import '../../env.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'main_menu.dart';
+import '../main_menu.dart';
 
 class Report extends StatefulWidget {
   const Report({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/inc/db.dart';
+import 'package:MrCarwash/inc/db.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 

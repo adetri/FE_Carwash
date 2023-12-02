@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/inc/method.dart';
-import 'package:flutter_application_1/inc/req.dart';
-import 'package:flutter_application_1/page/category_form.dart';
-import 'package:flutter_application_1/page/setting.dart';
+import 'package:MrCarwash/inc/method.dart';
+import 'package:MrCarwash/inc/req.dart';
+import 'package:MrCarwash/page/setting/category/category_form.dart';
+import 'package:MrCarwash/page/setting/setting.dart';
 
 class CategoryList extends StatelessWidget {
   CategoryList({Key? key});

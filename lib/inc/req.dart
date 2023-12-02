@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/env.dart';
-import 'package:flutter_application_1/inc/db.dart';
-import 'package:flutter_application_1/inc/method.dart';
+import 'package:MrCarwash/env.dart';
+import 'package:MrCarwash/inc/db.dart';
+import 'package:MrCarwash/inc/method.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -406,6 +406,46 @@ class Req {
   Future<Map<String, dynamic>> getItem(id_item) async {
     String url = apiUrl + '/item/get-mainitem/$id_item';
     dynamic req = await get_req(url);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> fetchSpot() async {
+    String url = apiUrl + '/order/get-spot';
+    dynamic req = await get_req(url);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> insertSpot(payload) async {
+    String url = apiUrl + '/order/insert-spot';
+    dynamic req = await get_req(url, req_type: 'post', reqBody: payload);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> getSpotById(id_spot) async {
+    String url = apiUrl + '/order/get-spot-id/$id_spot';
+    dynamic req = await get_req(url);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> updateSpot(id_spot, Payload) async {
+    String url = apiUrl + '/order/update-spot/$id_spot';
+    dynamic req = await get_req(url, req_type: 'put', reqBody: Payload);
     return {
       "status_code":
           req['status_code'], // You can set a custom status code for failure

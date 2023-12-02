@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_1/page/monitoring_page.dart';
+import 'package:MrCarwash/page/wash_service/monitoring_page.dart';
 
 import '../inc/method.dart';
 

@@ -1,6 +1,6 @@
-import 'package:flutter_application_1/env.dart';
-import 'package:flutter_application_1/page/login.dart';
-import 'package:flutter_application_1/page/main_menu.dart';
+import 'package:MrCarwash/env.dart';
+import 'package:MrCarwash/page/login.dart';
+import 'package:MrCarwash/page/main_menu.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';

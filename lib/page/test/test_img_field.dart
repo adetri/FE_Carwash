@@ -1,7 +1,7 @@
 // import 'dart:convert';
 // import 'dart:io';
 // import 'package:flutter/material.dart';
-// import 'package:flutter_application_1/inc/method.dart';
+// import 'package:MrCarwash/inc/method.dart';
 // import 'package:image_picker/image_picker.dart';
 
 // class ImageInputField extends StatefulWidget {

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_1/inc/req.dart';
-import 'package:flutter_application_1/page/pre_order.dart';
+import 'package:MrCarwash/inc/req.dart';
+import 'package:MrCarwash/page/wash_service/pre_order.dart';
 import 'monitoring_page.dart';
-import '../inc/method.dart';
-import '../env.dart';
+import '../../inc/method.dart';
+import '../../env.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 

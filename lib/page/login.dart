@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/env.dart';
-import 'package:flutter_application_1/inc/db.dart';
-import 'package:flutter_application_1/inc/method.dart';
-import 'package:flutter_application_1/inc/req.dart';
-import 'package:flutter_application_1/page/main_menu.dart';
+import 'package:MrCarwash/env.dart';
+import 'package:MrCarwash/inc/db.dart';
+import 'package:MrCarwash/inc/method.dart';
+import 'package:MrCarwash/inc/req.dart';
+import 'package:MrCarwash/page/main_menu.dart';
 
 import 'dart:convert';
 

@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_application_1/inc/method.dart';
-import 'package:flutter_application_1/inc/req.dart';
-import 'package:flutter_application_1/page/component/dropdown_field_input.dart';
-import 'package:flutter_application_1/page/component/img_field_input.dart';
-import 'package:flutter_application_1/page/component/text_field_input.dart';
-import 'package:flutter_application_1/page/item.dart';
+import 'package:MrCarwash/inc/method.dart';
+import 'package:MrCarwash/inc/req.dart';
+import 'package:MrCarwash/page/component/dropdown_field_input.dart';
+import 'package:MrCarwash/page/component/img_field_input.dart';
+import 'package:MrCarwash/page/component/text_field_input.dart';
+import 'package:MrCarwash/page/setting/item/item.dart';
 
 class ItemForm extends StatelessWidget {
   ItemForm({Key? key, int? id_item}) : super(key: key) {
@@ -284,7 +284,7 @@ class _MyformState extends State<Myform> {
 
                       if (req_upd_item!['status_code'] == 202) {
                         showDialogAndMove(context, 'Succes',
-                            'Insert data success', ItemList());
+                            'Update data success', ItemList());
                       } else {
                         show_dialog(context, 'Fail to insert',
                             req_upd_item['response']);
@@ -310,7 +310,13 @@ class _MyformState extends State<Myform> {
                       dbg(payload);
                     }
                   },
-                  child: Text("Submit"),
+                  child: Container(
+                    width: double.infinity,
+                    child: Text(
+                      "Submit",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ),
               ),
 

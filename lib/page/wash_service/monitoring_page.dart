@@ -1,14 +1,14 @@
 // TODO Implement this library.
 
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/inc/method.dart';
-import 'package:flutter_application_1/inc/req.dart';
-import 'package:flutter_application_1/page/main_menu.dart';
+import 'package:MrCarwash/inc/method.dart';
+import 'package:MrCarwash/inc/req.dart';
+import 'package:MrCarwash/page/main_menu.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:ui' as ui;
 import 'pre_order.dart';
-import '../env.dart';
+import '../../env.dart';
 import 'pay_order.dart';
 
 class MonitoringAppbar extends StatelessWidget {

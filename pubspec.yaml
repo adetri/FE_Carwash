@@ -1,5 +1,5 @@
-name: flutter_application_1
-description: A new Flutter project.
+name: MrCarwash
+description: =.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -45,6 +45,7 @@ dependencies:
   sqflite: ^2.3.0
   image_picker: ^1.0.4
   video_player: ^2.8.1
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -79,10 +80,15 @@ flutter:
     - assets/report.png
     - assets/category.png
     - assets/items.png
+    - assets/Applogo.png
+    - assets/spot.png
 
+    
 
-
-
+flutter_icons:
+  android: true # can specify file name here e.g. "ic_launcher"
+  # ios: true #
+  image_path_android: "assets/Applogo.png" # Path to your icon file
     
 
 
