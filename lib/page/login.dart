@@ -4,6 +4,7 @@ import 'package:MrCarwash/inc/db.dart';
 import 'package:MrCarwash/inc/method.dart';
 import 'package:MrCarwash/inc/req.dart';
 import 'package:MrCarwash/page/main_menu.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import 'dart:convert';
 
@@ -26,7 +27,6 @@ class _LoginState extends State<Login> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
     updateHostAndCreateReq();
   }
 
@@ -36,7 +36,15 @@ class _LoginState extends State<Login> {
 
     req = Req(context); // Create an instance of 'Req' using the context
     await req?.init();
+
     dbg(req?.host);
+
+    var try_auth = await req?.tyrAuth();
+    dbg(try_auth);
+    if (try_auth?['status_code'] == 200) {
+      dbg("this execute");
+      to_main_menu(context);
+    }
 
     // Use 'req' instance as needed
   }
@@ -59,6 +67,8 @@ class _LoginState extends State<Login> {
         child: Column(
           children: [
             Container(
+              width: 400,
+              height: 400,
               alignment: Alignment.center,
               child: Image.asset('assets/logo.png'),
             ),
@@ -124,17 +134,40 @@ class _LoginState extends State<Login> {
                   paylod['password'] = Password;
 
                   Map<String, dynamic> send_req = await req!.login(paylod);
-                  String accessToken =
-                      json.decode(send_req['response'])['access'];
+
+                  String accessToken = send_req['response']['access'];
 
                   if (send_req['status_code'] == 200) {
                     dbg(send_req['status_code']);
                     JWT = accessToken;
 
-                    int rowsAffected = await dbHelper.updateJWT(accessToken);
-                    print('Rows affected: $rowsAffected');
+                    Map<String, dynamic> decodedToken =
+                        JwtDecoder.decode(accessToken);
 
+                    var req_get_user =
+                        await req?.getUser(decodedToken["user_id"]);
+                    dbg(req_get_user);
+                    int id_karyawan =
+                        req_get_user?['response']['user']['karyawan']['id'];
+                    dbg(id_karyawan);
+
+                    int id_role =
+                        req_get_user?['response']['user']['karyawan']['role'];
+                    dbg(id_role);
+
+                    String nama_karyawan =
+                        req_get_user?['response']['user']['karyawan']['name'];
+                    dbg(nama_karyawan);
+
+                    int rowsAffected = await dbHelper.updateSeason(
+                        accessToken, nama_karyawan, id_karyawan, id_role);
+                    print('Rows affected: $rowsAffected');
+                    var get_t = await dbHelper.getSeason();
+                    dbg(get_t);
                     to_main_menu(context);
+                  } else {
+                    show_dialog(
+                        context, "Failed", "Username or Password Invalid");
                   }
                 });
                 // Add your button press logic here

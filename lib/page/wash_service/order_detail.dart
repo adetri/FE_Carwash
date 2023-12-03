@@ -37,9 +37,14 @@ class _OrderDetailState extends State<OrderDetail> {
     // Add a listener to check keyboard visibility
   }
 
+  String? karyawan_name;
+  int? karyawan_id_kasir;
   Future<void> init() async {
     req = Req(context);
     await req?.init();
+    karyawan_name = req?.karyawan_name;
+    karyawan_id_kasir = req?.id_karyawan;
+
     var req_wash = await req?.call_wash();
     print("reqwash output ${req_wash}");
     setState(() {
@@ -108,7 +113,7 @@ class _OrderDetailState extends State<OrderDetail> {
           SingleChildScrollView(
             child: Column(
               children: [
-                Tittle(list_item, widget.spot_id),
+                Tittle(list_item, widget.spot_id, karyawan_name),
                 Container(
                   child: Align(
                     alignment: Alignment.topLeft,
@@ -467,6 +472,7 @@ class _OrderDetailState extends State<OrderDetail> {
             "vehicle_number": platnum,
             "washer": li,
             "list_item": list_item,
+            "karyawan": karyawan_id_kasir,
           };
 
           Map<String, dynamic> send_req =
@@ -537,10 +543,11 @@ class _OrderDetailState extends State<OrderDetail> {
 class Tittle extends StatelessWidget {
   final List list_item;
   final spot_id;
-
+  final karyawan_name;
   const Tittle(
     this.list_item,
-    this.spot_id, {
+    this.spot_id,
+    this.karyawan_name, {
     Key? key,
   }) : super(key: key);
 
@@ -574,13 +581,24 @@ class Tittle extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: Container(
-              margin: EdgeInsets.all(20.0),
+              margin: EdgeInsets.all(10.0),
               child: Text(
                 "Order Detail",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 40, fontWeight: FontWeight.w600),
               ),
             ),
-          )
+          ),
+          Expanded(
+              child: Align(
+            alignment: Alignment.topRight,
+            child: Container(
+              margin: EdgeInsets.all(10.0),
+              child: Text(
+                karyawan_name.toString(),
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w600),
+              ),
+            ),
+          )),
         ],
       ),
     );

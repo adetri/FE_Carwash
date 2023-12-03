@@ -42,7 +42,7 @@ class DatabaseHelper {
       version: 1,
       onCreate: (Database db, int version) async {
         await db.execute(
-          'CREATE TABLE $tableName(id INTEGER PRIMARY KEY AUTOINCREMENT, jwt TEXT, host TEXT)',
+          'CREATE TABLE $tableName(id INTEGER PRIMARY KEY AUTOINCREMENT, jwt TEXT, host TEXT, id_karyawan INT, role INT,nama_karyawan TEXT)',
         );
       },
     );
@@ -139,6 +139,21 @@ class DatabaseHelper {
     );
   }
 
+  Future<int> updateSeason(
+      String jwt, String nama_karyawan, int id_karyawan, int id_role) async {
+    final Database db = await database;
+    return db.update(
+      tableName,
+      {
+        'jwt': jwt,
+        'id_karyawan': id_karyawan,
+        'role': id_role,
+        'nama_karyawan': nama_karyawan
+      },
+      where: 'id = 1',
+    );
+  }
+
   Future<String?> getHost() async {
     final Database db = await database;
 
@@ -192,6 +207,30 @@ class DatabaseHelper {
       Map<String, dynamic> task = result.first;
       data['jwt'] = task['jwt'];
       data['host'] = task['host'];
+
+      return data;
+    } else {
+      print('No jwt found!');
+      return data; // Return null or any default value to handle the case where no host is found
+    }
+  }
+
+  Future<Map> getSeason() async {
+    final Database db = await database;
+
+    List<Map<String, dynamic>> result = await db.query(
+      tableName,
+      columns: ['jwt', 'host', 'id_karyawan', 'role', 'nama_karyawan'],
+      where: 'id = 1',
+    );
+    Map data = {'host': "", 'jwt': ""};
+    if (result.isNotEmpty) {
+      Map<String, dynamic> task = result.first;
+      data['jwt'] = task['jwt'];
+      data['host'] = task['host'];
+      data['role'] = task['role'];
+      data['nama_karyawan'] = task['nama_karyawan'];
+      data['id_karyawan'] = task['id_karyawan'];
 
       return data;
     } else {

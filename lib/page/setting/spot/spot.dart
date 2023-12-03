@@ -11,25 +11,23 @@ class SpotList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 50, 20, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              header(context),
-              const SizedBox(height: 25),
-              Container(
-                alignment: Alignment.topRight,
-                child: ElevatedButton(
-                    onPressed: () {
-                      nav_to(context, SpotFrom());
-                    },
-                    child: Text("Add")),
-              ),
-              SpotDataList(),
-            ],
-          ),
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 50, 20, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            header(context),
+            const SizedBox(height: 25),
+            Container(
+              alignment: Alignment.topRight,
+              child: ElevatedButton(
+                  onPressed: () {
+                    nav_to(context, SpotFrom());
+                  },
+                  child: Text("Add")),
+            ),
+            SpotDataList(),
+          ],
         ),
       ),
     );

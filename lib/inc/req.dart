@@ -11,6 +11,9 @@ class Req {
   final dbHelper = DatabaseHelper();
   String? host;
   String? jwt;
+  int? role;
+  int? id_karyawan;
+  String? karyawan_name;
   final BuildContext context;
   final timeout = 5;
   final debug = true;
@@ -20,9 +23,13 @@ class Req {
   Req(this.context) {}
 
   Future<void> init() async {
-    dynamic data = await dbHelper.getJwtHost();
+    dynamic data = await dbHelper.getSeason();
     host = data['host'];
     jwt = data['jwt'];
+    role = data['role'];
+    id_karyawan = data['id_karyawan'];
+    karyawan_name = data['nama_karyawan'];
+
     apiUrl = host!;
     headers = {
       'Authorization': 'Bearer $jwt',
@@ -56,11 +63,13 @@ class Req {
             )
             .timeout(Duration(seconds: timeout));
       } else if (req_type == "put") {
-        response = await http.put(
-          Uri.parse(apiUrl),
-          headers: headers,
-          body: jsonEncode(reqBody),
-        );
+        response = await http
+            .put(
+              Uri.parse(apiUrl),
+              headers: headers,
+              body: jsonEncode(reqBody),
+            )
+            .timeout(Duration(seconds: timeout));
       } else {
         response = await http
             .post(
@@ -96,6 +105,74 @@ class Req {
     }
   }
 
+  Future<Map<String, dynamic>> get_req_login(apiUrl,
+      {dynamic? reqBody, String req_type = "get"}) async {
+    dbg("apiurl is : $apiUrl");
+    // dbg("headers is : $headers");
+    headers = {
+      'Content-Type': 'application/json',
+    };
+    if (req_type == "post" && reqBody == null) {
+      show_dialog(context, "POST req", "type req post. reqbody cant be null");
+      return {
+        "status_code": -1, // You can set a custom status code for failure
+        "response": "Error occurred: type req post. reqbody cant be null",
+      };
+    }
+    dbg("this req body  $reqBody");
+
+    try {
+      var response;
+      if (req_type == "get") {
+        response = await http
+            .get(
+              Uri.parse(apiUrl),
+              headers: headers,
+            )
+            .timeout(Duration(seconds: timeout));
+      } else if (req_type == "put") {
+        response = await http
+            .put(
+              Uri.parse(apiUrl),
+              headers: headers,
+              body: jsonEncode(reqBody),
+            )
+            .timeout(Duration(seconds: timeout));
+      } else {
+        response = await http
+            .post(
+              Uri.parse(apiUrl),
+              headers: headers,
+              body: jsonEncode(reqBody),
+            )
+            .timeout(Duration(seconds: timeout));
+      }
+
+      // req_validation(context, response.statusCode);
+
+      if (response.statusCode == 200 ||
+          response.statusCode == 201 ||
+          response.statusCode == 202) {
+        return {
+          "status_code": response.statusCode,
+          "response": json.decode(response.body),
+        };
+      } else {
+        return {
+          "status_code": response.statusCode,
+          "response":
+              "Failed to load data. Status msg:${response.body}  code: ${response.statusCode}",
+        };
+      }
+    } catch (e) {
+      // request_failed(context, e.toString());
+      return {
+        "status_code": -1, // You can set a custom status code for failure
+        "response": "Error occurred: $e",
+      };
+    }
+  }
+
   Future<String> getHost() async {
     if (host != null) {
       return host!;
@@ -116,26 +193,14 @@ class Req {
   }
 
   Future<Map<String, dynamic>> login(dynamic paylod) async {
-    String apiUrl = '$host/ath/login'; // Replace with your API endpoint
-    dbg("this host $apiUrl");
+    String url = apiUrl + '/ath/login';
+    dynamic req = await get_req_login(url, req_type: 'post', reqBody: paylod);
 
-    final Map<String, String> headers = {
-      'Content-Type': 'application/json',
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
     };
-
-    try {
-      final response = await http
-          .post(
-            Uri.parse(apiUrl),
-            headers: headers,
-            body: jsonEncode(paylod),
-          )
-          .timeout(Duration(seconds: timeout));
-      return {"status_code": response.statusCode, "response": response.body};
-    } catch (e) {
-      request_failed(context, e.toString());
-      return {"status_code": -1, "response": "Request Error ${e.toString()}"};
-    }
   }
 
   dynamic fetchMonitoring() async {
@@ -446,6 +511,26 @@ class Req {
   Future<Map<String, dynamic>> updateSpot(id_spot, Payload) async {
     String url = apiUrl + '/order/update-spot/$id_spot';
     dynamic req = await get_req(url, req_type: 'put', reqBody: Payload);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> getUser(id_user) async {
+    String url = apiUrl + '/pegawai/get-user/$id_user';
+    dynamic req = await get_req_login(url);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> tyrAuth() async {
+    String url = apiUrl + '/pegawai/try-auth';
+    dynamic req = await get_req(url);
     return {
       "status_code":
           req['status_code'], // You can set a custom status code for failure

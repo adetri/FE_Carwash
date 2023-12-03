@@ -35,9 +35,11 @@ class _PayOrderState extends State<PayOrder> {
     init();
   }
 
+  String? karyawan_name;
   void init() async {
     req = Req(context);
     await req?.init();
+    karyawan_name = req?.karyawan_name;
     order();
   }
 
@@ -228,9 +230,20 @@ class _PayOrderState extends State<PayOrder> {
                   ),
                   Container(
                     child: Text(
-                      "Order Detail",
+                      "Pay Order",
                       style:
                           TextStyle(fontSize: 40, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.topRight,
+                      margin: EdgeInsets.only(right: 10),
+                      child: Text(
+                        karyawan_name.toString(),
+                        style: TextStyle(
+                            fontSize: 25, fontWeight: FontWeight.w600),
+                      ),
                     ),
                   ),
                 ],

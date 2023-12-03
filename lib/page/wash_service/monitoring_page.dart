@@ -32,7 +32,7 @@ class Monitoring extends StatefulWidget {
 
 class _MonitoringState extends State<Monitoring> {
   dynamic jsonData1; // Make jsonData1 nullable
-
+  String? nama_karyawan;
   @override
   void initState() {
     super.initState();
@@ -42,6 +42,7 @@ class _MonitoringState extends State<Monitoring> {
   Future<void> setter() async {
     Req req = Req(context); // Create an instance of 'Req' using the context
     await req.init();
+    nama_karyawan = req?.karyawan_name;
     dynamic data = await req
         .fetchMonitoring(); //a = Req(context); // Create an instance of 'Req' using the context
     // Use 'req' instance as needed
@@ -120,6 +121,20 @@ class _MonitoringState extends State<Monitoring> {
                             textAlign: TextAlign.left, // Apply bold font weight
                           ),
                         ),
+                        Expanded(
+                          child: Container(
+                            alignment: Alignment.bottomRight,
+                            child: Text(
+                              nama_karyawan.toString(),
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign:
+                                  TextAlign.right, // Apply bold font weight
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),

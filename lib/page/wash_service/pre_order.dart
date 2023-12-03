@@ -57,8 +57,10 @@ class _PreorderState extends State<Preorder> {
   }
 
   String? host;
+  String? karyawan_name;
   Future<void> fetchData() async {
     req = Req(context);
+
     // Create an instance of 'Req' using the context
     await req!.init();
 
@@ -66,6 +68,7 @@ class _PreorderState extends State<Preorder> {
     dynamic reg_item_data = await req?.itemData(requestBody, customHeaders);
 
     setState(() {
+      karyawan_name = req!.karyawan_name;
       category = reg_category['response'];
       item = reg_item_data['response'];
       host = req!.host;
@@ -225,6 +228,20 @@ class _PreorderState extends State<Preorder> {
                             ),
                           ),
                         ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                top: 19.0, bottom: 19, right: 10),
+                            child: Align(
+                              alignment: Alignment.topRight,
+                              child: Text(
+                                karyawan_name.toString(),
+                                style: TextStyle(
+                                    fontSize: 25, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),

@@ -1,3 +1,4 @@
+import 'package:MrCarwash/page/setting/karyawan/karyawan.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:MrCarwash/inc/method.dart';
@@ -112,6 +113,37 @@ class Settings extends StatelessWidget {
                         Padding(padding: EdgeInsets.only(top: 10)),
                         Text(
                           "Spot",
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16.0),
+                child: GestureDetector(
+                  onTap: () {
+                    nav_to(context, KaryawanList());
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 200,
+                    width: 200,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 207, 204, 203),
+                    ),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          'assets/karyawan.png',
+                          height: 100,
+                          width: 100,
+                        ),
+                        Padding(padding: EdgeInsets.only(top: 10)),
+                        Text(
+                          "Karyawan",
                           style: TextStyle(fontWeight: FontWeight.w600),
                         )
                       ],

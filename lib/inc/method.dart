@@ -132,3 +132,39 @@ void dbg(object) {
     print(object);
   }
 }
+
+Row headerPage(context, prev_page, title) {
+  return Row(
+    children: [
+      GestureDetector(
+        onTap: () {
+          // Handle back button tap
+          nav_to(context, prev_page);
+        },
+        child: Container(
+          height: 50,
+          alignment: Alignment.topLeft,
+          child: Image.asset('assets/back.png'),
+        ),
+      ),
+      SizedBox(width: 10),
+      Text(
+        title.toString(),
+        style: TextStyle(
+          fontSize: 40,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      // Expanded(
+      //   child: Text(
+      //     karyawan_name.toString(),
+      //     style: TextStyle(
+      //       fontSize: 20,
+      //       fontWeight: FontWeight.bold,
+      //     ),
+      //     textAlign: TextAlign.right,
+      //   ),
+      // ),
+    ],
+  );
+}

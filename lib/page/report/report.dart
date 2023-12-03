@@ -34,9 +34,11 @@ class _ReportState extends State<Report> {
     // call_order();
   }
 
+  String? karyawan_name;
   void init() async {
     req = Req(context);
     await req?.init();
+    karyawan_name = req?.karyawan_name;
     orderReport();
   }
 
@@ -44,7 +46,7 @@ class _ReportState extends State<Report> {
     var req_order = await req?.orderReporting(payload);
     setState(() {
       d_order = req_order?['response'];
-
+      dbg(d_order);
       total = 0;
       if (req_order?['status_code'] == 200) {
         for (var data in d_order) {
@@ -128,6 +130,19 @@ class _ReportState extends State<Report> {
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.left, // Apply bold font weight
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(right: 10),
+                    child: Text(
+                      karyawan_name.toString(),
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.right, // Apply bold font weight
+                    ),
                   ),
                 ),
               ],
@@ -320,6 +335,9 @@ class _ReportState extends State<Report> {
 
                       DateTime originalDateTime =
                           DateTime.parse(d_order[i]['create_at']);
+
+                      String kasir = d_order[i]['karyawan']['name'];
+
                       String formattedDateTime = DateFormat('dd/MM/yyyy HH:mm')
                           .format(originalDateTime);
                       String Sub_total =
@@ -386,7 +404,7 @@ class _ReportState extends State<Report> {
                                       child: Container(
                                         margin: EdgeInsets.all(8),
                                         child: Text(
-                                          "Kasir : ${washers}",
+                                          "Kasir : ${kasir}",
                                           textAlign: TextAlign.right,
                                         ),
                                       ),
