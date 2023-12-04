@@ -45,7 +45,7 @@ class _DropdownInputFieldState extends State<DropdownInputField> {
         ? widget.listItem?.firstWhere(
             (element) => element['id'] == widget.id_category,
             orElse: () => null)
-        : widget.listItem?.first;
+        : null;
   }
 
   @override

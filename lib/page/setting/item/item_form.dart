@@ -99,13 +99,17 @@ class _MyformState extends State<Myform> {
     req = Req(context);
     await req?.init();
     var req_category = await req?.fetchCategory2();
+    dbg(req_category);
 
+    setState(() {
+      category_list = req_category?['response']['category'];
+    });
     if (widget.idItem != null) {
       var req_get_item = await req?.getItem(widget.idItem);
       dbg(req_get_item);
 
       setState(() {
-        category_list = req_category?['response']['category'];
+        dbg("category list ${category_list}");
         sub_item_count = 0;
         sub_item_minum_form = 0;
       });
@@ -149,7 +153,7 @@ class _MyformState extends State<Myform> {
           field_name: "Sub Item Price",
           inputType: "number",
         );
-
+        dbg(category_list);
         categoryItem = DropdownInputField(listItem: category_list);
         item_name = TextFieldInput(field_name: "Item Name");
         price = TextFieldInput(

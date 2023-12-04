@@ -68,6 +68,9 @@ class _TextFieldInputState extends State<TextFieldInput> {
           hintText: widget.field_name,
           border: OutlineInputBorder(),
         ),
+        obscureText: input_type == 'password'
+            ? true
+            : false, // Set this to true for a password field
         keyboardType:
             input_type == 'number' ? TextInputType.number : TextInputType.text,
         inputFormatters: input_type == 'number'

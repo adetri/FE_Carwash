@@ -173,6 +173,72 @@ class Req {
     }
   }
 
+  Future<Map<String, dynamic>> req_check_auth(apiUrl,
+      {dynamic? reqBody, String req_type = "get"}) async {
+    dbg("apiurl is : $apiUrl");
+    // dbg("headers is : $headers");
+
+    if (req_type == "post" && reqBody == null) {
+      show_dialog(context, "POST req", "type req post. reqbody cant be null");
+      return {
+        "status_code": -1, // You can set a custom status code for failure
+        "response": "Error occurred: type req post. reqbody cant be null",
+      };
+    }
+    dbg("this req body  $reqBody");
+
+    try {
+      var response;
+      if (req_type == "get") {
+        response = await http
+            .get(
+              Uri.parse(apiUrl),
+              headers: headers,
+            )
+            .timeout(Duration(seconds: timeout));
+      } else if (req_type == "put") {
+        response = await http
+            .put(
+              Uri.parse(apiUrl),
+              headers: headers,
+              body: jsonEncode(reqBody),
+            )
+            .timeout(Duration(seconds: timeout));
+      } else {
+        response = await http
+            .post(
+              Uri.parse(apiUrl),
+              headers: headers,
+              body: jsonEncode(reqBody),
+            )
+            .timeout(Duration(seconds: timeout));
+      }
+
+      // req_validation(context, response.statusCode);
+
+      if (response.statusCode == 200 ||
+          response.statusCode == 201 ||
+          response.statusCode == 202) {
+        return {
+          "status_code": response.statusCode,
+          "response": json.decode(response.body),
+        };
+      } else {
+        return {
+          "status_code": response.statusCode,
+          "response":
+              "Failed to load data. Status msg:${response.body}  code: ${response.statusCode}",
+        };
+      }
+    } catch (e) {
+      // request_failed(context, e.toString());
+      return {
+        "status_code": -1, // You can set a custom status code for failure
+        "response": "Error occurred: $e",
+      };
+    }
+  }
+
   Future<String> getHost() async {
     if (host != null) {
       return host!;
@@ -530,7 +596,77 @@ class Req {
 
   Future<Map<String, dynamic>> tyrAuth() async {
     String url = apiUrl + '/pegawai/try-auth';
+    dynamic req = await req_check_auth(url);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> fechKaryawan() async {
+    String url = apiUrl + '/pegawai/fatch-all-pegawai';
     dynamic req = await get_req(url);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> getKaryawan(id_karyawan) async {
+    String url = apiUrl + '/pegawai/get-pegawai/$id_karyawan';
+    dynamic req = await get_req(url);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> fechRole() async {
+    String url = apiUrl + '/pegawai/fatch-all-role';
+    dynamic req = await get_req(url);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> createKaryawan(payload) async {
+    String url = apiUrl + '/pegawai/create-pegawai';
+    dynamic req = await get_req(url, req_type: 'post', reqBody: payload);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> updateKaryawan(id_karyawan, payload) async {
+    String url = apiUrl + '/pegawai/edit-pegawai/$id_karyawan';
+    dynamic req = await get_req(url, req_type: 'put', reqBody: payload);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> validateKaryawan() async {
+    String url = apiUrl + '/pegawai/list-can-be-user';
+    dynamic req = await get_req(url);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> createUser(payload) async {
+    String url = apiUrl + '/pegawai/create-user';
+    dynamic req = await get_req(url, req_type: 'post', reqBody: payload);
     return {
       "status_code":
           req['status_code'], // You can set a custom status code for failure

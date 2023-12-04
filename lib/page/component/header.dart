@@ -1,5 +1,6 @@
 import 'package:MrCarwash/inc/method.dart';
 import 'package:MrCarwash/inc/req.dart';
+import 'package:MrCarwash/page/login.dart';
 import 'package:flutter/material.dart';
 
 class MyHeader extends StatefulWidget {
@@ -24,6 +25,14 @@ class _MyHeaderState extends State<MyHeader> {
   void startup() async {
     r = Req(context);
     await r?.init();
+    var check_auth = await r?.tyrAuth();
+    if (check_auth?['status_code'] != 200) {
+      dbg("you're not auth");
+      showDialogAndMove(context, "", "Season End", Login());
+    } else {
+      dbg("still auth");
+    }
+
     setState(() {
       karyawan_name = r?.karyawan_name;
       dbg(karyawan_name);
