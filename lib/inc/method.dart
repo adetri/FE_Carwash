@@ -60,6 +60,56 @@ class MyDialogHelper {
   }
 }
 
+class MyConfrimDialog {
+  static String? title;
+  static String? content;
+  static dynamic page;
+
+  static void Function()? logic;
+
+  static void showDialogMethod(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing on tap outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title ?? ""),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(content ?? ""),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // No
+              },
+              child: Text('No'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // Yes
+                if (logic != null) {
+                  logic!(); // Execute the logic function
+                }
+                if (page != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => page),
+                  );
+                }
+              },
+              child: Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
 Future<int> printerCheck() async {
   bool? isConnected = await bluetooth.isConnected;
   if (isConnected == true) {

@@ -154,6 +154,15 @@ class DatabaseHelper {
     );
   }
 
+  Future<int> logoutSeason() async {
+    final Database db = await database;
+    return db.update(
+      tableName,
+      {'jwt': null, 'id_karyawan': null, 'role': null, 'nama_karyawan': null},
+      where: 'id = 1',
+    );
+  }
+
   Future<String?> getHost() async {
     final Database db = await database;
 
