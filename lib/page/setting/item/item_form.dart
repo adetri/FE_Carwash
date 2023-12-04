@@ -297,12 +297,15 @@ class _MyformState extends State<Myform> {
 
                       dbg(req_upd_item);
                     } else {
-                      payload!['main_item']['sub_item'] = sub_item;
+                      if (sub_item[0].length > 1) {
+                        payload!['main_item']['sub_item'] = sub_item;
+                        dbg("this execute and sub item len is ${sub_item.length}");
+                      }
                       payload!['main_item']['name'] = item_name?.value;
                       payload!['main_item']['price'] = price?.value;
                       payload!['main_item']['category'] = categoryItem?.value;
                       payload!['main_item']['img'] = imgField?.base64;
-
+                      dbg(payload);
                       var req_ins_item = await req?.insertItem(payload);
                       if (req_ins_item!['status_code'] == 201) {
                         showDialogAndMove(context, 'Succes',
