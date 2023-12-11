@@ -28,6 +28,7 @@ class _PayOrderState extends State<PayOrder> {
   dynamic paylod = {};
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
   Req? req;
+  dynamic data_outlet;
   @override
   void initState() {
     super.initState();
@@ -45,8 +46,12 @@ class _PayOrderState extends State<PayOrder> {
 
   void order() async {
     var req_order = await req?.callPreogresOrder(widget.id_order);
+    var req_outlet = await req?.getOutlet();
 
     setState(() {
+      data_outlet = req_outlet?['response'];
+      dbg("data outlet is $data_outlet ");
+      // dbg(data_recipe);
       d_order = req_order?['response'];
     });
   }
@@ -76,12 +81,12 @@ class _PayOrderState extends State<PayOrder> {
   //   }
   // }
 
-  void printRecipt(data) {
+  void printRecipt(data, data_outlet) {
     String sperator = "================================";
     bluetooth.isConnected.then((isConnected) {
-      bluetooth.printCustom(data['outlet_name'], 2, 1);
-      bluetooth.printCustom(data['outlet_alamt'], 1, 1);
-      bluetooth.printCustom(data['phone_number'], 1, 1);
+      bluetooth.printCustom(data_outlet['name'], 2, 1);
+      bluetooth.printCustom(data_outlet['address'], 1, 1);
+      bluetooth.printCustom(data_outlet['phone'], 1, 1);
 
       bluetooth.printNewLine();
       bluetooth.printCustom(data['datetime'], 0, 0);
@@ -194,9 +199,9 @@ class _PayOrderState extends State<PayOrder> {
           : 0,
       "total": total,
       "list_item": list_item,
-      "outlet_name": "Mr Carwash",
-      "outlet_alamt": "Jagakarsa, Kec. Jagakarsa, Kota Jakarta Selatan",
-      "phone_number": "085157792607",
+      // "outlet_name": data_outlet['name']!.toString(),
+      // "outlet_alamt": data_outlet['address']!.toString(),
+      // "phone_number": data_outlet['phone']!.toString(),
       "nominal": nominal,
       "datetime": formattedDate,
       "no_order": data != null && data['order'] != null
@@ -441,7 +446,7 @@ class _PayOrderState extends State<PayOrder> {
                 await req?.payOrder(data['id_order'], paylod);
 
             if (send_req?['status_code'] == 201) {
-              printRecipt(data);
+              printRecipt(data, data_outlet);
 
               dialog("Success to add order data", "Success",
                   monitoring: "istrue");

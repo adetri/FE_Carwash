@@ -64,7 +64,7 @@ class _PreorderState extends State<Preorder> {
     // Create an instance of 'Req' using the context
     await req!.init();
 
-    dynamic reg_category = await req?.fetchCategory();
+    dynamic reg_category = await req?.fetchCategory2();
     dynamic reg_item_data = await req?.itemData(requestBody, customHeaders);
 
     setState(() {

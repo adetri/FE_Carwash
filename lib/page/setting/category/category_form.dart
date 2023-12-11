@@ -157,6 +157,28 @@ class _CatFormState extends State<CatForm> {
 
                     print(payload);
 
+                    // category validasi
+                    if (widget.id_category == null &&
+                        imgField?.base64 == null) {
+                      show_dialog(context, "Form Requiere",
+                          "Category Foto Cant be Null");
+                      setState(() {
+                        btn_status = true;
+                      });
+                      return;
+                    }
+
+                    if (category_name?.value == null ||
+                        category_name!.value!.isEmpty) {
+                      dbg(category_name?.value);
+                      show_dialog(context, "Form Requiere",
+                          "Category name cant be Null");
+                      setState(() {
+                        btn_status = true;
+                      });
+                      return;
+                    }
+
                     if (widget.id_category == null) {
                       var req_ins_category = await req?.insertCategory(payload);
                       if (req_ins_category?['status_code'] == 201) {

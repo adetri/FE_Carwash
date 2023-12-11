@@ -167,9 +167,14 @@ class _LoginState extends State<Login> {
                       var get_t = await dbHelper.getSeason();
                       dbg(get_t);
                       to_main_menu(context);
+                    } else if (send_req['status_code'] == -1) {
+                      dbg(send_req);
+                    } else if (send_req['status_code'] == 401) {
+                      show_dialog(context, "Request Error",
+                          "Username or Password is invalid");
                     } else {
-                      show_dialog(
-                          context, "Failed", "Username or Password Invalid");
+                      dbg(send_req);
+                      show_dialog(context, "Request Error", "Unspected Error");
                     }
                   });
                   // Add your button press logic here

@@ -3,6 +3,7 @@ import 'package:MrCarwash/page/report/report.dart';
 import 'package:MrCarwash/page/setting/karyawan/karyawan.dart';
 import 'package:MrCarwash/page/setting/karyawan/karyawan_form.dart';
 import 'package:MrCarwash/page/setting/karyawan/user_form.dart';
+import 'package:MrCarwash/page/setting/outlet_profile/oulet_profile_form.dart';
 import 'package:MrCarwash/page/setting/spot/spot_forn.dart';
 import 'package:MrCarwash/page/test/test_jwt_decoder.dart';
 import 'package:flutter/material.dart';

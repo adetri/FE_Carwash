@@ -102,6 +102,7 @@ class _MySpotFormState extends State<MySpotForm> {
     }
   }
 
+  bool submit_btn = true;
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -118,45 +119,61 @@ class _MySpotFormState extends State<MySpotForm> {
           Expanded(
             flex: 1,
             child: Container(
-              margin: EdgeInsets.all(20),
-              child: ElevatedButton(
-                onPressed: () async {
-                  setState(() {
-                    ins_payload['name'] = spot_name?.value;
-                  });
-                  if (widget.id_spot != null) {
-                    var req_update_spot =
-                        await req?.updateSpot(widget.id_spot, ins_payload);
-                    if (req_update_spot?['status_code'] == 202) {
-                      showDialogAndMove(
-                          context, "Success", "Update Success", SpotList());
-                      // dbg(req_update_spot);
-                    } else {
-                      show_dialog(context, "Error",
-                          req_update_spot?['response'].toString());
-                      // dbg(req_update_spot);
-                    }
-                  } else {
-                    var req_insert_spot = await req?.insertSpot(ins_payload);
-                    if (req_insert_spot?['status_code'] == 200) {
-                      showDialogAndMove(
-                          context, "Success", "Insert Success", SpotList());
-                    } else {
-                      show_dialog(context, "Error",
-                          req_insert_spot?['response'].toString());
-                    }
-                  }
-                },
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  width: double.infinity,
-                  child: Text(
-                    "Submit",
-                    textAlign: TextAlign.center,
+                margin: EdgeInsets.all(20),
+                width: double.infinity,
+                child: Visibility(
+                  visible: submit_btn,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      setState(() {
+                        submit_btn = false;
+                        ins_payload['name'] = spot_name?.value;
+                      });
+
+                      if (spot_name?.value == null ||
+                          spot_name!.value!.isEmpty) {
+                        dbg(spot_name?.value);
+                        show_dialog(context, "Form Requiere",
+                            "Category name cant be Null");
+                        setState(() {
+                          submit_btn = true;
+                        });
+                        return;
+                      }
+
+                      if (widget.id_spot != null) {
+                        var req_update_spot =
+                            await req?.updateSpot(widget.id_spot, ins_payload);
+                        if (req_update_spot?['status_code'] == 202) {
+                          showDialogAndMove(
+                              context, "Success", "Update Success", SpotList());
+                          // dbg(req_update_spot);
+                        } else {
+                          show_dialog(context, "Error",
+                              req_update_spot?['response'].toString());
+                          // dbg(req_update_spot);
+                        }
+                      } else {
+                        var req_insert_spot =
+                            await req?.insertSpot(ins_payload);
+                        if (req_insert_spot?['status_code'] == 200) {
+                          showDialogAndMove(
+                              context, "Success", "Insert Success", SpotList());
+                        } else {
+                          show_dialog(context, "Error",
+                              req_insert_spot?['response'].toString());
+                        }
+                      }
+                      setState(() {
+                        submit_btn = true;
+                      });
+                    },
+                    child: Text(
+                      "Submit",
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
-              ),
-            ),
+                )),
           ),
         ],
       ),

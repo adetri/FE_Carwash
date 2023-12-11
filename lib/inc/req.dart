@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:MrCarwash/env.dart';
 import 'package:MrCarwash/inc/db.dart';
 import 'package:MrCarwash/inc/method.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:async';
 
 // final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -97,11 +100,24 @@ class Req {
         };
       }
     } catch (e) {
-      request_failed(context, e.toString());
-      return {
-        "status_code": -1, // You can set a custom status code for failure
-        "response": "Error occurred: $e",
+      Map<String, dynamic> err = {
+        "status_code": -1,
       };
+      String? mg;
+      if (e is TimeoutException) {
+        // Handle timeout exception
+        mg = 'Request timed out';
+      } else if (e is SocketException) {
+        mg = 'No Internet connected';
+      } else if (e is http.ClientException) {
+        mg = 'No Internet connected';
+      } else {
+        mg = e.toString();
+      }
+
+      err['response'] = mg.toString;
+      request_failed(context, mg.toString());
+      return err;
     }
   }
 
@@ -165,11 +181,24 @@ class Req {
         };
       }
     } catch (e) {
-      // request_failed(context, e.toString());
-      return {
-        "status_code": -1, // You can set a custom status code for failure
-        "response": "Error occurred: $e",
+      Map<String, dynamic> err = {
+        "status_code": -1,
       };
+      String? mg;
+      if (e is TimeoutException) {
+        // Handle timeout exception
+        mg = 'Request timed out';
+      } else if (e is SocketException) {
+        mg = 'No Internet connected';
+      } else if (e is http.ClientException) {
+        mg = 'No Internet connected';
+      } else {
+        mg = e.toString();
+      }
+
+      err['response'] = mg.toString;
+      request_failed(context, mg.toString());
+      return err;
     }
   }
 
@@ -667,6 +696,36 @@ class Req {
   Future<Map<String, dynamic>> createUser(payload) async {
     String url = apiUrl + '/pegawai/create-user';
     dynamic req = await get_req(url, req_type: 'post', reqBody: payload);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> updateOutlet(payload) async {
+    String url = apiUrl + '/outlet/update-outlet/1';
+    dynamic req = await get_req(url, req_type: 'put', reqBody: payload);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> getOutlet() async {
+    String url = apiUrl + '/outlet/get-outlet';
+    dynamic req = await get_req(url);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> fetchMonitoring1() async {
+    String url = apiUrl + '/order/get-spot';
+    dynamic req = await get_req(url);
     return {
       "status_code":
           req['status_code'], // You can set a custom status code for failure

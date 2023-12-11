@@ -62,6 +62,7 @@ class _TextFieldInputState extends State<TextFieldInput> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+        maxLines: input_type == "textarea" ? 3 : 1, //or null
         controller: _controller, // Set the controller for the TextField
         decoration: InputDecoration(
           labelText: widget.field_name,
@@ -71,8 +72,11 @@ class _TextFieldInputState extends State<TextFieldInput> {
         obscureText: input_type == 'password'
             ? true
             : false, // Set this to true for a password field
-        keyboardType:
-            input_type == 'number' ? TextInputType.number : TextInputType.text,
+        keyboardType: input_type == 'number'
+            ? TextInputType.number
+            : input_type == 'email'
+                ? TextInputType.emailAddress
+                : TextInputType.text,
         inputFormatters: input_type == 'number'
             ? <TextInputFormatter>[
                 FilteringTextInputFormatter.digitsOnly,

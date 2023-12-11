@@ -114,6 +114,7 @@ class _MyKaryawanFormState extends State<MyKaryawanForm> {
     }
   }
 
+  bool submit_btn = true;
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -138,41 +139,82 @@ class _MyKaryawanFormState extends State<MyKaryawanForm> {
               Container(
                 padding: EdgeInsets.all(10),
                 width: double.infinity,
-                child: ElevatedButton(
-                    onPressed: () async {
-                      setState(() {
-                        payload['name'] = karyawan_name?.value;
-                        payload['phone'] = karyawan_phone?.value;
-                        payload['role'] = karyawan_role?.value;
-                      });
+                child: Visibility(
+                  visible: submit_btn,
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        setState(() {
+                          submit_btn = false;
+                          payload['name'] = karyawan_name?.value;
+                          payload['phone'] = karyawan_phone?.value;
+                          payload['role'] = karyawan_role?.value;
+                        });
 
-                      if (widget.id_karyawan != null) {
-                        var req_update_karyawan = await req?.updateKaryawan(
-                            widget.id_karyawan, payload);
-                        if (req_update_karyawan?['status_code'] == 202) {
-                          showDialogAndMove(context, "Success",
-                              "Insert Data Success", KaryawanList());
-                        } else {
-                          dbg(req_update_karyawan);
-                          show_dialog(
-                              context, "Failed", "Failed to update data");
+                        if (karyawan_name?.value == null ||
+                            karyawan_name!.value!.isEmpty) {
+                          dbg(karyawan_name?.value);
+                          show_dialog(context, "Form Requiere",
+                              "Employee name cant be Null");
+                          setState(() {
+                            submit_btn = true;
+                          });
+                          return;
                         }
-                      } else {
-                        var req_create_karyawan =
-                            await req?.createKaryawan(payload);
 
-                        if (req_create_karyawan?['status_code'] == 201) {
-                          showDialogAndMove(context, "Success",
-                              "Insert Data Success", KaryawanList());
+                        if (karyawan_phone?.value == null ||
+                            karyawan_phone!.value!.isEmpty) {
+                          dbg(karyawan_phone?.value);
+                          show_dialog(context, "Form Requiere",
+                              "Employee phone cant be Null");
+                          setState(() {
+                            submit_btn = true;
+                          });
+                          return;
+                        }
+                        if (karyawan_role?.value == null ||
+                            karyawan_role!.value!.isEmpty) {
+                          dbg(karyawan_role?.value);
+                          show_dialog(context, "Form Requiere",
+                              "Employee role cant be Null");
+                          setState(() {
+                            submit_btn = true;
+                          });
+                          return;
+                        }
+
+                        if (widget.id_karyawan != null) {
+                          var req_update_karyawan = await req?.updateKaryawan(
+                              widget.id_karyawan, payload);
+                          if (req_update_karyawan?['status_code'] == 202) {
+                            showDialogAndMove(context, "Success",
+                                "Insert Data Success", KaryawanList());
+                          } else {
+                            dbg(req_update_karyawan);
+                            show_dialog(
+                                context, "Failed", "Failed to update data");
+                          }
                         } else {
+                          var req_create_karyawan =
+                              await req?.createKaryawan(payload);
+
+                          if (req_create_karyawan?['status_code'] == 201) {
+                            showDialogAndMove(context, "Success",
+                                "Insert Data Success", KaryawanList());
+                          } else {
+                            dbg(req_create_karyawan);
+                            show_dialog(
+                                context, "Failed", "Failed to add data");
+                          }
+
                           dbg(req_create_karyawan);
-                          show_dialog(context, "Failed", "Failed to add data");
                         }
 
-                        dbg(req_create_karyawan);
-                      }
-                    },
-                    child: Text("Submit")),
+                        setState(() {
+                          submit_btn = true;
+                        });
+                      },
+                      child: Text("Submit")),
+                ),
               )
             ],
           ),

@@ -1,6 +1,7 @@
 import 'package:MrCarwash/inc/db.dart';
 import 'package:MrCarwash/page/login.dart';
 import 'package:MrCarwash/page/setting/karyawan/karyawan.dart';
+import 'package:MrCarwash/page/setting/outlet_profile/oulet_profile_form.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:MrCarwash/inc/method.dart';
@@ -183,6 +184,44 @@ class Settings extends StatelessWidget {
                         Padding(padding: EdgeInsets.only(top: 10)),
                         Text(
                           "Log Out",
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16.0),
+                child: GestureDetector(
+                  onTap: () async {
+                    // MyConfrimDialog.title = "Logout";
+                    // MyConfrimDialog.content = "Are you sure Logout ?";
+                    // MyConfrimDialog.page = Login();
+                    // MyConfrimDialog.logic = logout;
+                    // MyConfrimDialog.showDialogMethod(context);
+
+                    nav_to(context, OutletProfiles());
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    height: 200,
+                    width: 200,
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 207, 204, 203),
+                    ),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          'assets/setting.png',
+                          height: 100,
+                          width: 100,
+                        ),
+                        Padding(padding: EdgeInsets.only(top: 10)),
+                        Text(
+                          "Outlet Profile",
                           style: TextStyle(fontWeight: FontWeight.w600),
                         )
                       ],

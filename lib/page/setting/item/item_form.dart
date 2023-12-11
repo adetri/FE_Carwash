@@ -86,7 +86,7 @@ class _MyformState extends State<Myform> {
   Map<String, dynamic>? payload_update = {'mainitem': {}};
 
   dynamic subItems;
-
+  bool submit_btn = true;
   @override
   void initState() {
     // TODO: implement initState
@@ -263,65 +263,115 @@ class _MyformState extends State<Myform> {
               subItemForm(),
               Container(
                 margin: EdgeInsets.only(top: 10),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if (widget.idItem != null) {
+                child: Visibility(
+                  visible: submit_btn,
+                  child: ElevatedButton(
+                    onPressed: () async {
                       setState(() {
-                        payload_update!['mainitem']['sub_item'] =
-                            sub_item_existing;
-
-                        if (sub_item[0].length > 1) {
-                          payload_update!['mainitem']['new_sub_item'] =
-                              sub_item;
-                        }
-                        dbg("subleb : ${sub_item[0].length}");
-                        payload_update!['mainitem']['name'] = item_name?.value;
-                        payload_update!['mainitem']['price'] = price?.value;
-                        payload_update!['mainitem']['category'] =
-                            categoryItem?.value;
-                        if (imgField?.base64 != null) {
-                          payload_update!['mainitem']['img'] = imgField?.base64;
-                        }
+                        submit_btn = false;
                       });
-                      var req_upd_item =
-                          await req?.updateItem(widget.idItem, payload_update);
+                      dbg("Price is : ${price?.value}");
+                      dbg("Price is : ${categoryItem?.value}");
 
-                      if (req_upd_item!['status_code'] == 202) {
-                        showDialogAndMove(context, 'Succes',
-                            'Update data success', ItemList());
-                      } else {
-                        show_dialog(context, 'Fail to insert',
-                            req_upd_item['response']);
+                      if (widget.idItem == null && imgField?.base64 == null) {
+                        show_dialog(
+                            context, "Form required", "Item Foto Cant be Null");
+                        setState(() {
+                          submit_btn = true;
+                        });
+                        return;
                       }
-                      dbg(payload_update);
 
-                      dbg(req_upd_item);
-                    } else {
-                      if (sub_item[0].length > 1) {
-                        payload!['main_item']['sub_item'] = sub_item;
-                        dbg("this execute and sub item len is ${sub_item.length}");
+                      if (item_name?.value == null ||
+                          item_name!.value!.isEmpty) {
+                        show_dialog(
+                            context, "Form required", "Item name Cant be Null");
+                        setState(() {
+                          submit_btn = true;
+                        });
+                        return;
                       }
-                      payload!['main_item']['name'] = item_name?.value;
-                      payload!['main_item']['price'] = price?.value;
-                      payload!['main_item']['category'] = categoryItem?.value;
-                      payload!['main_item']['img'] = imgField?.base64;
-                      dbg(payload);
-                      var req_ins_item = await req?.insertItem(payload);
-                      if (req_ins_item!['status_code'] == 201) {
-                        showDialogAndMove(context, 'Succes',
-                            'Insert data success', ItemList());
+                      if (price?.value == null || price!.value!.isEmpty) {
+                        show_dialog(context, "Form required",
+                            "Item price Cant be Null");
+                        setState(() {
+                          submit_btn = true;
+                        });
+                        return;
+                      }
+                      if (categoryItem?.value == null ||
+                          categoryItem!.value!.isEmpty) {
+                        show_dialog(
+                            context, "Form required", "Category Cant be Null");
+                        setState(() {
+                          submit_btn = true;
+                        });
+                        return;
+                      }
+
+                      if (widget.idItem != null) {
+                        setState(() {
+                          payload_update!['mainitem']['sub_item'] =
+                              sub_item_existing;
+
+                          if (sub_item[0].length > 1) {
+                            payload_update!['mainitem']['new_sub_item'] =
+                                sub_item;
+                          }
+                          dbg("subleb : ${sub_item[0].length}");
+                          payload_update!['mainitem']['name'] =
+                              item_name?.value;
+                          payload_update!['mainitem']['price'] = price?.value;
+                          payload_update!['mainitem']['category'] =
+                              categoryItem?.value;
+                          if (imgField?.base64 != null) {
+                            payload_update!['mainitem']['img'] =
+                                imgField?.base64;
+                          }
+                        });
+                        var req_upd_item = await req?.updateItem(
+                            widget.idItem, payload_update);
+
+                        if (req_upd_item!['status_code'] == 202) {
+                          showDialogAndMove(context, 'Succes',
+                              'Update data success', ItemList());
+                        } else {
+                          show_dialog(context, 'Fail to insert',
+                              req_upd_item['response']);
+                        }
+                        dbg(payload_update);
+
+                        dbg(req_upd_item);
                       } else {
-                        show_dialog(context, 'Fail to insert',
-                            req_ins_item['response']);
+                        if (sub_item[0].length > 1) {
+                          payload!['main_item']['sub_item'] = sub_item;
+                          dbg("this execute and sub item len is ${sub_item.length}");
+                        }
+                        payload!['main_item']['name'] = item_name?.value;
+                        payload!['main_item']['price'] = price?.value;
+                        payload!['main_item']['category'] = categoryItem?.value;
+                        payload!['main_item']['img'] = imgField?.base64;
+                        dbg(payload);
+                        var req_ins_item = await req?.insertItem(payload);
+                        if (req_ins_item!['status_code'] == 201) {
+                          showDialogAndMove(context, 'Succes',
+                              'Insert data success', ItemList());
+                        } else {
+                          show_dialog(context, 'Fail to insert',
+                              req_ins_item['response']);
+                        }
+                        dbg(payload);
                       }
-                      dbg(payload);
-                    }
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    child: Text(
-                      "Submit",
-                      textAlign: TextAlign.center,
+                      setState(() {
+                        submit_btn = true;
+                      });
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      child: Text(
+                        "Submit",
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                 ),

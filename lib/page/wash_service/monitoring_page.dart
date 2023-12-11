@@ -44,10 +44,10 @@ class _MonitoringState extends State<Monitoring> {
     await req.init();
     nama_karyawan = req?.karyawan_name;
     dynamic data = await req
-        .fetchMonitoring(); //a = Req(context); // Create an instance of 'Req' using the context
+        .fetchMonitoring1(); //a = Req(context); // Create an instance of 'Req' using the context
     // Use 'req' instance as needed
     setState(() {
-      jsonData1 = jsonDecode(data['response']);
+      jsonData1 = data['response'];
       // print(jsonData1);
     });
   }

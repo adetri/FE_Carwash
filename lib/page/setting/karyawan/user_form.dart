@@ -74,6 +74,7 @@ class _MyUserFormState extends State<MyUserForm> {
     });
   }
 
+  bool submit_btn = true;
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -98,24 +99,62 @@ class _MyUserFormState extends State<MyUserForm> {
                 Container(
                   width: double.infinity,
                   padding: EdgeInsets.all(10),
-                  child: ElevatedButton(
-                      onPressed: () async {
-                        setState(() {
-                          payload['username'] = Username.value;
-                          payload['password'] = password.value;
-                          payload['karyawan'] = karyawan_val?.value;
-                        });
-                        var req_add_user = await req?.createUser(payload);
-                        if (req_add_user?['status_code'] == 201) {
-                          showDialogAndMove(context, "Success",
-                              "Success Insert Data", KaryawanList());
-                        } else {
-                          show_dialog(context, "Fail", "Failed To Insert");
-                        }
+                  child: Visibility(
+                    visible: submit_btn,
+                    child: ElevatedButton(
+                        onPressed: () async {
+                          setState(() {
+                            submit_btn = false;
+                            payload['username'] = Username.value;
+                            payload['password'] = password.value;
+                            payload['karyawan'] = karyawan_val?.value;
+                          });
 
-                        dbg(req_add_user);
-                      },
-                      child: Text("Submit")),
+                          if (Username?.value == null ||
+                              Username!.value!.isEmpty) {
+                            dbg(Username?.value);
+                            show_dialog(context, "Form Requiere",
+                                "Username cant be Null");
+                            setState(() {
+                              submit_btn = true;
+                            });
+                            return;
+                          }
+
+                          if (password?.value == null ||
+                              password!.value!.isEmpty) {
+                            dbg(password?.value);
+                            show_dialog(context, "Form Requiere",
+                                "Password cant be Null");
+                            setState(() {
+                              submit_btn = true;
+                            });
+                            return;
+                          }
+
+                          if (karyawan_val?.value == null ||
+                              karyawan_val!.value!.isEmpty) {
+                            dbg(karyawan_val?.value);
+                            show_dialog(context, "Form Requiere",
+                                "Employee cant be Null");
+                            setState(() {
+                              submit_btn = true;
+                            });
+                            return;
+                          }
+
+                          var req_add_user = await req?.createUser(payload);
+                          if (req_add_user?['status_code'] == 201) {
+                            showDialogAndMove(context, "Success",
+                                "Success Insert Data", KaryawanList());
+                          } else {
+                            show_dialog(context, "Fail", "Failed To Insert");
+                          }
+
+                          dbg(req_add_user);
+                        },
+                        child: Text("Submit")),
+                  ),
                 )
               ],
             ),
