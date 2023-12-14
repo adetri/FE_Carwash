@@ -1,3 +1,5 @@
+import 'package:MrCarwash/env.dart';
+import 'package:MrCarwash/page/component/check_box.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -71,6 +73,7 @@ class Myform extends StatefulWidget {
 class _MyformState extends State<Myform> {
   TextFieldInput? item_name;
   TextFieldInput? price;
+  TextFieldInput? stk;
   ImageInputField? imgField;
   DropdownInputField? categoryItem;
   Req? req;
@@ -81,12 +84,18 @@ class _MyformState extends State<Myform> {
   int sub_item_minum_form = 1;
   List<dynamic> sub_item = [{}];
   List<dynamic> sub_item_existing = [{}];
+  CheckBoxField? is_stk;
 
   Map<String, dynamic>? payload = {'main_item': {}};
   Map<String, dynamic>? payload_update = {'mainitem': {}};
 
   dynamic subItems;
+  bool isChecked = false; // Initial value of checkbox
   bool submit_btn = true;
+
+  bool init_status = false;
+  bool loading = true;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -146,8 +155,21 @@ class _MyformState extends State<Myform> {
             imgUrl:
                 "${req?.host}${req_get_item?['response']['mainitem']['img']}");
       });
+
+      isChecked = req_get_item?['response']['mainitem']['is_count_item'];
+      stk = TextFieldInput(
+        field_name: "Item Stock",
+        initialValue: req_get_item?['response']['mainitem']['stock'].toString(),
+        inputType: "number",
+      );
+      stk?.value = req_get_item?['response']['mainitem']['stock'].toString();
     } else {
       setState(() {
+        is_stk = CheckBoxField(tittle: "Stock : ");
+        stk = TextFieldInput(
+          field_name: "Item Stock",
+          inputType: "number",
+        );
         subItemName = TextFieldInput(field_name: "Sub Item Name");
         subItemPrice = TextFieldInput(
           field_name: "Sub Item Price",
@@ -165,225 +187,273 @@ class _MyformState extends State<Myform> {
         );
       });
     }
-
+    loading = false;
+    dbg("init status is : $init_status");
     dbg("init Page End");
   }
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: 1,
-      child: SingleChildScrollView(
-        child: Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.all(10),
-                child: imgField,
-              ),
-
-              Container(
-                margin: EdgeInsets.only(top: 10),
-                child: item_name ?? SizedBox.shrink(),
-              ),
-
-              Container(
-                margin: EdgeInsets.only(top: 10),
-                child: price ?? SizedBox.shrink(),
-              ),
-              Container(
-                  alignment: Alignment.topLeft,
-                  margin: EdgeInsets.only(top: 10),
-                  child: categoryItem ?? SizedBox.shrink()),
-              Container(
-                alignment: Alignment.topLeft,
-                margin: EdgeInsets.only(top: 30),
-                child: Row(
+    return loading
+        ? SizedBox.shrink()
+        : Expanded(
+            flex: 1,
+            child: SingleChildScrollView(
+              child: Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      flex: 6,
-                      child: Text(
-                        "Sub Item",
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.w600,
-                        ),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      child: imgField,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 10),
+                      child: item_name ?? SizedBox.shrink(),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(top: 10),
+                      child: price ?? SizedBox.shrink(),
+                    ),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      margin: EdgeInsets.only(top: 10),
+                      child: categoryItem ?? SizedBox.shrink(),
+                    ),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      margin: EdgeInsets.only(top: 10),
+                      child: Row(
+                        children: [
+                          Text("Stock "),
+                          Checkbox(
+                            value: isChecked, // Current state of the checkbox
+                            onChanged: (bool? value) {
+                              setState(() {
+                                isChecked = value ?? false;
+                              });
+                            },
+                          ),
+                        ],
                       ),
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        // color: Colors.amberAccent,
-                        alignment: Alignment.topRight,
-                        child: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              if (sub_item_count < 4) {
-                                sub_item_count += 1;
+                    isChecked
+                        ? Container(
+                            alignment: Alignment.topLeft,
+                            margin: EdgeInsets.only(top: 10),
+                            child: stk ?? SizedBox.shrink(),
+                          )
+                        : SizedBox.shrink(),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      margin: EdgeInsets.only(top: 30),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 6,
+                            child: Text(
+                              "Sub Item",
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              // color: Colors.amberAccent,
+                              alignment: Alignment.topRight,
+                              child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    if (sub_item_count < 4) {
+                                      sub_item_count += 1;
 
-                                if (sub_item.length < sub_item_count) {
-                                  sub_item.add({});
+                                      if (sub_item.length < sub_item_count) {
+                                        sub_item.add({});
+                                      }
+                                    }
+                                  });
+                                  dbg("print");
+                                },
+                                icon: Icon(Icons.add_circle_outline),
+                              ),
+
+                              // Icon(Icons.add_circle_outline),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: Container(
+                              // color: Colors.amberAccent,
+                              alignment: Alignment.topRight,
+                              child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    if (sub_item_count > sub_item_minum_form) {
+                                      sub_item_count -= 1;
+
+                                      sub_item.removeLast();
+                                    }
+                                  });
+                                },
+                                icon: Icon(Icons.remove_circle_outline),
+                              ),
+
+                              // Icon(Icons.add_circle_outline),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    widget.idItem != null
+                        ? subItemFormExisting()
+                        : SizedBox.shrink(),
+                    subItemForm(),
+                    Container(
+                      margin: EdgeInsets.only(top: 10),
+                      child: Visibility(
+                        visible: submit_btn,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            setState(() {
+                              submit_btn = false;
+                            });
+                            dbg("Price is : ${price?.value}");
+                            dbg("Price is : ${categoryItem?.value}");
+
+                            if (widget.idItem == null &&
+                                imgField?.base64 == null) {
+                              show_dialog(context, "Form required",
+                                  "Item Foto Cant be Null");
+                              setState(() {
+                                submit_btn = true;
+                              });
+                              return;
+                            }
+
+                            if (item_name?.value == null ||
+                                item_name!.value!.isEmpty) {
+                              show_dialog(context, "Form required",
+                                  "Item name Cant be Null");
+                              setState(() {
+                                submit_btn = true;
+                              });
+                              return;
+                            }
+                            if (price?.value == null || price!.value!.isEmpty) {
+                              show_dialog(context, "Form required",
+                                  "Item price Cant be Null");
+                              setState(() {
+                                submit_btn = true;
+                              });
+                              return;
+                            }
+                            if (categoryItem?.value == null ||
+                                categoryItem!.value!.isEmpty) {
+                              show_dialog(context, "Form required",
+                                  "Category Cant be Null");
+                              setState(() {
+                                submit_btn = true;
+                              });
+                              return;
+                            }
+                            if (isChecked &&
+                                (stk?.value == null ||
+                                    (stk?.value?.isEmpty ?? true))) {
+                              show_dialog(context, "Form required",
+                                  "Stock Cant be Null");
+                              setState(() {
+                                submit_btn = true;
+                              });
+                              return;
+                            }
+                            if (widget.idItem != null) {
+                              setState(() {
+                                payload_update!['mainitem']['is_count_item'] =
+                                    isChecked;
+
+                                payload_update!['mainitem']['stock'] =
+                                    stk?.value;
+
+                                payload_update!['mainitem']['sub_item'] =
+                                    sub_item_existing;
+
+                                if (sub_item[0].length > 1) {
+                                  payload_update!['mainitem']['new_sub_item'] =
+                                      sub_item;
                                 }
-                              }
-                            });
-                            dbg("print");
-                          },
-                          icon: Icon(Icons.add_circle_outline),
-                        ),
+                                dbg("subleb : ${sub_item[0].length}");
+                                payload_update!['mainitem']['name'] =
+                                    item_name?.value;
+                                payload_update!['mainitem']['price'] =
+                                    price?.value;
+                                payload_update!['mainitem']['category'] =
+                                    categoryItem?.value;
+                                if (imgField?.base64 != null) {
+                                  payload_update!['mainitem']['img'] =
+                                      imgField?.base64;
+                                }
+                              });
+                              var req_upd_item = await req?.updateItem(
+                                  widget.idItem, payload_update);
 
-                        // Icon(Icons.add_circle_outline),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Container(
-                        // color: Colors.amberAccent,
-                        alignment: Alignment.topRight,
-                        child: IconButton(
-                          onPressed: () {
+                              if (req_upd_item!['status_code'] == 202) {
+                                showDialogAndMove(context, 'Succes',
+                                    'Update data success', ItemList());
+                              } else {
+                                show_dialog(context, 'Fail to insert',
+                                    req_upd_item['response']);
+                              }
+                              dbg(payload_update);
+
+                              dbg(req_upd_item);
+                            } else {
+                              payload!['main_item']['is_count_item'] =
+                                  isChecked;
+
+                              payload!['main_item']['stock'] = stk?.value;
+                              if (sub_item[0].length > 1) {
+                                payload!['main_item']['sub_item'] = sub_item;
+                                dbg("this execute and sub item len is ${sub_item.length}");
+                              }
+                              payload!['main_item']['name'] = item_name?.value;
+                              payload!['main_item']['price'] = price?.value;
+                              payload!['main_item']['category'] =
+                                  categoryItem?.value;
+                              payload!['main_item']['img'] = imgField?.base64;
+                              dbg(payload);
+                              var req_ins_item = await req?.insertItem(payload);
+                              if (req_ins_item!['status_code'] == 201) {
+                                // showDialogAndMove(context, 'Succes',
+                                //     'Insert data success', ItemList());
+                              } else {
+                                show_dialog(context, 'Fail to insert',
+                                    req_ins_item['response']);
+                              }
+                              dbg(req_ins_item);
+                              // dbg(payload);
+                            }
                             setState(() {
-                              if (sub_item_count > sub_item_minum_form) {
-                                sub_item_count -= 1;
-
-                                sub_item.removeLast();
-                              }
+                              submit_btn = true;
                             });
                           },
-                          icon: Icon(Icons.remove_circle_outline),
+                          child: Container(
+                            width: double.infinity,
+                            child: Text(
+                              "Submit",
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
-
-                        // Icon(Icons.add_circle_outline),
                       ),
                     ),
                   ],
                 ),
               ),
-              widget.idItem != null ? subItemFormExisting() : SizedBox.shrink(),
-              subItemForm(),
-              Container(
-                margin: EdgeInsets.only(top: 10),
-                child: Visibility(
-                  visible: submit_btn,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      setState(() {
-                        submit_btn = false;
-                      });
-                      dbg("Price is : ${price?.value}");
-                      dbg("Price is : ${categoryItem?.value}");
-
-                      if (widget.idItem == null && imgField?.base64 == null) {
-                        show_dialog(
-                            context, "Form required", "Item Foto Cant be Null");
-                        setState(() {
-                          submit_btn = true;
-                        });
-                        return;
-                      }
-
-                      if (item_name?.value == null ||
-                          item_name!.value!.isEmpty) {
-                        show_dialog(
-                            context, "Form required", "Item name Cant be Null");
-                        setState(() {
-                          submit_btn = true;
-                        });
-                        return;
-                      }
-                      if (price?.value == null || price!.value!.isEmpty) {
-                        show_dialog(context, "Form required",
-                            "Item price Cant be Null");
-                        setState(() {
-                          submit_btn = true;
-                        });
-                        return;
-                      }
-                      if (categoryItem?.value == null ||
-                          categoryItem!.value!.isEmpty) {
-                        show_dialog(
-                            context, "Form required", "Category Cant be Null");
-                        setState(() {
-                          submit_btn = true;
-                        });
-                        return;
-                      }
-
-                      if (widget.idItem != null) {
-                        setState(() {
-                          payload_update!['mainitem']['sub_item'] =
-                              sub_item_existing;
-
-                          if (sub_item[0].length > 1) {
-                            payload_update!['mainitem']['new_sub_item'] =
-                                sub_item;
-                          }
-                          dbg("subleb : ${sub_item[0].length}");
-                          payload_update!['mainitem']['name'] =
-                              item_name?.value;
-                          payload_update!['mainitem']['price'] = price?.value;
-                          payload_update!['mainitem']['category'] =
-                              categoryItem?.value;
-                          if (imgField?.base64 != null) {
-                            payload_update!['mainitem']['img'] =
-                                imgField?.base64;
-                          }
-                        });
-                        var req_upd_item = await req?.updateItem(
-                            widget.idItem, payload_update);
-
-                        if (req_upd_item!['status_code'] == 202) {
-                          showDialogAndMove(context, 'Succes',
-                              'Update data success', ItemList());
-                        } else {
-                          show_dialog(context, 'Fail to insert',
-                              req_upd_item['response']);
-                        }
-                        dbg(payload_update);
-
-                        dbg(req_upd_item);
-                      } else {
-                        if (sub_item[0].length > 1) {
-                          payload!['main_item']['sub_item'] = sub_item;
-                          dbg("this execute and sub item len is ${sub_item.length}");
-                        }
-                        payload!['main_item']['name'] = item_name?.value;
-                        payload!['main_item']['price'] = price?.value;
-                        payload!['main_item']['category'] = categoryItem?.value;
-                        payload!['main_item']['img'] = imgField?.base64;
-                        dbg(payload);
-                        var req_ins_item = await req?.insertItem(payload);
-                        if (req_ins_item!['status_code'] == 201) {
-                          showDialogAndMove(context, 'Succes',
-                              'Insert data success', ItemList());
-                        } else {
-                          show_dialog(context, 'Fail to insert',
-                              req_ins_item['response']);
-                        }
-                        dbg(payload);
-                      }
-                      setState(() {
-                        submit_btn = true;
-                      });
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      child: Text(
-                        "Submit",
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-              // Expanded(child: item_name ?? Text("")),
-              // Expanded(child: price ?? Text(""))
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 
   Column subItemFormExisting() {

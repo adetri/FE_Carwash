@@ -47,6 +47,9 @@ dependencies:
   video_player: ^2.8.1
   flutter_launcher_icons: ^0.13.1
   jwt_decoder: ^2.0.1
+  loading_animation_widget: ^1.2.0+4
+  fl_chart: ^0.65.0
+  syncfusion_flutter_charts: ^21.2.4
 
 dev_dependencies:
   flutter_test:

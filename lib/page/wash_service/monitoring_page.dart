@@ -144,7 +144,7 @@ class _MonitoringState extends State<Monitoring> {
                     runSpacing: 10,
                     children: (jsonData1 ?? const {'spot': []})['spot']
                         .map<Widget>((spot) {
-                      final id = spot['id'];
+                      final int id = spot['id'];
                       final name = spot['name'];
                       final status = spot['status'];
                       final color = status
@@ -173,9 +173,10 @@ class _MonitoringState extends State<Monitoring> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Preorder(
-                                              spot_id: id,
-                                            )),
+                                      builder: (context) => Preorder(
+                                        spot_id: id,
+                                      ),
+                                    ),
                                   );
                                   // Execute code when status is false
 

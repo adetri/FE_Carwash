@@ -490,10 +490,11 @@ class _OrderDetailState extends State<OrderDetail> {
         });
       },
       child: Container(
-        margin: EdgeInsets.all(20),
+        // margin: EdgeInsets.all(20),
+        margin: EdgeInsets.only(top: 20),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(5.0),
           color: Colors.blue,
         ),
         height: 50,
@@ -501,8 +502,9 @@ class _OrderDetailState extends State<OrderDetail> {
         child: Align(
           alignment: Alignment.center,
           child: Text(
-            "Add Order",
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+            "Add Order".toUpperCase(),
+            style: TextStyle(
+                fontSize: 24, fontWeight: FontWeight.w500, color: Colors.white),
           ),
         ),
       ),

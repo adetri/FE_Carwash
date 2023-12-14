@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:jwt_decode/jwt_decode.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 int get_user_id(jwt) {
   String jwtToken = '$jwt'; // Replace this with your actual JWT token
@@ -217,4 +218,18 @@ Row headerPage(context, prev_page, title) {
       // ),
     ],
   );
+}
+
+class LoadingSc extends StatelessWidget {
+  const LoadingSc({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: LoadingAnimationWidget.fourRotatingDots(
+        size: 200,
+        color: Colors.blue,
+      ),
+    );
+  }
 }

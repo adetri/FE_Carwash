@@ -525,9 +525,13 @@ class _OrderSumState extends State<OrderSum> {
 
               var req_add_more_item =
                   await req.addMoreItem(widget.id_order, payload);
+              dbg(req_add_more_item);
               if (req_add_more_item['status_code'] == 201) {
                 showDialogAndMove(context, "Succes", "Add Item Success",
                     PayOrder(id_order: widget.id_order));
+              } else {
+                show_dialog(
+                    context, "Failed to Add", req_add_more_item['response']);
               }
 
               setState(() {
