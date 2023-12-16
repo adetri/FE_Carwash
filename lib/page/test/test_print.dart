@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/services.dart';
 
-class ThermalPrint extends StatefulWidget {
-  const ThermalPrint({super.key});
+class TestThermalPrint extends StatefulWidget {
+  const TestThermalPrint({super.key});
 
   @override
-  State<ThermalPrint> createState() => _ThermalPrintState();
+  State<TestThermalPrint> createState() => _TestThermalPrintState();
 }
 
-class _ThermalPrintState extends State<ThermalPrint> {
+class _TestThermalPrintState extends State<TestThermalPrint> {
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
   List<BluetoothDevice> _devices = [];
   dynamic items = [];
@@ -156,24 +156,28 @@ class _ThermalPrintState extends State<ThermalPrint> {
 
   void test_print() {
     bluetooth.isConnected.then((isConnected) {
-      bluetooth.printCustom("Mr Carwash", 2, 1);
-      bluetooth.printCustom(
-          "Jagakarsa, Kec. Jagakarsa, Kota Jakarta Selatan", 1, 1);
-      bluetooth.printCustom("085157792607", 1, 1);
+      // bluetooth.printCustom("Mr Carwash", 2, 1);
+      bluetooth.printCustom("Nota", 1, 1);
+      // bluetooth.printCustom("085157792607", 1, 1);
 
       bluetooth.printNewLine();
       bluetooth.printCustom("11 Nov 2024 13:04", 0, 0);
 
       bluetooth.printCustom("No Order : 202406051234", 0, 0);
 
-      bluetooth.printCustom("==========================================", 0, 0);
-      bluetooth.printCustom("Body Polishing (full body) with thermal", 0, 0);
-      bluetooth.printLeftRight("2 x 200.000", "400.000", 0);
-      bluetooth.printCustom("Body Wash (full body)", 0, 0);
-      bluetooth.printLeftRight("2 x 200.000.000", "400.000.000", 0);
+      bluetooth.printCustom("================================", 0, 0);
+      bluetooth.printCustom("Kaos Kaki Hitam Pendek", 0, 0);
+      bluetooth.printLeftRight("300 x 3.100", "930.000", 0);
+      bluetooth.printCustom("Biaya Pengiriman", 0, 0);
+      bluetooth.printLeftRight("1 x 23.000", "23.000", 0);
 
-      bluetooth.printCustom("==========================================", 0, 0);
-      bluetooth.printLeftRight("Total", "400.400.000", 0);
+      bluetooth.printCustom("================================", 0, 0);
+      bluetooth.printLeftRight("Diskon", "25.500", 0);
+
+      bluetooth.printLeftRight("Total", "927.500", 0);
+      bluetooth.printNewLine();
+      bluetooth.printCustom("Terima Kasih", 1, 1);
+
       bluetooth.paperCut();
     });
   }

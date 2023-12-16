@@ -1,15 +1,21 @@
 import 'package:MrCarwash/env.dart';
 import 'package:MrCarwash/page/component/check_box.dart';
+import 'package:MrCarwash/page/component/horizontal_month_scroll.dart';
 import 'package:MrCarwash/page/login.dart';
+import 'package:MrCarwash/page/report/menu_report.dart';
 import 'package:MrCarwash/page/report/report.dart';
+import 'package:MrCarwash/page/report/report_chart.dart';
 import 'package:MrCarwash/page/setting/karyawan/karyawan.dart';
 import 'package:MrCarwash/page/setting/karyawan/karyawan_form.dart';
 import 'package:MrCarwash/page/setting/karyawan/user_form.dart';
 import 'package:MrCarwash/page/setting/outlet_profile/oulet_profile_form.dart';
 import 'package:MrCarwash/page/setting/spot/spot_forn.dart';
 import 'package:MrCarwash/page/test/test_chart.dart';
+import 'package:MrCarwash/page/test/test_datimetime.dart';
 import 'package:MrCarwash/page/test/test_jwt_decoder.dart';
 import 'package:MrCarwash/page/test/test_loading.dart';
+import 'package:MrCarwash/page/test/test_print.dart';
+import 'package:MrCarwash/page/test/test_stream_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:MrCarwash/page/setting/category/category.dart';
 import 'package:MrCarwash/page/setting/category/category_form.dart';
@@ -40,7 +46,7 @@ class StratAt extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: '',
-      home: Login(),
+      home: ReportChart(),
     );
   }
 }

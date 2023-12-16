@@ -1,3 +1,4 @@
+import 'package:MrCarwash/page/report/menu_report.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:MrCarwash/inc/method.dart';
@@ -112,7 +113,7 @@ class _ReportState extends State<Report> {
                       print("tab this");
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Mainmenu()),
+                        MaterialPageRoute(builder: (context) => ReportMenu()),
                       );
                     });
                   },
