@@ -18,7 +18,7 @@ class Req {
   int? id_karyawan;
   String? karyawan_name;
   final BuildContext context;
-  final timeout = 5;
+  final timeout = 10;
   final debug = true;
   int? status_cido;
   Map<String, String>? headers;
@@ -733,8 +733,18 @@ class Req {
     };
   }
 
-  Future<Map<String, dynamic>> fetchChartReport() async {
-    String url = apiUrl + '/order/chart-report';
+  Future<Map<String, dynamic>> fetchChartReport(year, month) async {
+    String url = apiUrl + '/order/chart-report/$year/$month';
+    dynamic req = await get_req(url);
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
+
+  Future<Map<String, dynamic>> getRole() async {
+    String url = apiUrl + '/pegawai/get-role/$role';
     dynamic req = await get_req(url);
     return {
       "status_code":

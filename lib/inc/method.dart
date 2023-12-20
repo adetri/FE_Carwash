@@ -233,3 +233,19 @@ class LoadingSc extends StatelessWidget {
     );
   }
 }
+
+bool canAccess(role, {kasir = false, management = false, owner = false}) {
+  if (role['is_dev'] == true) {
+    return true;
+  }
+
+  if (kasir == true && role['is_cashier'] == true) {
+    return true;
+  } else if (management == true && role['is_management'] == true) {
+    return true;
+  } else if (owner == true && role['is_owner']) {
+    return true;
+  } else {
+    return false;
+  }
+}

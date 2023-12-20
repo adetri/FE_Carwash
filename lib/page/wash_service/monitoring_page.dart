@@ -33,21 +33,28 @@ class Monitoring extends StatefulWidget {
 class _MonitoringState extends State<Monitoring> {
   dynamic jsonData1; // Make jsonData1 nullable
   String? nama_karyawan;
+  bool load_page = false;
+  Map<String, dynamic>? role;
   @override
   void initState() {
     super.initState();
     setter();
+    load_page = true;
   }
 
   Future<void> setter() async {
     Req req = Req(context); // Create an instance of 'Req' using the context
     await req.init();
+    var req_role = await req.getRole();
+
     nama_karyawan = req?.karyawan_name;
     dynamic data = await req
         .fetchMonitoring1(); //a = Req(context); // Create an instance of 'Req' using the context
     // Use 'req' instance as needed
     setState(() {
       jsonData1 = data['response'];
+      role = req_role['response'];
+
       // print(jsonData1);
     });
   }
@@ -78,180 +85,194 @@ class _MonitoringState extends State<Monitoring> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-            child: Column(
-      children: [
-        Center(
-            child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                  top: 19.0), // Adjust the padding as needed
-              child: Column(
+        body: load_page == false
+            ? SizedBox.shrink()
+            : SingleChildScrollView(
+                child: Column(
                 children: [
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.only(top: 50, bottom: 20, right: 50),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              print("tab this");
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Mainmenu()),
-                              );
-                            });
-                          },
-                          child: Container(
-                            height: 50,
-                            alignment: Alignment.topLeft,
-                            child: Image.asset('assets/back.png'),
-                          ),
-                        ),
-                        Container(
-                          child: Text(
-                            'Monitoring',
-                            style: TextStyle(
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.left, // Apply bold font weight
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            alignment: Alignment.bottomRight,
-                            child: Text(
-                              nama_karyawan.toString(),
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign:
-                                  TextAlign.right, // Apply bold font weight
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: (jsonData1 ?? const {'spot': []})['spot']
-                        .map<Widget>((spot) {
-                      final int id = spot['id'];
-                      final name = spot['name'];
-                      final status = spot['status'];
-                      final color = status
-                          ? const Color.fromARGB(255, 94, 207, 98)
-                          : const Color.fromARGB(255, 207, 204, 203);
-                      final owner = spot['vehicle_owner'] ?? "";
-                      final number = spot['vehicle_number'] ?? "";
-                      final order = spot['order'] ?? "";
-
-                      return ClipRRect(
-                          borderRadius: BorderRadius.circular(16.0),
-                          child: GestureDetector(
-                              onTap: () {
-                                if (status) {
-                                  // Execute code when status is true
-                                  print(
-                                      'Containdasdasder tapped with true status - $order');
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            PayOrder(id_order: order)),
-                                  );
-                                  // Add other actions for true status here
-                                } else {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Preorder(
-                                        spot_id: id,
+                  Center(
+                      child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            top: 19.0), // Adjust the padding as needed
+                        child: Column(
+                          children: [
+                            Container(
+                              width: double.infinity,
+                              margin: EdgeInsets.only(
+                                  top: 50, bottom: 20, right: 50),
+                              child: Row(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        print("tab this");
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => Mainmenu()),
+                                        );
+                                      });
+                                    },
+                                    child: Container(
+                                      height: 50,
+                                      alignment: Alignment.topLeft,
+                                      child: Image.asset('assets/back.png'),
+                                    ),
+                                  ),
+                                  Container(
+                                    child: Text(
+                                      'Monitoring',
+                                      style: TextStyle(
+                                        fontSize: 40,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign
+                                          .left, // Apply bold font weight
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      alignment: Alignment.bottomRight,
+                                      child: Text(
+                                        nama_karyawan.toString(),
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        textAlign: TextAlign
+                                            .right, // Apply bold font weight
                                       ),
                                     ),
-                                  );
-                                  // Execute code when status is false
+                                  )
+                                ],
+                              ),
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.center,
+                              spacing: 10,
+                              runSpacing: 10,
+                              children:
+                                  (jsonData1 ?? const {'spot': []})['spot']
+                                      .map<Widget>((spot) {
+                                final int id = spot['id'];
+                                final name = spot['name'];
+                                final status = spot['status'];
+                                final color = status
+                                    ? const Color.fromARGB(255, 94, 207, 98)
+                                    : const Color.fromARGB(255, 207, 204, 203);
+                                final owner = spot['vehicle_owner'] ?? "";
+                                final number = spot['vehicle_number'] ?? "";
+                                final order = spot['order'] ?? "";
 
-                                  // Add other actions for false status here
-                                }
-                              },
-                              child: Container(
-                                width: 250,
-                                height: 200,
-                                color: color,
-                                padding: const EdgeInsets.all(10.0),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text('$name',
-                                            style: const TextStyle(
-                                                fontSize: 30,
-                                                fontWeight: FontWeight
-                                                    .bold)), // Display ID with bold style
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text('$owner',
-                                            style: const TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight
-                                                    .bold)), // Display ID with bold style
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Text('$number',
-                                            style: const TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight
-                                                    .bold)), // Display ID with bold style
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  left: 50, top: 60),
-                                              // Adds margin to the left of the child
-                                            ),
-                                            Text(
-                                              '${status ? 'Use' : 'Availble'}',
-                                              style: const TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              )));
-                    }).toList(),
-                  ),
+                                return ClipRRect(
+                                    borderRadius: BorderRadius.circular(16.0),
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          if (status) {
+                                            // Execute code when status is true
+                                            print(
+                                                'Containdasdasder tapped with true status - $order');
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PayOrder(
+                                                          id_order: order)),
+                                            );
+                                            // Add other actions for true status here
+                                          } else {
+                                            canAccess(role, kasir: true)
+                                                ? Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Preorder(
+                                                        spot_id: id,
+                                                      ),
+                                                    ),
+                                                  )
+                                                : dbg("not ath");
+
+                                            // Execute code when status is false
+
+                                            // Add other actions for false status here
+                                          }
+                                        },
+                                        child: Container(
+                                          width: 250,
+                                          height: 200,
+                                          color: color,
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Text('$name',
+                                                      style: const TextStyle(
+                                                          fontSize: 30,
+                                                          fontWeight: FontWeight
+                                                              .bold)), // Display ID with bold style
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Text('$owner',
+                                                      style: const TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight: FontWeight
+                                                              .bold)), // Display ID with bold style
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Text('$number',
+                                                      style: const TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight: FontWeight
+                                                              .bold)), // Display ID with bold style
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Column(
+                                                    children: [
+                                                      Container(
+                                                        margin: const EdgeInsets
+                                                            .only(
+                                                            left: 50, top: 60),
+                                                        // Adds margin to the left of the child
+                                                      ),
+                                                      Text(
+                                                        '${status ? 'Use' : 'Availble'}',
+                                                        style: const TextStyle(
+                                                            fontSize: 20,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        )));
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )),
                 ],
-              ),
-            ),
-          ],
-        )),
-      ],
-    )));
+              )));
   }
 }

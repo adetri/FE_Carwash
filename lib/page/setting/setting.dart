@@ -154,43 +154,6 @@ class Settings extends StatelessWidget {
                   ),
                 ),
               ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: GestureDetector(
-                  onTap: () async {
-                    MyConfrimDialog.title = "Logout";
-                    MyConfrimDialog.content = "Are you sure Logout ?";
-                    MyConfrimDialog.page = Login();
-                    MyConfrimDialog.logic = logout;
-                    MyConfrimDialog.showDialogMethod(context);
-
-                    // nav_to(context, KaryawanList());
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 200,
-                    width: 200,
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 207, 204, 203),
-                    ),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/setting.png',
-                          height: 100,
-                          width: 100,
-                        ),
-                        Padding(padding: EdgeInsets.only(top: 10)),
-                        Text(
-                          "Log Out",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
 
               ClipRRect(
                 borderRadius: BorderRadius.circular(16.0),
@@ -284,12 +247,6 @@ class Settings extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  void logout() async {
-    DatabaseHelper? db = DatabaseHelper();
-    var logout = db.logoutSeason();
-    dbg("log out is : $logout");
   }
 
   Widget header(context) {

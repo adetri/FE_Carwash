@@ -36,12 +36,20 @@ class _PayOrderState extends State<PayOrder> {
     init();
   }
 
+  bool load_page = false;
+  Map<String, dynamic>? role;
   String? karyawan_name;
   void init() async {
     req = Req(context);
     await req?.init();
+    var req_role = await req?.getRole();
+
     karyawan_name = req?.karyawan_name;
     order();
+    setState(() {
+      role = req_role?['response'];
+      load_page = true;
+    });
   }
 
   void order() async {
@@ -55,31 +63,6 @@ class _PayOrderState extends State<PayOrder> {
       d_order = req_order?['response'];
     });
   }
-
-  // void call_order() async {
-  //   String apiUrl =
-  //       '$APIHOST/order/preogres-order/${widget.id_order}'; // Replace with your API endpoint
-  //   final Map<String, String> headers = {
-  //     'Authorization': 'Bearer $JWT',
-  //     'Content-Type': 'application/json',
-  //   };
-
-  //   final response = await http.get(
-  //     Uri.parse(apiUrl),
-  //     headers: headers,
-  //   );
-
-  //   if (response.statusCode == 200) {
-  //     setState(() {
-  //       d_order = json.decode(response.body);
-  //     });
-  //     print(d_order);
-  //     print("Success with order");
-  //   } else {
-  //     print(
-  //         'Failed to load data item. Status code: ${response.statusCode} ${response.body}');
-  //   }
-  // }
 
   void printRecipt(data, data_outlet) {
     String sperator = "================================";
@@ -212,209 +195,225 @@ class _PayOrderState extends State<PayOrder> {
 
     return Scaffold(
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              margin: EdgeInsets.only(top: 50, bottom: 50),
-              child: Row(
+        child: load_page == false
+            ? SizedBox.shrink()
+            : Column(
                 children: [
                   Container(
-                    height: 50,
-                    alignment: Alignment.topLeft,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Monitoring(),
+                    margin: EdgeInsets.only(top: 50, bottom: 50),
+                    child: Row(
+                      children: [
+                        Container(
+                          height: 50,
+                          alignment: Alignment.topLeft,
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Monitoring(),
+                                ),
+                              );
+                            },
+                            child: Image.asset('assets/back.png'),
                           ),
-                        );
-                      },
-                      child: Image.asset('assets/back.png'),
+                        ),
+                        Container(
+                          child: Text(
+                            "Pay Order",
+                            style: TextStyle(
+                                fontSize: 40, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            alignment: Alignment.topRight,
+                            margin: EdgeInsets.only(right: 10),
+                            child: Text(
+                              karyawan_name.toString(),
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                  canAccess(role, kasir: true)
+                      ? Container(
+                          alignment: Alignment.topLeft,
+                          margin: EdgeInsets.only(left: 10),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              nav_to(
+                                  context,
+                                  Preorder(
+                                    spot_id: data['order']['spot'],
+                                    id_order: id_order,
+                                  ));
+                            },
+                            child: Text("Add more item"),
+                          ),
+                        )
+                      : SizedBox.shrink(),
+                  list_itm(list_item),
                   Container(
-                    child: Text(
-                      "Pay Order",
-                      style:
-                          TextStyle(fontSize: 40, fontWeight: FontWeight.w600),
-                    ),
+                    margin: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                        border: Border(bottom: BorderSide(width: 3))),
                   ),
-                  Expanded(
+                  sub_total(total),
+                  data_owner(vehicle_number, owner),
+                  Align(
+                    alignment: Alignment.topLeft,
                     child: Container(
-                      alignment: Alignment.topRight,
-                      margin: EdgeInsets.only(right: 10),
-                      child: Text(
-                        karyawan_name.toString(),
-                        style: TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.w600),
+                      margin: EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    "Washers",
+                                    style: TextStyle(
+                                      fontSize: 25,
+                                    ),
+                                  ),
+                                ),
+                                // Expanded(
+                                //   flex: 1,
+                                //   child: Container(
+                                //     height: 50,
+                                //     child: Align(
+                                //       alignment: Alignment.topRight,
+                                //       child: Image.asset('assets/Plus.png'),
+                                //     ),
+                                //   ),
+                                // )
+                              ],
+                            ),
+                          ),
+                          wahser_list(washer_list),
+                          Column(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(top: 20),
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  "Pay",
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                                child: TextField(
+                                  onChanged: (num) {
+                                    setState(() {
+                                      nominal = int.parse(num);
+
+                                      print(nominal);
+                                    });
+                                  },
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: <TextInputFormatter>[
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    // You can add more formatters if needed, for instance, to limit the length
+                                    // LengthLimitingTextInputFormatter(5), // Allows only 5 characters
+                                  ],
+                                  decoration: InputDecoration(
+                                    labelText: 'Nominal',
+                                    hintText: 'Nominal',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  // Additional properties and handlers for the TextField
+                                ),
+                              )
+                            ],
+                          ),
+                          canAccess(role, kasir: true)
+                              ? pay_btn(data_recipe, context)
+                              : SizedBox.shrink(),
+                          canAccess(role, management: true)
+                              ? Container(
+                                  margin: EdgeInsets.only(top: 10),
+                                  height: 50,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                      color: Color.fromARGB(255, 205, 52, 52),
+                                      borderRadius: BorderRadius.circular(4)),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text("Delete"),
+                                            content: Text(
+                                                "Are you sure to delete ?"),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () async {
+                                                  Navigator.of(context)
+                                                      .pop(); // Close the dialog
+
+                                                  Map<String, dynamic>?
+                                                      send_req =
+                                                      await req?.cancleOrder(
+                                                          id_order);
+
+                                                  if (send_req?[
+                                                          'status_code'] ==
+                                                      202) {
+                                                    dialog(
+                                                        "Success to delete order data",
+                                                        "Success",
+                                                        monitoring: "istrue");
+                                                  } else {
+                                                    dialog(
+                                                        send_req?['response'],
+                                                        "Failed");
+                                                  }
+                                                },
+                                                child: Text('OK'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context)
+                                                      .pop(); // Close the dialog
+                                                },
+                                                child: Text('NO'),
+                                              )
+                                            ],
+                                          );
+                                        },
+                                      );
+                                      // delete_order
+                                    },
+                                    child: Center(
+                                      child: Text(
+                                        "Cancle",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : SizedBox.shrink(),
+                        ],
                       ),
                     ),
                   ),
                 ],
               ),
-            ),
-            Container(
-              alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(left: 10),
-              child: ElevatedButton(
-                onPressed: () {
-                  nav_to(
-                      context,
-                      Preorder(
-                        spot_id: data['order']['spot'],
-                        id_order: id_order,
-                      ));
-                },
-                child: Text("Add more item"),
-              ),
-            ),
-            list_itm(list_item),
-            Container(
-              margin: EdgeInsets.all(10),
-              decoration:
-                  BoxDecoration(border: Border(bottom: BorderSide(width: 3))),
-            ),
-            sub_total(total),
-            data_owner(vehicle_number, owner),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Container(
-                margin: EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Text(
-                              "Washers",
-                              style: TextStyle(
-                                fontSize: 25,
-                              ),
-                            ),
-                          ),
-                          // Expanded(
-                          //   flex: 1,
-                          //   child: Container(
-                          //     height: 50,
-                          //     child: Align(
-                          //       alignment: Alignment.topRight,
-                          //       child: Image.asset('assets/Plus.png'),
-                          //     ),
-                          //   ),
-                          // )
-                        ],
-                      ),
-                    ),
-                    wahser_list(washer_list),
-                    Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(top: 20),
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Pay",
-                            style: TextStyle(
-                              fontSize: 25,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 10),
-                          child: TextField(
-                            onChanged: (num) {
-                              setState(() {
-                                nominal = int.parse(num);
-
-                                print(nominal);
-                              });
-                            },
-                            keyboardType: TextInputType.number,
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.digitsOnly,
-                              // You can add more formatters if needed, for instance, to limit the length
-                              // LengthLimitingTextInputFormatter(5), // Allows only 5 characters
-                            ],
-                            decoration: InputDecoration(
-                              labelText: 'Nominal',
-                              hintText: 'Nominal',
-                              border: OutlineInputBorder(),
-                            ),
-                            // Additional properties and handlers for the TextField
-                          ),
-                        )
-                      ],
-                    ),
-                    pay_btn(data_recipe, context),
-                    Container(
-                      margin: EdgeInsets.only(top: 10),
-                      height: 50,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 205, 52, 52),
-                          borderRadius: BorderRadius.circular(4)),
-                      child: TextButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: Text("Delete"),
-                                content: Text("Are you sure to delete ?"),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () async {
-                                      Navigator.of(context)
-                                          .pop(); // Close the dialog
-
-                                      Map<String, dynamic>? send_req =
-                                          await req?.cancleOrder(id_order);
-
-                                      if (send_req?['status_code'] == 202) {
-                                        dialog("Success to delete order data",
-                                            "Success",
-                                            monitoring: "istrue");
-                                      } else {
-                                        dialog(send_req?['response'], "Failed");
-                                      }
-                                    },
-                                    child: Text('OK'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); // Close the dialog
-                                    },
-                                    child: Text('NO'),
-                                  )
-                                ],
-                              );
-                            },
-                          );
-                          // delete_order
-                        },
-                        child: Center(
-                          child: Text(
-                            "Cancle",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -665,48 +664,50 @@ class _PayOrderState extends State<PayOrder> {
                             ),
                           ),
                           Expanded(
-                            flex: 5,
-                            child: Row(
-                              children: [
-                                Visibility(
-                                  visible: plus_btn,
-                                  child: IconButton(
-                                    icon: Icon(Icons
-                                        .add_circle_outline), // Icon widget with the 'add' icon
-                                    onPressed: () async {
-                                      setState(() {
-                                        plus_btn = false;
-                                      });
-                                      dynamic payload = {
-                                        "id_service_list":
-                                            id_service_list.toInt()
-                                      };
-                                      var add_req =
-                                          await req?.addQtyServiceList(payload);
-                                      dbg(add_req);
-                                      if (add_req?['status_code'] == 202) {
-                                        setState(() {
-                                          order();
-                                        });
-                                      }
-                                      setState(() {
-                                        plus_btn = true;
-                                      });
-                                      // Handle button press
-                                      // Add your logic here
-                                    },
-                                  ),
-                                ),
-                                Text(
-                                  qty.toString(),
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
-                            ),
-                          ),
+                              flex: 5,
+                              child: canAccess(role, kasir: true)
+                                  ? Row(
+                                      children: [
+                                        Visibility(
+                                          visible: plus_btn,
+                                          child: IconButton(
+                                            icon: Icon(Icons
+                                                .add_circle_outline), // Icon widget with the 'add' icon
+                                            onPressed: () async {
+                                              setState(() {
+                                                plus_btn = false;
+                                              });
+                                              dynamic payload = {
+                                                "id_service_list":
+                                                    id_service_list.toInt()
+                                              };
+                                              var add_req = await req
+                                                  ?.addQtyServiceList(payload);
+                                              dbg(add_req);
+                                              if (add_req?['status_code'] ==
+                                                  202) {
+                                                setState(() {
+                                                  order();
+                                                });
+                                              }
+                                              setState(() {
+                                                plus_btn = true;
+                                              });
+                                              // Handle button press
+                                              // Add your logic here
+                                            },
+                                          ),
+                                        ),
+                                        Text(
+                                          qty.toString(),
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w500),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    )
+                                  : SizedBox.shrink()),
                           Expanded(
                             flex: 1,
                             child: SizedBox(

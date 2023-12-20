@@ -245,6 +245,12 @@ class _ReportState extends State<Report> {
                 color: Colors.blue, borderRadius: BorderRadius.circular(4)),
             child: TextButton(
               onPressed: () {
+                if (field_startdate == null || field_enddate == null) {
+                  show_dialog(context, "Field Require",
+                      "Start & End date cant be null");
+                  return;
+                }
+
                 setState(() {
                   payload['start_date'] = field_startdate.toString();
                   payload['end_date'] = field_enddate.toString();

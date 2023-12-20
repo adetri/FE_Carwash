@@ -10,6 +10,9 @@ class HorizontalDate extends StatefulWidget {
   }) {
     this.callback = callback;
   }
+
+  Map<String, dynamic> value = {};
+
   VoidCallback? callback;
 
   @override
@@ -43,6 +46,9 @@ class _HorizontalDateState extends State<HorizontalDate> {
       // Add more key-value pairs as needed
     };
 
+    widget.value['year'] = currentYear;
+    widget.value['month_str'] = monthName;
+    widget.value['month_int'] = currentMonth;
     // Appending the new map to the list
 
     date_list!.add(newData);
@@ -88,6 +94,10 @@ class _HorizontalDateState extends State<HorizontalDate> {
                   }
                 }
                 date_list[index]['isTapped'] = true;
+
+                widget.value['year'] = map['year'];
+                widget.value['month_str'] = map['month_str'];
+                widget.value['month_int'] = map['month_int'];
               });
             },
             child: Container(
@@ -130,11 +140,30 @@ class TestRunHorizontalDate extends StatefulWidget {
 
 class _TestRunHorizontalDateState extends State<TestRunHorizontalDate> {
   int counter = 0;
-
+  late HorizontalDate tgl;
   void test_strem() {
     setState(() {
       counter += 1;
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    init();
+  }
+
+  void init() async {
+    tgl = HorizontalDate(
+      callback: test_strem,
+    );
+    await tgl.value;
+
+    setState(() {
+      tgl.value = tgl.value;
+    });
+    dbg(tgl.value);
   }
 
   @override
@@ -143,8 +172,8 @@ class _TestRunHorizontalDateState extends State<TestRunHorizontalDate> {
       body: Center(
         child: Column(
           children: [
-            Container(child: HorizontalDate()),
-            Text(counter.toString())
+            Container(child: tgl),
+            tgl.value.isNotEmpty ? Text(counter.toString()) : Text("kososng")
           ],
         ),
       ),

@@ -2,6 +2,7 @@ import 'package:MrCarwash/env.dart';
 import 'package:MrCarwash/page/component/check_box.dart';
 import 'package:MrCarwash/page/component/horizontal_month_scroll.dart';
 import 'package:MrCarwash/page/login.dart';
+import 'package:MrCarwash/page/main_menu.dart';
 import 'package:MrCarwash/page/report/menu_report.dart';
 import 'package:MrCarwash/page/report/report.dart';
 import 'package:MrCarwash/page/report/report_chart.dart';
@@ -46,7 +47,7 @@ class StratAt extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: '',
-      home: ReportChart(),
+      home: Monitoring(),
     );
   }
 }

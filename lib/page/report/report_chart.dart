@@ -40,7 +40,9 @@ class _MyReportChartState extends State<MyReportChart> {
   List<_ChartData> data = [];
   TooltipBehavior? _tooltip;
   Req? req;
-  HorizontalDate tanggal = HorizontalDate();
+  late HorizontalDate tanggal;
+  bool is_visible = false;
+  bool ignore_date = true;
   Random random = Random();
   @override
   void initState() {
@@ -49,40 +51,71 @@ class _MyReportChartState extends State<MyReportChart> {
   }
 
   void init() async {
+    tanggal = HorizontalDate(
+      callback: change_date,
+    );
     dbg("object exec");
     req = Req(context);
     await req?.init();
-    Map<String, dynamic>? req_monthly_record = await req?.fetchChartReport();
+    change_date();
+  }
+
+  void change_date() async {
+    setState(() {
+      is_visible = false;
+      ignore_date = true;
+    });
+    await tanggal.value;
+    setState(() {
+      data = [];
+      tanggal.value;
+    });
+    dbg(tanggal.value);
+    Map<String, dynamic>? req_monthly_record = await req?.fetchChartReport(
+        tanggal.value['year'], tanggal.value['month_int']);
+
+    dbg(req_monthly_record);
     for (var req_month in req_monthly_record?['response']['monthly_recod']) {
-      dbg(req_month[0]);
-      dbg(req_month[1]);
+      // dbg(req_month[0]);
+      // dbg(req_month[1]);
 
       setState(() {
         data.add(_ChartData(req_month[0].toString(), (req_month[1])));
       });
     }
-    _tooltip = TooltipBehavior(enable: true);
+    if (req_monthly_record?['response'] == 200) {
+      setState(() {});
+    }
+    setState(() {
+      is_visible = true;
+      ignore_date = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        tanggal,
-        SfCartesianChart(
-          primaryXAxis: CategoryAxis(),
-          title: ChartTitle(text: "Monthly Sales"),
-          // primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
-          tooltipBehavior: _tooltip,
-          series: <ChartSeries<_ChartData, String>>[
-            ColumnSeries<_ChartData, String>(
-                dataSource: data,
-                xValueMapper: (_ChartData data, _) => data.x,
-                yValueMapper: (_ChartData data, _) => data.y.toDouble(),
-                name: 'Sales',
-                color: Color.fromRGBO(8, 142, 255, 1)),
-          ],
+        IgnorePointer(
+          ignoring: ignore_date,
+          child: tanggal,
         ),
+        is_visible == true
+            ? SfCartesianChart(
+                primaryXAxis: CategoryAxis(),
+                title: ChartTitle(text: "Monthly Sales"),
+                // primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
+                tooltipBehavior: TooltipBehavior(enable: true),
+                series: <ChartSeries<_ChartData, String>>[
+                  ColumnSeries<_ChartData, String>(
+                      dataSource: data,
+                      xValueMapper: (_ChartData data, _) => data.x,
+                      yValueMapper: (_ChartData data, _) => data.y.toDouble(),
+                      name: 'Sales',
+                      color: Color.fromRGBO(8, 142, 255, 1)),
+                ],
+              )
+            : SizedBox.shrink()
       ],
     );
   }
