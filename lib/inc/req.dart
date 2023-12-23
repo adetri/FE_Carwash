@@ -752,4 +752,21 @@ class Req {
       "response": req['response'],
     };
   }
+
+  Future<Map<String, dynamic>> Request(String url,
+      {String reqType = "get", payload}) async {
+    String endpoint = "${apiUrl}/${url}";
+    dynamic req;
+    if (reqType == "get") {
+      req = await get_req(endpoint);
+    } else {
+      req = await get_req(url, req_type: reqType, reqBody: payload);
+    }
+
+    return {
+      "status_code":
+          req['status_code'], // You can set a custom status code for failure
+      "response": req['response'],
+    };
+  }
 }

@@ -150,114 +150,120 @@ class _ReportState extends State<Report> {
             ),
           ),
           Padding(padding: EdgeInsets.only(top: 25)),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: TextField(
-                    controller:
-                        startdate, //editing controller of this TextField
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.calendar_today), //icon of text field
-                      labelText: "Start Date", //label text of field
-                      border: OutlineInputBorder(),
-                    ),
-                    readOnly:
-                        true, //set it true, so that user will not able to edit text
-                    onTap: () async {
-                      DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(
-                              2000), //DateTime.now() - not to allow to choose before today.
-                          lastDate: DateTime(2101));
-
-                      if (pickedDate != null) {
-                        print(
-                            pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
-                        String formattedDate =
-                            DateFormat('yyyy-MM-dd').format(pickedDate);
-                        print(
-                            formattedDate); //formatted date output using intl package =>  2021-03-16
-                        //you can implement different kind of Date Format here according to your requirement
-
-                        setState(() {
-                          startdate.text =
-                              formattedDate; //set output date to TextField value.
-                          field_startdate = formattedDate;
-                        });
-                      } else {
-                        print("Date is not selected");
-                      }
-                    },
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: TextField(
-                    controller: enddate, //editing controller of this TextField
-                    decoration: InputDecoration(
-                      icon: Icon(Icons.calendar_today), //icon of text field
-                      labelText: "End Date", //label text of field
-                      border: OutlineInputBorder(),
-                    ),
-                    readOnly:
-                        true, //set it true, so that user will not able to edit text
-                    onTap: () async {
-                      DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(
-                              2000), //DateTime.now() - not to allow to choose before today.
-                          lastDate: DateTime(2101));
-
-                      if (pickedDate != null) {
-                        print(
-                            pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
-                        String formattedDate =
-                            DateFormat('yyyy-MM-dd').format(pickedDate);
-                        print(
-                            formattedDate); //formatted date output using intl package =>  2021-03-16
-                        //you can implement different kind of Date Format here according to your requirement
-
-                        setState(() {
-                          enddate.text =
-                              formattedDate; //set output date to TextField value.
-                          field_enddate = formattedDate;
-                        });
-                      } else {
-                        print("Date is not selected");
-                      }
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
           Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-                color: Colors.blue, borderRadius: BorderRadius.circular(4)),
-            child: TextButton(
-              onPressed: () {
-                if (field_startdate == null || field_enddate == null) {
-                  show_dialog(context, "Field Require",
-                      "Start & End date cant be null");
-                  return;
-                }
+            padding: EdgeInsets.only(right: 10, left: 10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: TextField(
+                      controller:
+                          startdate, //editing controller of this TextField
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.calendar_today), //icon of text field
+                        labelText: "Start Date", //label text of field
+                        border: OutlineInputBorder(),
+                      ),
+                      readOnly:
+                          true, //set it true, so that user will not able to edit text
+                      onTap: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(
+                                2000), //DateTime.now() - not to allow to choose before today.
+                            lastDate: DateTime(2101));
 
-                setState(() {
-                  payload['start_date'] = field_startdate.toString();
-                  payload['end_date'] = field_enddate.toString();
-                });
-                orderReport();
-                print(payload);
-              },
+                        if (pickedDate != null) {
+                          print(
+                              pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+                          String formattedDate =
+                              DateFormat('yyyy-MM-dd').format(pickedDate);
+                          print(
+                              formattedDate); //formatted date output using intl package =>  2021-03-16
+                          //you can implement different kind of Date Format here according to your requirement
+
+                          setState(() {
+                            startdate.text =
+                                formattedDate; //set output date to TextField value.
+                            field_startdate = formattedDate;
+                          });
+                        } else {
+                          print("Date is not selected");
+                        }
+                      },
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: TextField(
+                      controller:
+                          enddate, //editing controller of this TextField
+                      decoration: InputDecoration(
+                        icon: Icon(Icons.calendar_today), //icon of text field
+                        labelText: "End Date", //label text of field
+                        border: OutlineInputBorder(),
+                      ),
+                      readOnly:
+                          true, //set it true, so that user will not able to edit text
+                      onTap: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(
+                                2000), //DateTime.now() - not to allow to choose before today.
+                            lastDate: DateTime(2101));
+
+                        if (pickedDate != null) {
+                          print(
+                              pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+                          String formattedDate =
+                              DateFormat('yyyy-MM-dd').format(pickedDate);
+                          print(
+                              formattedDate); //formatted date output using intl package =>  2021-03-16
+                          //you can implement different kind of Date Format here according to your requirement
+
+                          setState(() {
+                            enddate.text =
+                                formattedDate; //set output date to TextField value.
+                            field_enddate = formattedDate;
+                          });
+                        } else {
+                          print("Date is not selected");
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              if (field_startdate == null || field_enddate == null) {
+                show_dialog(
+                    context, "Field Require", "Start & End date cant be null");
+                return;
+              }
+
+              setState(() {
+                payload['start_date'] = field_startdate.toString();
+                payload['end_date'] = field_enddate.toString();
+              });
+              orderReport();
+              print(payload);
+            },
+            child: Container(
+              alignment: Alignment.center,
+
+              height: 50,
+              // margin: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  color: Colors.blue, borderRadius: BorderRadius.circular(4)),
               child: Text(
                 "Search",
                 style: TextStyle(color: Colors.white),

@@ -48,18 +48,17 @@ class _MainmenuState extends State<Mainmenu> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: load_page
-            ? Column(
-                children: [
-                  Expanded(
-                    flex: 5,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Image.asset('assets/logo.png'),
-                    ),
-                  ),
-                  Expanded(
-                      flex: 5,
-                      child: Wrap(
+            ? SingleChildScrollView(
+                child: Expanded(
+                  child: Column(
+                    children: [
+                      Container(
+                        height: HeighMediaQuery(
+                            context, 0.5), // Adjust the height as needed
+                        alignment: Alignment.center,
+                        child: Image.asset('assets/logo.png'),
+                      ),
+                      Wrap(
                         alignment: WrapAlignment.center,
                         spacing: 10,
                         runSpacing: 10,
@@ -223,8 +222,10 @@ class _MainmenuState extends State<Mainmenu> {
                             ),
                           ),
                         ],
-                      ))
-                ],
+                      ),
+                    ],
+                  ),
+                ),
               )
             : SizedBox.shrink());
   }

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:MrCarwash/page/component/radio_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:MrCarwash/inc/method.dart';
 import 'package:MrCarwash/inc/req.dart';
@@ -24,11 +25,14 @@ class PayOrder extends StatefulWidget {
 }
 
 class _PayOrderState extends State<PayOrder> {
+  RadioBtn? paymentMethod;
   dynamic d_order;
   dynamic paylod = {};
   BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
   Req? req;
   dynamic data_outlet;
+  List<Map<String, dynamic>> payment_method = [];
+
   @override
   void initState() {
     super.initState();
@@ -36,20 +40,47 @@ class _PayOrderState extends State<PayOrder> {
     init();
   }
 
+  List<Map<String, dynamic>> testdata = [
+    {"name": "test 2", "value": 2},
+    {"name": "test 1", "value": 1}
+  ];
   bool load_page = false;
   Map<String, dynamic>? role;
   String? karyawan_name;
+
   void init() async {
     req = Req(context);
     await req?.init();
     var req_role = await req?.getRole();
-
+    var req_payment_method = await req?.Request("order/get-payment-method");
     karyawan_name = req?.karyawan_name;
-    order();
+    List<dynamic> raw_payment_method =
+        req_payment_method?['response']['payment_method'];
+
+    setState(() {
+      for (var item in raw_payment_method) {
+        Map<String, dynamic> data = {};
+        data['name'] = item['name'];
+        data['value'] = item['id'];
+        data['is_cash'] = item['is_cash'];
+
+        payment_method.add(data);
+      }
+      paymentMethod = RadioBtn(
+        tittle: "Payment Method",
+        data: payment_method,
+        def_value: payment_method[0],
+      );
+
+      paymentMethod?.value = payment_method[0];
+      dbg("this debug value  12312 31 ${paymentMethod?.value}");
+    });
+
     setState(() {
       role = req_role?['response'];
       load_page = true;
     });
+    order();
   }
 
   void order() async {
@@ -310,6 +341,7 @@ class _PayOrderState extends State<PayOrder> {
                                   textAlign: TextAlign.left,
                                 ),
                               ),
+                              paymentMethod!,
                               Container(
                                 margin: EdgeInsets.only(top: 10),
                                 child: TextField(
@@ -338,6 +370,75 @@ class _PayOrderState extends State<PayOrder> {
                           ),
                           canAccess(role, kasir: true)
                               ? pay_btn(data_recipe, context)
+                              : SizedBox.shrink(),
+                          canAccess(role, kasir: true)
+                              ? Container(
+                                  margin: EdgeInsets.only(top: 10),
+                                  height: 50,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                      color: Color.fromARGB(255, 205, 52, 52),
+                                      borderRadius: BorderRadius.circular(4)),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text("Delete"),
+                                            content: Text(
+                                                "Are you sure to delete ?"),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                onPressed: () async {
+                                                  Navigator.of(context)
+                                                      .pop(); // Close the dialog
+
+                                                  Map<String, dynamic>?
+                                                      send_req =
+                                                      await req?.cancleOrder(
+                                                          id_order);
+
+                                                  if (send_req?[
+                                                          'status_code'] ==
+                                                      202) {
+                                                    dialog(
+                                                        "Success to delete order data",
+                                                        "Success",
+                                                        monitoring: "istrue");
+                                                  } else {
+                                                    dialog(
+                                                        send_req?['response'],
+                                                        "Failed");
+                                                  }
+                                                },
+                                                child: Text('OK'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context)
+                                                      .pop(); // Close the dialog
+                                                },
+                                                child: Text('NO'),
+                                              )
+                                            ],
+                                          );
+                                        },
+                                      );
+                                      // delete_order
+                                    },
+                                    child: Center(
+                                      child: Text(
+                                        "Cancle",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                )
                               : SizedBox.shrink(),
                           canAccess(role, management: true)
                               ? Container(

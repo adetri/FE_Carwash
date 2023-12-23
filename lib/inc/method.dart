@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:MrCarwash/env.dart';
+import 'package:MrCarwash/page/checking.dart';
 import 'package:MrCarwash/page/login.dart';
 import 'package:MrCarwash/page/main_menu.dart';
 import 'package:intl/intl.dart';
@@ -148,6 +151,10 @@ void nav_to(BuildContext context, page) {
   );
 }
 
+void closeApp() {
+  exit(0);
+}
+
 void req_validation(BuildContext context, status_code) {
   if (status_code == 401) {
     MyDialogHelper.title = "";
@@ -157,10 +164,31 @@ void req_validation(BuildContext context, status_code) {
   }
 }
 
+double HeighMediaQuery(BuildContext context, double ascpect) {
+  var height = MediaQuery.of(context).size.height * ascpect;
+
+  return height;
+}
+
+double WidthMediaQuery(BuildContext context, double ascpect) {
+  var width = MediaQuery.of(context).size.width * ascpect;
+
+  return width;
+}
+
+void logic_dialog(BuildContext context,
+    {String? title, String? content, dynamic page, void Function()? logic}) {
+  MyConfrimDialog.title = title;
+  MyConfrimDialog.content = content;
+  MyConfrimDialog.page = page;
+  MyConfrimDialog.logic = logic;
+  MyConfrimDialog.showDialogMethod(context);
+}
+
 void request_failed(BuildContext context, e) {
   MyDialogHelper.title = "Request Error";
   MyDialogHelper.content = e;
-  MyDialogHelper.page = Login();
+  MyDialogHelper.page = CheckingPage();
   MyDialogHelper.showDialogMethod(context);
 }
 
