@@ -125,7 +125,7 @@ class _MonitoringState extends State<Monitoring> {
                                     child: Text(
                                       'Monitoring',
                                       style: TextStyle(
-                                        fontSize: 40,
+                                        fontSize: 28,
                                         fontWeight: FontWeight.bold,
                                       ),
                                       textAlign: TextAlign
@@ -138,7 +138,7 @@ class _MonitoringState extends State<Monitoring> {
                                       child: Text(
                                         nama_karyawan.toString(),
                                         style: TextStyle(
-                                          fontSize: 25,
+                                          fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                         ),
                                         textAlign: TextAlign
@@ -201,66 +201,58 @@ class _MonitoringState extends State<Monitoring> {
                                           }
                                         },
                                         child: Container(
-                                          width: 250,
-                                          height: 200,
+                                          width: 150,
+                                          height: 150,
                                           color: color,
                                           padding: const EdgeInsets.all(10.0),
                                           child: Column(
                                             children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  Text('$name',
-                                                      style: const TextStyle(
-                                                          fontSize: 30,
-                                                          fontWeight: FontWeight
-                                                              .bold)), // Display ID with bold style
-                                                ],
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Text('$owner',
-                                                      style: const TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight: FontWeight
-                                                              .bold)), // Display ID with bold style
-                                                ],
-                                              ),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
-                                                  Text('$number',
-                                                      style: const TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight: FontWeight
-                                                              .bold)), // Display ID with bold style
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Column(
-                                                    children: [
-                                                      Container(
-                                                        margin: const EdgeInsets
-                                                            .only(
-                                                            left: 50, top: 60),
-                                                        // Adds margin to the left of the child
-                                                      ),
-                                                      Text(
-                                                        '${status ? 'Use' : 'Availble'}',
-                                                        style: const TextStyle(
-                                                            fontSize: 20,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                    ],
+                                              Container(
+                                                alignment: Alignment.topRight,
+                                                child: Text(
+                                                  '$name',
+                                                  style: const TextStyle(
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ), // Display ID with bold style
+                                              Container(
+                                                alignment: Alignment.topLeft,
+                                                child: Text(
+                                                  '$owner',
+                                                  style: const TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ), // Display ID with bold style
+
+                                              // ),
+                                              Container(
+                                                alignment: Alignment.topLeft,
+                                                child: Text(
+                                                  '$number',
+                                                  style: const TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ), // Display ID with bold style
+
+                                              Expanded(
+                                                child: Container(
+                                                  height: 20,
+                                                  alignment:
+                                                      Alignment.bottomLeft,
+                                                  child: Text(
+                                                    '${status ? 'Use' : 'Availble'}',
+                                                    style: const TextStyle(
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.bold),
                                                   ),
-                                                ],
+                                                ),
                                               ),
                                             ],
                                           ),

@@ -78,20 +78,32 @@ class _MainmenuState extends State<Mainmenu> {
                               child: Container(
                                 padding: EdgeInsets.all(10),
                                 alignment: Alignment.center,
-                                height: 200,
-                                width: 200,
+                                height: 150,
+                                width: 150,
                                 decoration: BoxDecoration(
                                   color:
                                       const Color.fromARGB(255, 207, 204, 203),
                                 ),
                                 child: Column(
                                   children: [
-                                    Image.asset('assets/washservice.png'),
-                                    Padding(padding: EdgeInsets.only(top: 10)),
-                                    Text(
-                                      "Wash Service",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600),
+                                    Expanded(
+                                      child: Center(
+                                        child: Image.asset(
+                                            'assets/washservice.png'),
+                                      ),
+                                    ),
+
+                                    // Padding(padding: EdgeInsets.only(top: 10)),
+
+                                    Container(
+                                      alignment: Alignment.bottomCenter,
+                                      height: 20,
+                                      child: Text(
+                                        "Wash Service",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 12),
+                                      ),
                                     )
                                   ],
                                 ),
@@ -116,22 +128,29 @@ class _MainmenuState extends State<Mainmenu> {
                                     child: Container(
                                       padding: EdgeInsets.all(10),
                                       alignment: Alignment.center,
-                                      height: 200,
-                                      width: 200,
+                                      height: 150,
+                                      width: 150,
                                       decoration: BoxDecoration(
                                         color: const Color.fromARGB(
                                             255, 207, 204, 203),
                                       ),
                                       child: Column(
                                         children: [
-                                          Image.asset('assets/report.png'),
-                                          Padding(
-                                              padding:
-                                                  EdgeInsets.only(top: 10)),
-                                          Text(
-                                            "Report",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600),
+                                          Expanded(
+                                            child: Center(
+                                              child: Image.asset(
+                                                  'assets/report.png'),
+                                            ),
+                                          ),
+                                          Container(
+                                            alignment: Alignment.bottomCenter,
+                                            height: 20,
+                                            child: Text(
+                                              "Report",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12),
+                                            ),
                                           )
                                         ],
                                       ),
@@ -157,8 +176,8 @@ class _MainmenuState extends State<Mainmenu> {
                                     },
                                     child: Container(
                                       alignment: Alignment.center,
-                                      height: 200,
-                                      width: 200,
+                                      height: 150,
+                                      width: 150,
                                       padding: EdgeInsets.all(10),
                                       decoration: BoxDecoration(
                                         color: const Color.fromARGB(
@@ -166,15 +185,22 @@ class _MainmenuState extends State<Mainmenu> {
                                       ),
                                       child: Column(
                                         children: [
-                                          Image.asset('assets/setting.png'),
-                                          Padding(
-                                              padding:
-                                                  EdgeInsets.only(top: 10)),
-                                          Text(
-                                            "Setting",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600),
-                                          )
+                                          Expanded(
+                                            child: Center(
+                                              child: Image.asset(
+                                                  'assets/setting.png'),
+                                            ),
+                                          ),
+                                          Container(
+                                            alignment: Alignment.bottomCenter,
+                                            height: 20,
+                                            child: Text(
+                                              "Setting",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -196,8 +222,8 @@ class _MainmenuState extends State<Mainmenu> {
                               },
                               child: Container(
                                 alignment: Alignment.center,
-                                height: 200,
-                                width: 200,
+                                height: 150,
+                                width: 150,
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
                                   color:
@@ -205,17 +231,23 @@ class _MainmenuState extends State<Mainmenu> {
                                 ),
                                 child: Column(
                                   children: [
-                                    Image.asset(
-                                      'assets/setting.png',
-                                      height: 100,
-                                      width: 100,
+                                    Expanded(
+                                      child: Center(
+                                        child: Image.asset(
+                                          'assets/setting.png',
+                                        ),
+                                      ),
                                     ),
-                                    Padding(padding: EdgeInsets.only(top: 10)),
-                                    Text(
-                                      "Log Out",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600),
-                                    )
+                                    Container(
+                                      height: 20,
+                                      alignment: Alignment.bottomCenter,
+                                      child: Text(
+                                        "Log Out",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 12),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),

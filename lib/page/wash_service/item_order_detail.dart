@@ -133,24 +133,40 @@ class _ItemDetailState extends State<ItemDetail> {
           SingleChildScrollView(
               child: Column(
             children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Preorder(
-                        data1: requestBody,
-                        spot_id: widget.spot_id,
-                        id_order: widget.id_order,
-                      ), // Ensure you pass 'data' as a named parameter
+              Container(
+                margin: EdgeInsets.only(top: 50),
+                height: 50,
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Preorder(
+                              data1: requestBody,
+                              spot_id: widget.spot_id,
+                              id_order: widget.id_order,
+                            ), // Ensure you pass 'data' as a named parameter
+                          ),
+                        );
+                      },
+                      child: Container(
+                        alignment: Alignment.topLeft,
+                        child: Image.asset('assets/back.png'),
+                      ),
                     ),
-                  );
-                },
-                child: Container(
-                  margin: EdgeInsets.only(top: 50),
-                  height: 50,
-                  alignment: Alignment.topLeft,
-                  child: Image.asset('assets/back.png'),
+                    Container(
+                      child: Text(
+                        'Item Detail',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.left, // Apply bold font weight
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Container(
@@ -187,22 +203,20 @@ class _ItemDetailState extends State<ItemDetail> {
                             ),
                           ),
                         ),
-                        Expanded(
-                          flex: 10,
-                          child: Container(
-                            padding: EdgeInsets.all(15),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                item != null &&
-                                        item['mainitem'] != null &&
-                                        item['mainitem']['img'] != null
-                                    ? item['mainitem']['name'].toUpperCase()
-                                    : "Text Not Fond",
-                                style: TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                        Container(
+                          height: 40,
+                          padding: EdgeInsets.all(15),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              item != null &&
+                                      item['mainitem'] != null &&
+                                      item['mainitem']['img'] != null
+                                  ? item['mainitem']['name'].toUpperCase()
+                                  : "Text Not Fond",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),

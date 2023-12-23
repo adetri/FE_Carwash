@@ -230,7 +230,7 @@ class _PreorderState extends State<Preorder> {
                                   child: Text(
                                     'Wash Services',
                                     style: TextStyle(
-                                        fontSize: 40,
+                                        fontSize: 28,
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ),
@@ -244,7 +244,7 @@ class _PreorderState extends State<Preorder> {
                                     child: Text(
                                       karyawan_name.toString(),
                                       style: TextStyle(
-                                          fontSize: 25,
+                                          fontSize: 18,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
@@ -261,63 +261,59 @@ class _PreorderState extends State<Preorder> {
                             child: Text(
                               'Category',
                               style: TextStyle(
-                                  fontSize: 25, fontWeight: FontWeight.bold),
+                                  fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 25.0,
-                              top: 20,
-                              bottom: 15), // Adjust the padding as needed
-                          child: Wrap(
-                            alignment: WrapAlignment.center,
-                            spacing: 75,
-                            runSpacing: 20,
-                            children:
-                                (category != null ? category['category'] : [])
-                                    .map<Widget>((category) {
-                              final categoryName = category['name'];
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10.0,
+                                top: 10,
+                                bottom: 10), // Adjust the padding as needed
+                            child: Wrap(
+                              alignment: WrapAlignment.spaceAround,
+                              spacing: 20,
+                              runSpacing: 10,
+                              children:
+                                  (category != null ? category['category'] : [])
+                                      .map<Widget>((category) {
+                                final categoryName = category['name'];
 
-                              final categoryImage = host! + category['img'];
-                              final categoryId = category['id'];
+                                final categoryImage = host! + category['img'];
+                                final categoryId = category['id'];
 
-                              return GestureDetector(
-                                onTap: () async {
-                                  requestBody['search']?['category'] =
-                                      categoryId;
+                                return GestureDetector(
+                                  onTap: () async {
+                                    requestBody['search']?['category'] =
+                                        categoryId;
 
-                                  Map<String, dynamic> req_item = await req!
-                                      .itemData(requestBody, customHeaders);
-                                  setState(() {
-                                    if (req_item['status_code'] != 200) {
-                                      ModalDialog(context);
-                                    } else {
-                                      item = req_item['response'];
-                                    }
-                                  });
-                                  // Future<int> req_item =
-                                  //     itemdata(requestBody, customHeaders);
-                                  // req.then((value) {
-                                  //   if (value != 200) {
-                                  //     ModalDialog(context);
-                                  //   }
-                                  // });
-                                },
-                                child: Container(
-                                  width: 85,
-                                  height: 75,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: NetworkImage(categoryImage),
-                                      fit: BoxFit.fill,
+                                    Map<String, dynamic> req_item = await req!
+                                        .itemData(requestBody, customHeaders);
+                                    setState(() {
+                                      if (req_item['status_code'] != 200) {
+                                        ModalDialog(context);
+                                      } else {
+                                        item = req_item['response'];
+                                      }
+                                    });
+                                  },
+                                  child: Container(
+                                    width: 55,
+                                    height: 55,
+                                    decoration: BoxDecoration(
+                                      // color: Colors.amber,
+                                      image: DecorationImage(
+                                        image: NetworkImage(categoryImage),
+                                        fit: BoxFit.fill,
+                                      ),
+                                      borderRadius: BorderRadius.circular(
+                                          10.0), // Adjust the radius as needed
                                     ),
-                                    borderRadius: BorderRadius.circular(
-                                        10.0), // Adjust the radius as needed
                                   ),
-                                ),
-                              );
-                            }).toList(),
+                                );
+                              }).toList(),
+                            ),
                           ),
                         ),
                         const Padding(
@@ -328,7 +324,7 @@ class _PreorderState extends State<Preorder> {
                             child: Text(
                               'Services',
                               style: TextStyle(
-                                  fontSize: 25, fontWeight: FontWeight.bold),
+                                  fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
@@ -363,26 +359,29 @@ class _PreorderState extends State<Preorder> {
                                         "list_item": list_item
                                       };
                                       print(widget.id_order);
-                                      setState(() {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
+                                      setState(
+                                        () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
                                               builder: (context) => ItemDetail(
                                                   data1: payload,
                                                   spot_id: widget.spot_id,
-                                                  id_order: widget.id_order)),
-                                        );
-                                      });
+                                                  id_order: widget.id_order),
+                                            ),
+                                          );
+                                        },
+                                      );
                                     },
                                     child: Container(
-                                      width: 220,
-                                      height: 300,
+                                      width: 150,
+                                      height: 200,
                                       color: const Color.fromARGB(
                                           255, 207, 204, 203),
                                       child: Column(
                                         children: [
                                           Expanded(
-                                            flex: 4,
+                                            flex: 3,
                                             child: Container(
                                               color: Colors.red,
                                               child: Center(
@@ -395,32 +394,31 @@ class _PreorderState extends State<Preorder> {
                                               ),
                                             ),
                                           ),
-                                          Expanded(
-                                            flex: 2,
-                                            child: Container(
-                                              padding: EdgeInsets.all(8),
-                                              child: Align(
-                                                alignment: Alignment.topLeft,
-                                                child: Text(
-                                                  itemName,
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
+                                          Container(
+                                            height: 50,
+                                            alignment: Alignment.topLeft,
+                                            padding: EdgeInsets.all(8),
+                                            child: Align(
+                                              alignment: Alignment.topLeft,
+                                              child: Text(
+                                                itemName,
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
                                                 ),
                                               ),
                                             ),
                                           ),
                                           Expanded(
-                                            flex: 1,
                                             child: Container(
+                                              alignment: Alignment.bottomLeft,
                                               padding: EdgeInsets.all(8),
                                               child: Align(
                                                 alignment: Alignment.topLeft,
                                                 child: Text(
                                                   itemPrice,
                                                   style: TextStyle(
-                                                    fontSize: 20,
+                                                    fontSize: 15,
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
