@@ -85,186 +85,191 @@ class _MonitoringState extends State<Monitoring> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: load_page == false
-            ? SizedBox.shrink()
-            : SingleChildScrollView(
-                child: Column(
+      body: load_page == false
+          ? SizedBox.shrink()
+          : SingleChildScrollView(
+              child: Column(
                 children: [
                   Center(
-                      child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            top: 19.0), // Adjust the padding as needed
-                        child: Column(
-                          children: [
-                            Container(
-                              width: double.infinity,
-                              margin: EdgeInsets.only(
-                                  top: 50, bottom: 20, right: 50),
-                              child: Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        print("tab this");
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => Mainmenu()),
-                                        );
-                                      });
-                                    },
-                                    child: Container(
-                                      height: 50,
-                                      alignment: Alignment.topLeft,
-                                      child: Image.asset('assets/back.png'),
-                                    ),
-                                  ),
-                                  Container(
-                                    child: Text(
-                                      'Monitoring',
-                                      style: TextStyle(
-                                        fontSize: 28,
-                                        fontWeight: FontWeight.bold,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 19.0), // Adjust the padding as needed
+                          child: Column(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                margin: EdgeInsets.only(
+                                    top: 50, bottom: 20, right: 50),
+                                child: Row(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          print("tab this");
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Mainmenu()),
+                                          );
+                                        });
+                                      },
+                                      child: Container(
+                                        height: 50,
+                                        alignment: Alignment.topLeft,
+                                        child: Image.asset('assets/back.png'),
                                       ),
-                                      textAlign: TextAlign
-                                          .left, // Apply bold font weight
                                     ),
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      alignment: Alignment.bottomRight,
+                                    Container(
                                       child: Text(
-                                        nama_karyawan.toString(),
+                                        'Monitoring',
                                         style: TextStyle(
-                                          fontSize: 18,
+                                          fontSize: 28,
                                           fontWeight: FontWeight.bold,
                                         ),
                                         textAlign: TextAlign
-                                            .right, // Apply bold font weight
+                                            .left, // Apply bold font weight
                                       ),
                                     ),
-                                  )
-                                ],
+                                    Expanded(
+                                      child: Container(
+                                        alignment: Alignment.bottomRight,
+                                        child: Text(
+                                          nama_karyawan.toString(),
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          textAlign: TextAlign
+                                              .right, // Apply bold font weight
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                            Wrap(
-                              alignment: WrapAlignment.center,
-                              spacing: 10,
-                              runSpacing: 10,
-                              children:
-                                  (jsonData1 ?? const {'spot': []})['spot']
-                                      .map<Widget>((spot) {
-                                final int id = spot['id'];
-                                final name = spot['name'];
-                                final status = spot['status'];
-                                final color = status
-                                    ? const Color.fromARGB(255, 94, 207, 98)
-                                    : const Color.fromARGB(255, 207, 204, 203);
-                                final owner = spot['vehicle_owner'] ?? "";
-                                final number = spot['vehicle_number'] ?? "";
-                                final order = spot['order'] ?? "";
+                              Wrap(
+                                alignment: WrapAlignment.center,
+                                spacing: 10,
+                                runSpacing: 10,
+                                children:
+                                    (jsonData1 ?? const {'spot': []})['spot']
+                                        .map<Widget>((spot) {
+                                  final int id = spot['id'];
+                                  final name = spot['name'];
+                                  final status = spot['status'];
+                                  final color = status
+                                      ? const Color.fromARGB(255, 94, 207, 98)
+                                      : const Color.fromARGB(
+                                          255, 207, 204, 203);
+                                  final owner = spot['vehicle_owner'] ?? "";
+                                  final number = spot['vehicle_number'] ?? "";
+                                  final order = spot['order'] ?? "";
 
-                                return ClipRRect(
-                                    borderRadius: BorderRadius.circular(16.0),
-                                    child: GestureDetector(
-                                        onTap: () {
-                                          if (status) {
-                                            // Execute code when status is true
-                                            print(
-                                                'Containdasdasder tapped with true status - $order');
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      PayOrder(
-                                                          id_order: order)),
-                                            );
-                                            // Add other actions for true status here
-                                          } else {
-                                            canAccess(role, kasir: true)
-                                                ? Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          Preorder(
-                                                        spot_id: id,
+                                  return ClipRRect(
+                                      borderRadius: BorderRadius.circular(16.0),
+                                      child: GestureDetector(
+                                          onTap: () {
+                                            if (status) {
+                                              // Execute code when status is true
+                                              print(
+                                                  'Containdasdasder tapped with true status - $order');
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        PayOrder(
+                                                            id_order: order)),
+                                              );
+                                              // Add other actions for true status here
+                                            } else {
+                                              canAccess(role, kasir: true)
+                                                  ? Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            Preorder(
+                                                          spot_id: id,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  )
-                                                : dbg("not ath");
+                                                    )
+                                                  : dbg("not ath");
 
-                                            // Execute code when status is false
+                                              // Execute code when status is false
 
-                                            // Add other actions for false status here
-                                          }
-                                        },
-                                        child: Container(
-                                          width: 150,
-                                          height: 150,
-                                          color: color,
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                alignment: Alignment.topRight,
-                                                child: Text(
-                                                  '$name',
-                                                  style: const TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ), // Display ID with bold style
-                                              Container(
-                                                alignment: Alignment.topLeft,
-                                                child: Text(
-                                                  '$owner',
-                                                  style: const TextStyle(
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ), // Display ID with bold style
-
-                                              // ),
-                                              Container(
-                                                alignment: Alignment.topLeft,
-                                                child: Text(
-                                                  '$number',
-                                                  style: const TextStyle(
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ), // Display ID with bold style
-
-                                              Expanded(
-                                                child: Container(
-                                                  height: 20,
-                                                  alignment:
-                                                      Alignment.bottomLeft,
+                                              // Add other actions for false status here
+                                            }
+                                          },
+                                          child: Container(
+                                            width: 150,
+                                            height: 150,
+                                            color: color,
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                  alignment: Alignment.topRight,
                                                   child: Text(
-                                                    '${status ? 'Use' : 'Availble'}',
+                                                    '$name',
+                                                    style: const TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ), // Display ID with bold style
+                                                Container(
+                                                  alignment: Alignment.topLeft,
+                                                  child: Text(
+                                                    '$owner',
                                                     style: const TextStyle(
                                                         fontSize: 15,
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
+                                                ), // Display ID with bold style
+
+                                                // ),
+                                                Container(
+                                                  alignment: Alignment.topLeft,
+                                                  child: Text(
+                                                    '$number',
+                                                    style: const TextStyle(
+                                                        fontSize: 15,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                ), // Display ID with bold style
+
+                                                Expanded(
+                                                  child: Container(
+                                                    height: 20,
+                                                    alignment:
+                                                        Alignment.bottomLeft,
+                                                    child: Text(
+                                                      '${status ? 'Use' : 'Availble'}',
+                                                      style: const TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        )));
-                              }).toList(),
-                            ),
-                          ],
+                                              ],
+                                            ),
+                                          )));
+                                }).toList(),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  )),
+                      ],
+                    ),
+                  ),
                 ],
-              )));
+              ),
+            ),
+    );
   }
 }

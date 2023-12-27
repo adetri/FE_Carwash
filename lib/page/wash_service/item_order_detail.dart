@@ -186,7 +186,7 @@ class _ItemDetailState extends State<ItemDetail> {
                     child: Column(
                       children: [
                         Expanded(
-                          flex: 50,
+                          flex: 5,
                           child: Container(
                             color: Colors.red,
                             child: Center(
@@ -204,7 +204,6 @@ class _ItemDetailState extends State<ItemDetail> {
                           ),
                         ),
                         Container(
-                          height: 40,
                           padding: EdgeInsets.all(15),
                           child: Align(
                             alignment: Alignment.topLeft,
@@ -221,249 +220,283 @@ class _ItemDetailState extends State<ItemDetail> {
                             ),
                           ),
                         ),
-                        Expanded(
-                          flex: 10,
-                          child: Container(
-                            padding: EdgeInsets.all(15),
-                            child: Align(
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                item != null &&
-                                        item['mainitem'] != null &&
-                                        item['mainitem']['img'] != null
-                                    ? formatCurrency(item['mainitem']['price'])
-                                        .toString()
-                                    : "Text Not Fond",
-                                style: TextStyle(
+                        Container(
+                          padding: EdgeInsets.all(15),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              item != null &&
+                                      item['mainitem'] != null &&
+                                      item['mainitem']['img'] != null
+                                  ? formatCurrency(item['mainitem']['price'])
+                                      .toString()
+                                  : "Text Not Fond",
+                              style: TextStyle(
                                   color: const Color.fromARGB(255, 0, 117, 213),
-                                  fontSize: 30,
-                                ),
-                              ),
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
-                        Expanded(
-                          flex: 20,
-                          child: Container(
-                            padding: EdgeInsets.all(15),
-                            child: Column(
-                              children: [
-                                Align(
-                                  alignment: Alignment.topLeft,
+                        Container(
+                          // color: Colors.amber,
+                          margin: EdgeInsets.only(left: 10),
+                          child: Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    qty += 1;
+                                  });
+                                },
+                                child: Container(
+                                  height: 30,
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Image.asset('assets/Plus.png'),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                height: 60,
+                                margin: EdgeInsets.only(left: 10, right: 10),
+                                child: Align(
+                                  alignment: Alignment.center,
                                   child: Text(
-                                    "Sub Services",
+                                    qty.toString(),
                                     style: TextStyle(
-                                      fontSize: 25,
+                                      color: Colors.black,
+                                      fontSize: 24,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Container(
-                                    child: Row(
-                                        children: List<Widget>.generate(
-                                            (item != null
-                                                ? item['mainitem']['sub_item']
-                                                    .length
-                                                : 0), (int index) {
-                                      final subItem =
-                                          item['mainitem']['sub_item'][index];
-                                      var containerColor =
-                                          subItem['containerColor'] ??
-                                              Colors.white;
-
-                                      return GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              sub_itm_id = subItem['id'];
-                                              sub_item_price = subItem['price'];
-                                              sub_item_name = subItem['name'];
-                                              print(sub_item_name);
-                                              changeColor(index);
-                                            });
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.all(10),
-                                            margin: EdgeInsets.all(5),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
-                                              color: containerColor,
-                                              border: Border.all(
-                                                width: 1.0,
-                                              ),
-                                            ),
-                                            child: Text(
-                                              subItem['name'] +
-                                                  " (" +
-                                                  formatCurrency(
-                                                          subItem['price'])
-                                                      .toString() +
-                                                  ")", // Access the name from the subItem dictionary
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ));
-                                    })),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    if (qty > 0) {
+                                      qty -= 1;
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  height: 30,
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Image.asset('assets/Minus.png'),
                                   ),
-                                )
-                              ],
-                            ),
+                                ),
+                              ),
+                              Spacer(),
+                              Container(
+                                alignment: Alignment.centerRight,
+                                // width: 100,
+                                // color: Colors.blueGrey,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    final list_item = {
+                                      "item_id": item['mainitem']['id'],
+                                      "qty": qty,
+                                      "price": item['mainitem']['price'],
+                                      "name": item['mainitem']['name'],
+                                    };
+
+                                    if (sub_itm_id > 0) {
+                                      list_item['sub_item'] = [];
+                                      list_item['sub_item'].add({
+                                        "sub_item_id": sub_itm_id,
+                                        "price": sub_item_price,
+                                        "name": sub_item_name
+                                      });
+                                    }
+
+                                    requestBody.add(list_item);
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Preorder(
+                                          data1: requestBody,
+                                          spot_id: widget.spot_id,
+                                          id_order: widget.id_order,
+                                        ), // Ensure you pass 'data' as a named parameter
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      color: Colors.blue,
+                                    ),
+                                    padding: EdgeInsets.all(15),
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "ADD",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        Expanded(
-                          flex: 13,
-                          child: Align(
-                              alignment: Alignment.center,
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          qty += 1;
-                                        });
-                                      },
-                                      child: Expanded(
-                                        flex: 1,
-                                        child: Container(
-                                          height: 50,
-                                          child: Align(
-                                            alignment: Alignment.center,
-                                            child:
-                                                Image.asset('assets/Plus.png'),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                      flex: 2,
-                                      child: Container(
-                                        height: 100,
-                                        margin: EdgeInsets.all(20),
-                                        padding: EdgeInsets.all(15),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            qty.toString(),
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 40,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      )),
-                                  Expanded(
-                                    flex: 1,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (qty > 0) {
-                                            qty -= 1;
-                                          }
-                                        });
-                                      },
-                                      child: Expanded(
-                                        flex: 1,
-                                        child: Container(
-                                          height: 50,
-                                          child: Align(
-                                            alignment: Alignment.center,
-                                            child:
-                                                Image.asset('assets/Minus.png'),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                        // Expanded(
+                        //   flex: 13,
+                        //   child: Align(
+                        //     alignment: Alignment.center,
+                        //     child: Row(
+                        //       children: [
+                        //         Expanded(
+                        //           flex: 1,
+                        //           child: GestureDetector(
+                        //             onTap: () {
+                        //               setState(() {
+                        //                 qty += 1;
+                        //               });
+                        //             },
+                        //             child: Expanded(
+                        //               flex: 1,
+                        //               child: Container(
+                        //                 height: 50,
+                        //                 child: Align(
+                        //                   alignment: Alignment.center,
+                        //                   child: Image.asset('assets/Plus.png'),
+                        //                 ),
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         ),
+                        //         Expanded(
+                        //             flex: 2,
+                        //             child: Container(
+                        //               height: 100,
+                        //               margin: EdgeInsets.all(20),
+                        //               padding: EdgeInsets.all(15),
+                        //               child: Align(
+                        //                 alignment: Alignment.center,
+                        //                 child: Text(
+                        //                   qty.toString(),
+                        //                   style: TextStyle(
+                        //                     color: Colors.black,
+                        //                     fontSize: 40,
+                        //                     fontWeight: FontWeight.bold,
+                        //                   ),
+                        //                 ),
+                        //               ),
+                        //             )),
+                        //         Expanded(
+                        //           flex: 1,
+                        //           child: GestureDetector(
+                        //             onTap: () {
+                        //               setState(() {
+                        //                 if (qty > 0) {
+                        //                   qty -= 1;
+                        //                 }
+                        //               });
+                        //             },
+                        //             child: Expanded(
+                        //               flex: 1,
+                        //               child: Container(
+                        //                 height: 50,
+                        //                 child: Align(
+                        //                   alignment: Alignment.center,
+                        //                   child:
+                        //                       Image.asset('assets/Minus.png'),
+                        //                 ),
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         ),
 
-                                  // Transform.translate(
-                                  //   offset: Offset(0.0, MediaQuery.of(context).size.height - 200),
-                                  //   child: Container(
-                                  //     margin: EdgeInsets.all(20),
-                                  //     alignment: Alignment.center,
-                                  //     decoration: BoxDecoration(
-                                  //       borderRadius: BorderRadius.circular(10.0),
-                                  //       color: Colors.blue,
-                                  //     ),
-                                  //     height: 50,
-                                  //     width: double.infinity,
-                                  //     child: Align(
-                                  //       alignment: Alignment.center,
-                                  //       child: Text(
-                                  //         "Add Order",
-                                  //         style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  // )
+                        //         // Transform.translate(
+                        //         //   offset: Offset(0.0, MediaQuery.of(context).size.height - 200),
+                        //         //   child: Container(
+                        //         //     margin: EdgeInsets.all(20),
+                        //         //     alignment: Alignment.center,
+                        //         //     decoration: BoxDecoration(
+                        //         //       borderRadius: BorderRadius.circular(10.0),
+                        //         //       color: Colors.blue,
+                        //         //     ),
+                        //         //     height: 50,
+                        //         //     width: double.infinity,
+                        //         //     child: Align(
+                        //         //       alignment: Alignment.center,
+                        //         //       child: Text(
+                        //         //         "Add Order",
+                        //         //         style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+                        //         //       ),
+                        //         //     ),
+                        //         //   ),
+                        //         // )
 
-                                  Expanded(
-                                    flex: 3,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        final list_item = {
-                                          "item_id": item['mainitem']['id'],
-                                          "qty": qty,
-                                          "price": item['mainitem']['price'],
-                                          "name": item['mainitem']['name'],
-                                        };
+                        //         Expanded(
+                        //           flex: 3,
+                        //           child: GestureDetector(
+                        //             onTap: () {
+                        //               final list_item = {
+                        //                 "item_id": item['mainitem']['id'],
+                        //                 "qty": qty,
+                        //                 "price": item['mainitem']['price'],
+                        //                 "name": item['mainitem']['name'],
+                        //               };
 
-                                        if (sub_itm_id > 0) {
-                                          list_item['sub_item'] = [];
-                                          list_item['sub_item'].add({
-                                            "sub_item_id": sub_itm_id,
-                                            "price": sub_item_price,
-                                            "name": sub_item_name
-                                          });
-                                        }
+                        //               if (sub_itm_id > 0) {
+                        //                 list_item['sub_item'] = [];
+                        //                 list_item['sub_item'].add({
+                        //                   "sub_item_id": sub_itm_id,
+                        //                   "price": sub_item_price,
+                        //                   "name": sub_item_name
+                        //                 });
+                        //               }
 
-                                        requestBody.add(list_item);
+                        //               requestBody.add(list_item);
 
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => Preorder(
-                                              data1: requestBody,
-                                              spot_id: widget.spot_id,
-                                              id_order: widget.id_order,
-                                            ), // Ensure you pass 'data' as a named parameter
-                                          ),
-                                        );
-                                      },
-                                      child: Container(
-                                        height: 100,
-                                        margin: EdgeInsets.all(20),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          color: Colors.blue,
-                                        ),
-                                        padding: EdgeInsets.all(15),
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text(
-                                            "ADD",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 30,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )),
-                        ),
+                        //               Navigator.push(
+                        //                 context,
+                        //                 MaterialPageRoute(
+                        //                   builder: (context) => Preorder(
+                        //                     data1: requestBody,
+                        //                     spot_id: widget.spot_id,
+                        //                     id_order: widget.id_order,
+                        //                   ), // Ensure you pass 'data' as a named parameter
+                        //                 ),
+                        //               );
+                        //             },
+                        //             child: Container(
+                        //               height: 100,
+                        //               margin: EdgeInsets.all(20),
+                        //               decoration: BoxDecoration(
+                        //                 borderRadius:
+                        //                     BorderRadius.circular(10.0),
+                        //                 color: Colors.blue,
+                        //               ),
+                        //               padding: EdgeInsets.all(15),
+                        //               child: Align(
+                        //                 alignment: Alignment.center,
+                        //                 child: Text(
+                        //                   "ADD",
+                        //                   style: TextStyle(
+                        //                     color: Colors.white,
+                        //                     fontSize: 30,
+                        //                     fontWeight: FontWeight.bold,
+                        //                   ),
+                        //                 ),
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
