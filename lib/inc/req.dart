@@ -733,8 +733,8 @@ class Req {
     };
   }
 
-  Future<Map<String, dynamic>> fetchChartReport(year, month) async {
-    String url = apiUrl + '/order/chart-report/$year/$month';
+  Future<Map<String, dynamic>> fetchChartReport(year, month, day) async {
+    String url = apiUrl + '/order/chart-report/$year/$month/$day';
     dynamic req = await get_req(url);
     return {
       "status_code":

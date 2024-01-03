@@ -239,6 +239,84 @@ class _ItemDetailState extends State<ItemDetail> {
                           ),
                         ),
                         Container(
+                          padding: EdgeInsets.all(15),
+                          child: Column(
+                            children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  "Sub Services",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Container(
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: List<Widget>.generate(
+                                        (item != null
+                                            ? item['mainitem']['sub_item']
+                                                .length
+                                            : 0),
+                                        (int index) {
+                                          final subItem = item['mainitem']
+                                              ['sub_item'][index];
+                                          var containerColor =
+                                              subItem['containerColor'] ??
+                                                  Colors.white;
+
+                                          return GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                sub_itm_id = subItem['id'];
+                                                sub_item_price =
+                                                    subItem['price'];
+                                                sub_item_name = subItem['name'];
+                                                print(sub_item_name);
+                                                changeColor(index);
+                                              });
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.all(10),
+                                              margin: EdgeInsets.all(5),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                                color: containerColor,
+                                                border: Border.all(
+                                                  width: 1.0,
+                                                ),
+                                              ),
+                                              child: Text(
+                                                subItem['name'] +
+                                                    " (" +
+                                                    formatCurrency(
+                                                            subItem['price'])
+                                                        .toString() +
+                                                    ")", // Access the name from the subItem dictionary
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
                           // color: Colors.amber,
                           margin: EdgeInsets.only(left: 10),
                           child: Row(

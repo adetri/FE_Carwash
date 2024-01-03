@@ -33,18 +33,21 @@ class ReportMenu extends StatelessWidget {
                     },
                     child: Container(
                       alignment: Alignment.center,
-                      height: 200,
-                      width: 200,
+                      height: 150,
+                      width: 150,
                       padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 207, 204, 203),
                       ),
                       child: Column(
                         children: [
-                          Image.asset(
-                            'assets/report.png',
+                          Expanded(
+                            child: Center(
+                              child: Image.asset(
+                                'assets/report.png',
+                              ),
+                            ),
                           ),
-                          Padding(padding: EdgeInsets.only(top: 10)),
                           Text(
                             "Report",
                             style: TextStyle(fontWeight: FontWeight.w600),
@@ -62,18 +65,21 @@ class ReportMenu extends StatelessWidget {
                     },
                     child: Container(
                       alignment: Alignment.center,
-                      height: 200,
-                      width: 200,
+                      height: 150,
+                      width: 150,
                       padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         color: const Color.fromARGB(255, 207, 204, 203),
                       ),
                       child: Column(
                         children: [
-                          Image.asset(
-                            'assets/report.png',
+                          Expanded(
+                            child: Center(
+                              child: Image.asset(
+                                'assets/report.png',
+                              ),
+                            ),
                           ),
-                          Padding(padding: EdgeInsets.only(top: 10)),
                           Text(
                             "Chart",
                             style: TextStyle(fontWeight: FontWeight.w600),

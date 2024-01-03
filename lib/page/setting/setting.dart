@@ -16,235 +16,237 @@ class Settings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(
-            height: 50,
-          ),
-          header(context),
-          SizedBox(
-            height: 50,
-          ),
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 10,
-            runSpacing: 10,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: GestureDetector(
-                  onTap: () {
-                    nav_to(context, CategoryList());
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 200,
-                    width: 200,
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 207, 204, 203),
-                    ),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/category.png',
-                          height: 100,
-                          width: 100,
-                        ),
-                        Padding(padding: EdgeInsets.only(top: 10)),
-                        Text(
-                          "Category",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: GestureDetector(
-                  onTap: () {
-                    nav_to(context, ItemList());
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 200,
-                    width: 200,
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 207, 204, 203),
-                    ),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/items.png',
-                          height: 100,
-                          width: 100,
-                        ),
-                        Padding(padding: EdgeInsets.only(top: 10)),
-                        Text(
-                          "Item",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        )
-                      ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 50,
+            ),
+            header(context),
+            SizedBox(
+              height: 50,
+            ),
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      nav_to(context, CategoryList());
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 150,
+                      width: 150,
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 207, 204, 203),
+                      ),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/category.png',
+                            height: 100,
+                            width: 100,
+                          ),
+                          Padding(padding: EdgeInsets.only(top: 10)),
+                          Text(
+                            "Category",
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: GestureDetector(
-                  onTap: () {
-                    nav_to(context, SpotList());
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 200,
-                    width: 200,
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 207, 204, 203),
-                    ),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/spot.png',
-                          height: 100,
-                          width: 100,
-                        ),
-                        Padding(padding: EdgeInsets.only(top: 10)),
-                        Text(
-                          "Spot",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: GestureDetector(
-                  onTap: () {
-                    nav_to(context, KaryawanList());
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 200,
-                    width: 200,
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 207, 204, 203),
-                    ),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/karyawan.png',
-                          height: 100,
-                          width: 100,
-                        ),
-                        Padding(padding: EdgeInsets.only(top: 10)),
-                        Text(
-                          "Karyawan",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        )
-                      ],
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      nav_to(context, ItemList());
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 150,
+                      width: 150,
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 207, 204, 203),
+                      ),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/items.png',
+                            height: 100,
+                            width: 100,
+                          ),
+                          Padding(padding: EdgeInsets.only(top: 10)),
+                          Text(
+                            "Item",
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      nav_to(context, SpotList());
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 150,
+                      width: 150,
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 207, 204, 203),
+                      ),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/spot.png',
+                            height: 100,
+                            width: 100,
+                          ),
+                          Padding(padding: EdgeInsets.only(top: 10)),
+                          Text(
+                            "Spot",
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      nav_to(context, KaryawanList());
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 150,
+                      width: 150,
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 207, 204, 203),
+                      ),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/karyawan.png',
+                            height: 100,
+                            width: 100,
+                          ),
+                          Padding(padding: EdgeInsets.only(top: 10)),
+                          Text(
+                            "Karyawan",
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
 
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16.0),
-                child: GestureDetector(
-                  onTap: () async {
-                    // MyConfrimDialog.title = "Logout";
-                    // MyConfrimDialog.content = "Are you sure Logout ?";
-                    // MyConfrimDialog.page = Login();
-                    // MyConfrimDialog.logic = logout;
-                    // MyConfrimDialog.showDialogMethod(context);
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16.0),
+                  child: GestureDetector(
+                    onTap: () async {
+                      // MyConfrimDialog.title = "Logout";
+                      // MyConfrimDialog.content = "Are you sure Logout ?";
+                      // MyConfrimDialog.page = Login();
+                      // MyConfrimDialog.logic = logout;
+                      // MyConfrimDialog.showDialogMethod(context);
 
-                    nav_to(context, OutletProfiles());
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: 200,
-                    width: 200,
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 207, 204, 203),
-                    ),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'assets/setting.png',
-                          height: 100,
-                          width: 100,
-                        ),
-                        Padding(padding: EdgeInsets.only(top: 10)),
-                        Text(
-                          "Outlet Profile",
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        )
-                      ],
+                      nav_to(context, OutletProfiles());
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: 150,
+                      width: 150,
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 207, 204, 203),
+                      ),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/setting.png',
+                            height: 100,
+                            width: 100,
+                          ),
+                          Padding(padding: EdgeInsets.only(top: 10)),
+                          Text(
+                            "Outlet Profile",
+                            style: TextStyle(fontWeight: FontWeight.w600),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              // ClipRRect(
-              //   borderRadius: BorderRadius.circular(16.0),
-              //   child: GestureDetector(
-              //     onTap: () {},
-              //     child: Container(
-              //       alignment: Alignment.center,
-              //       height: 200,
-              //       width: 200,
-              //       padding: EdgeInsets.all(10),
-              //       decoration: BoxDecoration(
-              //         color: const Color.fromARGB(255, 207, 204, 203),
-              //       ),
-              //       child: Column(
-              //         children: [
-              //           Image.asset('assets/setting.png'),
-              //           Padding(padding: EdgeInsets.only(top: 10)),
-              //           Text(
-              //             "SettingS",
-              //             style: TextStyle(fontWeight: FontWeight.w600),
-              //           )
-              //         ],
-              //       ),
-              //     ),
-              //   ),
-              // ),
-              // ClipRRect(
-              //   borderRadius: BorderRadius.circular(16.0),
-              //   child: GestureDetector(
-              //     onTap: () {},
-              //     child: Container(
-              //       alignment: Alignment.center,
-              //       height: 200,
-              //       width: 200,
-              //       padding: EdgeInsets.all(10),
-              //       decoration: BoxDecoration(
-              //         color: const Color.fromARGB(255, 207, 204, 203),
-              //       ),
-              //       child: Column(
-              //         children: [
-              //           Image.asset('assets/setting.png'),
-              //           Padding(padding: EdgeInsets.only(top: 10)),
-              //           Text(
-              //             "SettingS",
-              //             style: TextStyle(fontWeight: FontWeight.w600),
-              //           )
-              //         ],
-              //       ),
-              //     ),
-              //   ),
-              // ),
-            ],
-          ),
-        ],
+                // ClipRRect(
+                //   borderRadius: BorderRadius.circular(16.0),
+                //   child: GestureDetector(
+                //     onTap: () {},
+                //     child: Container(
+                //       alignment: Alignment.center,
+                //       height: 200,
+                //       width: 200,
+                //       padding: EdgeInsets.all(10),
+                //       decoration: BoxDecoration(
+                //         color: const Color.fromARGB(255, 207, 204, 203),
+                //       ),
+                //       child: Column(
+                //         children: [
+                //           Image.asset('assets/setting.png'),
+                //           Padding(padding: EdgeInsets.only(top: 10)),
+                //           Text(
+                //             "SettingS",
+                //             style: TextStyle(fontWeight: FontWeight.w600),
+                //           )
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                // ClipRRect(
+                //   borderRadius: BorderRadius.circular(16.0),
+                //   child: GestureDetector(
+                //     onTap: () {},
+                //     child: Container(
+                //       alignment: Alignment.center,
+                //       height: 200,
+                //       width: 200,
+                //       padding: EdgeInsets.all(10),
+                //       decoration: BoxDecoration(
+                //         color: const Color.fromARGB(255, 207, 204, 203),
+                //       ),
+                //       child: Column(
+                //         children: [
+                //           Image.asset('assets/setting.png'),
+                //           Padding(padding: EdgeInsets.only(top: 10)),
+                //           Text(
+                //             "SettingS",
+                //             style: TextStyle(fontWeight: FontWeight.w600),
+                //           )
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -268,7 +270,7 @@ class Settings extends StatelessWidget {
         Text(
           'Setting',
           style: TextStyle(
-            fontSize: 40,
+            fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
         ),

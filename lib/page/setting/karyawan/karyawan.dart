@@ -86,33 +86,35 @@ class _KaryawanDataListState extends State<KaryawanDataList> {
   Widget build(BuildContext context) {
     return karywan == null
         ? Text("Karyawan Not Found")
-        : SingleChildScrollView(
-            child: Container(
-              height: MediaQuery.of(context).size.height *
-                  0.8, // Adjust the height as needed
-              child: ListView.builder(
-                itemCount: karywan!.length,
-                itemBuilder: (BuildContext context, int index) {
-                  String karyawan_name = karywan?[index]['name'];
-                  String karywan_role = karywan?[index]['role']['name'];
-                  int? karyawan_id = karywan?[index]['id'];
-                  return ExpansionTile(
-                    title: Text("${karyawan_name} (${karywan_role})"),
-                    children: <Widget>[
-                      ListTile(
-                        title: Text('Edit'),
-                        onTap: () {
-                          nav_to(
-                              context,
-                              KaryawanForm(
-                                id_karyawan: karyawan_id,
-                              ));
-                        },
-                      ),
-                      // Add more ListTile widgets for subcategories as needed
-                    ],
-                  );
-                },
+        : Expanded(
+            child: SingleChildScrollView(
+              child: Container(
+                height: MediaQuery.of(context).size.height *
+                    0.8, // Adjust the height as needed
+                child: ListView.builder(
+                  itemCount: karywan!.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    String karyawan_name = karywan?[index]['name'];
+                    String karywan_role = karywan?[index]['role']['name'];
+                    int? karyawan_id = karywan?[index]['id'];
+                    return ExpansionTile(
+                      title: Text("${karyawan_name} (${karywan_role})"),
+                      children: <Widget>[
+                        ListTile(
+                          title: Text('Edit'),
+                          onTap: () {
+                            nav_to(
+                                context,
+                                KaryawanForm(
+                                  id_karyawan: karyawan_id,
+                                ));
+                          },
+                        ),
+                        // Add more ListTile widgets for subcategories as needed
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
           );

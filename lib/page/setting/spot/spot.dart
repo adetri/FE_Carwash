@@ -52,7 +52,7 @@ class SpotList extends StatelessWidget {
         Text(
           'Spot',
           style: TextStyle(
-            fontSize: 40,
+            fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
         ),

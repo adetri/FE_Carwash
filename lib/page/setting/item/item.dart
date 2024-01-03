@@ -33,7 +33,7 @@ class ItemList extends StatelessWidget {
                 Text(
                   'Item',
                   style: TextStyle(
-                    fontSize: 40,
+                    fontSize: 28,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

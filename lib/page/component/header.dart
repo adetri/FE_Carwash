@@ -58,7 +58,7 @@ class _MyHeaderState extends State<MyHeader> {
         Text(
           widget.title.toString(),
           style: TextStyle(
-            fontSize: 40,
+            fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
         ),

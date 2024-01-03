@@ -17,11 +17,10 @@ class Report extends StatefulWidget {
   State<Report> createState() => _ReportState();
 }
 
-dynamic payload = {};
-
 class _ReportState extends State<Report> {
   TextEditingController startdate = TextEditingController();
   TextEditingController enddate = TextEditingController();
+  dynamic payload = {};
 
   String? field_startdate;
   String? field_enddate;
@@ -254,6 +253,8 @@ class _ReportState extends State<Report> {
                 payload['start_date'] = field_startdate.toString();
                 payload['end_date'] = field_enddate.toString();
               });
+
+              print(payload);
               orderReport();
               print(payload);
             },

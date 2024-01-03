@@ -44,6 +44,12 @@ class _MyReportChartState extends State<MyReportChart> {
   bool is_visible = false;
   bool ignore_date = true;
   Random random = Random();
+
+  late int monthly_total_order;
+  late int monthly_total;
+  late int total_daily;
+  late int total_daily_order;
+
   @override
   void initState() {
     init();
@@ -72,7 +78,15 @@ class _MyReportChartState extends State<MyReportChart> {
     });
     dbg(tanggal.value);
     Map<String, dynamic>? req_monthly_record = await req?.fetchChartReport(
-        tanggal.value['year'], tanggal.value['month_int']);
+        tanggal.value['year'],
+        tanggal.value['month_int'],
+        tanggal.value['day']);
+
+    monthly_total_order =
+        req_monthly_record?['response']['monthly_total_order'];
+    monthly_total = req_monthly_record?['response']['monthly_total'];
+    total_daily = req_monthly_record?['response']['total_today'];
+    total_daily_order = req_monthly_record?['response']['total_today_order'];
 
     dbg(req_monthly_record);
     for (var req_month in req_monthly_record?['response']['monthly_recod']) {
@@ -115,7 +129,91 @@ class _MyReportChartState extends State<MyReportChart> {
                       color: Color.fromRGBO(8, 142, 255, 1)),
                 ],
               )
-            : SizedBox.shrink()
+            : SizedBox.shrink(),
+        is_visible == true
+            ? Container(
+                margin: EdgeInsets.only(top: 30),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "Total Monthly Order",
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        monthly_total_order.toString(),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : SizedBox.shrink(),
+        is_visible == true
+            ? Container(
+                margin: EdgeInsets.only(top: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "Total Monthly Revenue",
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        formatCurrency(monthly_total),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : SizedBox.shrink(),
+        is_visible == true
+            ? Container(
+                margin: EdgeInsets.only(top: 30),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "Total Daily Order",
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        total_daily_order.toString(),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : SizedBox.shrink(),
+        is_visible == true
+            ? Container(
+                margin: EdgeInsets.only(top: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "Total Daily Revenue",
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        formatCurrency(total_daily),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : SizedBox.shrink(),
       ],
     );
   }

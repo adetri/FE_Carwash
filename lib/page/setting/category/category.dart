@@ -32,7 +32,7 @@ class CategoryList extends StatelessWidget {
                 Text(
                   'Category',
                   style: TextStyle(
-                    fontSize: 40,
+                    fontSize: 28,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
