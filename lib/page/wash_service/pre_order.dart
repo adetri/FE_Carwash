@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:MrCarwash/inc/db.dart';
 import 'package:MrCarwash/inc/req.dart';
@@ -29,6 +30,7 @@ class Preorder extends StatefulWidget {
 }
 
 class _PreorderState extends State<Preorder> {
+  int selectedCategoryIds = -1;
   dynamic category;
   dynamic item;
   late final list_item = [];
@@ -272,14 +274,12 @@ class _PreorderState extends State<Preorder> {
                                 top: 10,
                                 bottom: 10), // Adjust the padding as needed
                             child: Wrap(
-                              alignment: WrapAlignment.spaceAround,
+                              alignment: WrapAlignment.spaceEvenly,
                               spacing: 20,
-                              runSpacing: 10,
                               children:
                                   (category != null ? category['category'] : [])
                                       .map<Widget>((category) {
                                 final categoryName = category['name'];
-
                                 final categoryImage = host! + category['img'];
                                 final categoryId = category['id'];
 
@@ -291,6 +291,7 @@ class _PreorderState extends State<Preorder> {
                                     Map<String, dynamic> req_item = await req!
                                         .itemData(requestBody, customHeaders);
                                     setState(() {
+                                      selectedCategoryIds = categoryId;
                                       if (req_item['status_code'] != 200) {
                                         ModalDialog(context);
                                       } else {
@@ -299,16 +300,26 @@ class _PreorderState extends State<Preorder> {
                                     });
                                   },
                                   child: Container(
-                                    width: 55,
-                                    height: 55,
+                                    padding: EdgeInsets.all(10),
                                     decoration: BoxDecoration(
                                       // color: Colors.amber,
-                                      image: DecorationImage(
-                                        image: NetworkImage(categoryImage),
-                                        fit: BoxFit.fill,
-                                      ),
+
+                                      color: selectedCategoryIds == categoryId
+                                          ? const Color.fromARGB(
+                                              255, 207, 204, 203)
+                                          : Colors.transparent,
                                       borderRadius: BorderRadius.circular(
                                           10.0), // Adjust the radius as needed
+                                    ),
+                                    child: CachedNetworkImage(
+                                      width: 60,
+                                      height: 60,
+                                      alignment: Alignment.bottomCenter,
+                                      imageUrl: categoryImage,
+                                      // placeholder: (context, url) =>
+                                      //     CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
                                     ),
                                   ),
                                 );
@@ -383,14 +394,27 @@ class _PreorderState extends State<Preorder> {
                                           Expanded(
                                             flex: 3,
                                             child: Container(
-                                              color: Colors.red,
+                                              // color: Colors.red,
                                               child: Center(
-                                                child: Image.network(
-                                                  itemImg,
+                                                child: CachedNetworkImage(
+                                                  imageUrl: itemImg,
                                                   fit: BoxFit.cover,
-                                                  height: double.infinity,
-                                                  width: double.infinity,
+                                                  height: 200,
+                                                  width: 200,
+                                                  // width: double.infinity,
+                                                  // placeholder: (context, url) =>
+                                                  //     CircularProgressIndicator(),
+                                                  errorWidget:
+                                                      (context, url, error) =>
+                                                          Icon(Icons.error),
                                                 ),
+
+                                                // Image.network(
+                                                //   itemImg,
+                                                //   fit: BoxFit.cover,
+                                                //   height: double.infinity,
+                                                //   width: double.infinity,
+                                                // ),
                                               ),
                                             ),
                                           ),

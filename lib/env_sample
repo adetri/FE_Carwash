@@ -1,0 +1,6 @@
+// TODO Implement this library.
+
+bool LOADING = false;
+String JWT = "";
+String APIHOST = "http://192.168.18.20:8000";
+bool DEBUG = true;

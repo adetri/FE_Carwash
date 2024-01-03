@@ -3,7 +3,7 @@ import 'package:MrCarwash/inc/req.dart';
 import 'package:MrCarwash/page/login.dart';
 import 'package:MrCarwash/page/report/menu_report.dart';
 import 'package:flutter/material.dart';
-import 'package:MrCarwash/env.dart';
+import '../../env.dart';
 import 'package:MrCarwash/inc/method.dart';
 import 'package:MrCarwash/page/wash_service/monitoring_page.dart';
 import 'package:MrCarwash/page/report/report.dart';

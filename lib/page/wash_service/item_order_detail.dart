@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:MrCarwash/inc/req.dart';
 import '../../env.dart';
@@ -188,17 +189,28 @@ class _ItemDetailState extends State<ItemDetail> {
                         Expanded(
                           flex: 5,
                           child: Container(
-                            color: Colors.red,
+                            // color: Colors.red,
                             child: Center(
                               child: item != null &&
                                       item['mainitem'] != null &&
                                       item['mainitem']['img'] != null
-                                  ? Image.network(
-                                      req!.host! + item['mainitem']['img'],
-                                      fit: BoxFit.cover,
-                                      height: double.infinity,
+                                  ? CachedNetworkImage(
                                       width: double.infinity,
+                                      height: double.infinity,
+                                      fit: BoxFit.cover,
+                                      imageUrl:
+                                          req!.host! + item['mainitem']['img'],
+                                      // placeholder: (context, url) => CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
                                     )
+
+                                  // Image.network(
+                                  //     req!.host! + item['mainitem']['img'],
+                                  //     fit: BoxFit.cover,
+                                  //     height: double.infinity,
+                                  //     width: double.infinity,
+                                  //   )
                                   : Text('Image URL is null'),
                             ),
                           ),
