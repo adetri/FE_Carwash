@@ -426,8 +426,8 @@ class _MyformState extends State<Myform> {
                               dbg(payload);
                               var req_ins_item = await req?.insertItem(payload);
                               if (req_ins_item!['status_code'] == 201) {
-                                // showDialogAndMove(context, 'Succes',
-                                //     'Insert data success', ItemList());
+                                showDialogAndMove(context, 'Succes',
+                                    'Insert data success', ItemList());
                               } else {
                                 show_dialog(context, 'Fail to insert',
                                     req_ins_item['response']);
