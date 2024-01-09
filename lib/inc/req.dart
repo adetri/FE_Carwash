@@ -95,8 +95,7 @@ class Req {
       } else {
         return {
           "status_code": response.statusCode,
-          "response":
-              "Failed to load data. Status msg:${response.body}  code: ${response.statusCode}",
+          "response": json.decode(response.body),
         };
       }
     } catch (e) {
@@ -760,13 +759,14 @@ class Req {
     if (reqType == "get") {
       req = await get_req(endpoint);
     } else {
-      req = await get_req(url, req_type: reqType, reqBody: payload);
+      req = await get_req(endpoint, req_type: reqType, reqBody: payload);
     }
-
-    return {
+    Map<String, dynamic> result = {
       "status_code":
           req['status_code'], // You can set a custom status code for failure
       "response": req['response'],
     };
+    dbg("this req result  : ${result}");
+    return result;
   }
 }

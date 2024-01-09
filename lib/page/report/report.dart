@@ -1,3 +1,4 @@
+import 'package:MrCarwash/page/component/text_field_input.dart';
 import 'package:MrCarwash/page/report/menu_report.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,7 +22,8 @@ class _ReportState extends State<Report> {
   TextEditingController startdate = TextEditingController();
   TextEditingController enddate = TextEditingController();
   dynamic payload = {};
-
+  TextFieldInput email =
+      TextFieldInput(field_name: "E-mail", inputType: "email");
   String? field_startdate;
   String? field_enddate;
   dynamic total = 0;
@@ -40,6 +42,42 @@ class _ReportState extends State<Report> {
     await req?.init();
     karyawan_name = req?.karyawan_name;
     orderReport();
+  }
+
+  void openModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Export to Excel'),
+          content: email,
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                Map<String, dynamic> payload = {"target_mail": email.value};
+                var send_req = await req?.Request(
+                    "order/generate-download-link",
+                    reqType: "post",
+                    payload: payload);
+
+                if (send_req?['status_code'] == 200) {
+                  Navigator.of(context).pop();
+                } else {
+                  setState(() {
+                    email = TextFieldInput(
+                        field_name: "E-mail",
+                        inputType: "email",
+                        errorMsg: send_req?['response']['msg']);
+                  });
+                  dbg(email.errorMsg);
+                }
+              },
+              child: Text("Send"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void orderReport() async {
@@ -280,12 +318,27 @@ class _ReportState extends State<Report> {
               ExpansionTile(
                 backgroundColor: Colors.white,
                 collapsedBackgroundColor: Colors.white,
-                title: Text(
-                  'TOTAL',
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
+                title: Row(
+                  children: [
+                    Text(
+                      'TOTAL',
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        print("object");
+                        openModal(context);
+                      },
+                      child: const Text('Export to Excel'),
+                    )
+                  ],
                 ),
+
                 // subtitle: Container(
                 //   // color: Colors.grey,
                 //   child: Column(
