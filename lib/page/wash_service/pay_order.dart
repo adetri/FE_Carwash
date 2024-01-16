@@ -32,7 +32,7 @@ class _PayOrderState extends State<PayOrder> {
   Req? req;
   dynamic data_outlet;
   List<Map<String, dynamic>> payment_method = [];
-
+  TextEditingController nominalController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -47,6 +47,28 @@ class _PayOrderState extends State<PayOrder> {
   bool load_page = false;
   Map<String, dynamic>? role;
   String? karyawan_name;
+
+  void updateNominal() {
+    setState(() {
+      nominal = int.parse(nominalController.text);
+      print(nominal);
+    });
+  }
+
+  void radioCallback() {
+    print(paymentMethod!.value);
+    setState(() {
+      if (paymentMethod!.value['is_cash'] == false) {
+        nominal = d_order?['order']['sub_total'];
+        nominalController.text = nominal.toString();
+      } else {
+        nominalController.text = "0";
+        nominal = 0;
+      }
+    });
+
+    print(nominal);
+  }
 
   void init() async {
     req = Req(context);
@@ -70,6 +92,7 @@ class _PayOrderState extends State<PayOrder> {
         tittle: "Payment Method",
         data: payment_method,
         def_value: payment_method[0],
+        callback: radioCallback,
       );
 
       paymentMethod?.value = payment_method[0];
@@ -92,6 +115,7 @@ class _PayOrderState extends State<PayOrder> {
       dbg("data outlet is $data_outlet ");
       // dbg(data_recipe);
       d_order = req_order?['response'];
+      dbg("data order is : $d_order ");
     });
   }
 
@@ -103,9 +127,17 @@ class _PayOrderState extends State<PayOrder> {
       bluetooth.printCustom(data_outlet['phone'], 1, 1);
 
       bluetooth.printNewLine();
-      bluetooth.printCustom(data['datetime'], 0, 0);
+      bluetooth.printCustom(data['datetime'], 0, 2);
 
-      bluetooth.printCustom("No order : ${data['no_order']}", 0, 0);
+      bluetooth.printLeftRight("No order", "${data['no_order']}", 0);
+      bluetooth.printLeftRight(
+          "Vehicle number", "${d_order['order']['vehicle_number']}", 0);
+      bluetooth.printLeftRight(
+          "Car Owner", "${d_order['order']['vehicle_owner']}", 0);
+
+      // bluetooth.printCustom("No order : ${data['no_order']}", 0, 0);
+      // bluetooth.printCustom("Vehicle number : ${data['no_order']}", 0, 0);
+      // bluetooth.printCustom("Car Owner : ${data['no_order']}", 0, 0);
 
       bluetooth.printCustom(sperator, 0, 0);
 
@@ -345,11 +377,13 @@ class _PayOrderState extends State<PayOrder> {
                               Container(
                                 margin: EdgeInsets.only(top: 10),
                                 child: TextField(
+                                  controller: nominalController,
                                   onChanged: (num) {
                                     setState(() {
-                                      nominal = int.parse(num);
+                                      updateNominal();
+                                      // nominal = int.parse(num);
 
-                                      print(nominal);
+                                      // print(nominal);
                                     });
                                   },
                                   keyboardType: TextInputType.number,
@@ -372,75 +406,6 @@ class _PayOrderState extends State<PayOrder> {
                               ? pay_btn(data_recipe, context)
                               : SizedBox.shrink(),
                           canAccess(role, kasir: true)
-                              ? Container(
-                                  margin: EdgeInsets.only(top: 10),
-                                  height: 50,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                      color: Color.fromARGB(255, 205, 52, 52),
-                                      borderRadius: BorderRadius.circular(4)),
-                                  child: TextButton(
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: Text("Delete"),
-                                            content: Text(
-                                                "Are you sure to delete ?"),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                onPressed: () async {
-                                                  Navigator.of(context)
-                                                      .pop(); // Close the dialog
-
-                                                  Map<String, dynamic>?
-                                                      send_req =
-                                                      await req?.cancleOrder(
-                                                          id_order);
-
-                                                  if (send_req?[
-                                                          'status_code'] ==
-                                                      202) {
-                                                    dialog(
-                                                        "Success to delete order data",
-                                                        "Success",
-                                                        monitoring: "istrue");
-                                                  } else {
-                                                    dialog(
-                                                        send_req?['response'],
-                                                        "Failed");
-                                                  }
-                                                },
-                                                child: Text('OK'),
-                                              ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context)
-                                                      .pop(); // Close the dialog
-                                                },
-                                                child: Text('NO'),
-                                              )
-                                            ],
-                                          );
-                                        },
-                                      );
-                                      // delete_order
-                                    },
-                                    child: Center(
-                                      child: Text(
-                                        "Cancle",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : SizedBox.shrink(),
-                          canAccess(role, management: true)
                               ? Container(
                                   margin: EdgeInsets.only(top: 10),
                                   height: 50,
@@ -542,18 +507,20 @@ class _PayOrderState extends State<PayOrder> {
 
           if (printer_cek == 1) {
             paylod['nominal'] = nominal;
-            Map<String, dynamic>? send_req =
-                await req?.payOrder(data['id_order'], paylod);
+            printRecipt(data, data_outlet);
 
-            if (send_req?['status_code'] == 201) {
-              printRecipt(data, data_outlet);
+            // Map<String, dynamic>? send_req =
+            //     await req?.payOrder(data['id_order'], paylod);
 
-              dialog("Success to add order data", "Success",
-                  monitoring: "istrue");
-            } else {
-              dialog(send_req?['response'], "Failed");
-            }
-            print(send_req);
+            // if (send_req?['status_code'] == 201) {
+            //   printRecipt(data, data_outlet);
+
+            //   dialog("Success to add order data", "Success",
+            //       monitoring: "istrue");
+            // } else {
+            //   dialog(send_req?['response'], "Failed");
+            // }
+            // print(send_req);
           } else {
             Navigator.push(
               context,

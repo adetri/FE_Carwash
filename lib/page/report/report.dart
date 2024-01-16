@@ -39,6 +39,7 @@ class _ReportState extends State<Report> {
   String? karyawan_name;
   void init() async {
     req = Req(context);
+
     await req?.init();
     karyawan_name = req?.karyawan_name;
     orderReport();
@@ -65,9 +66,13 @@ class _ReportState extends State<Report> {
                 } else {
                   setState(() {
                     email = TextFieldInput(
-                        field_name: "E-mail",
-                        inputType: "email",
-                        errorMsg: send_req?['response']['msg']);
+                      field_name: "E-mail",
+                      inputType: "email",
+                    );
+
+                    email.errorMsg = send_req?['response']['msg'];
+                    Navigator.of(context).pop();
+                    openModal(context);
                   });
                   dbg(email.errorMsg);
                 }
@@ -332,6 +337,7 @@ class _ReportState extends State<Report> {
                     ElevatedButton(
                       onPressed: () {
                         print("object");
+                        email.errorMsg = null;
                         openModal(context);
                       },
                       child: const Text('Export to Excel'),

@@ -85,12 +85,13 @@ class _RadioBtnState extends State<RadioBtn> {
                           groupValue: _selectedValue,
                           onChanged: (value) {
                             setState(() {
-                              if (widget.callback != null) {
-                                widget.callback!();
-                              }
                               _selectedValue = value;
                               widget.value = _selectedValue;
                               // dbg(widget.value);
+
+                              if (widget.callback != null) {
+                                widget.callback!();
+                              }
                             });
                           },
                         ),

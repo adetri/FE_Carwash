@@ -51,7 +51,7 @@ class StratAt extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: '',
-      home: Report(),
+      home: Monitoring(),
     );
   }
 }
