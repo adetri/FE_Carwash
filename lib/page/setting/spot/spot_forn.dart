@@ -50,7 +50,7 @@ class SpotFrom extends StatelessWidget {
         Text(
           'Spot Form',
           style: TextStyle(
-            fontSize: 40,
+            fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
         ),

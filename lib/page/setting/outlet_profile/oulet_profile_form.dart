@@ -194,8 +194,8 @@ class _OutletProfileFormState extends State<OutletProfileForm> {
                                 return;
                               }
                               dbg(payload);
-                              var req_update_outlet =
-                                  await req?.updateOutlet(payload);
+                              var req_update_outlet = await req?.updateOutlet(
+                                  payload, outlet?['id']);
                               if (req_update_outlet?['status_code'] == 202) {
                                 showDialogAndMove(context, "Success",
                                     "Update Data Success", Settings());

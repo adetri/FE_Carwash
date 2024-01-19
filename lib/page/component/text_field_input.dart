@@ -66,7 +66,7 @@ class _TextFieldInputState extends State<TextFieldInput> {
   Widget build(BuildContext context) {
     return Container(
       // color: Colors.amber,
-      height: 80,
+      height: input_type == "textarea" ? 120 : 80,
       child: Column(
         children: [
           TextField(

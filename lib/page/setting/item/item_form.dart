@@ -52,7 +52,7 @@ class ItemForm extends StatelessWidget {
         Text(
           'Item Form',
           style: TextStyle(
-            fontSize: 40,
+            fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
         ),

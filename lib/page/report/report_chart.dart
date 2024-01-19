@@ -108,124 +108,127 @@ class _MyReportChartState extends State<MyReportChart> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          IgnorePointer(
-            ignoring: ignore_date,
-            child: tanggal,
-          ),
-          is_visible == true
-              ? SfCartesianChart(
-                  primaryXAxis: CategoryAxis(),
-                  title: ChartTitle(text: "Monthly Sales"),
-                  // primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
-                  tooltipBehavior: TooltipBehavior(enable: true),
-                  series: <ChartSeries<_ChartData, String>>[
-                    ColumnSeries<_ChartData, String>(
-                        dataSource: data,
-                        xValueMapper: (_ChartData data, _) => data.x,
-                        yValueMapper: (_ChartData data, _) => data.y.toDouble(),
-                        name: 'Sales',
-                        color: Color.fromRGBO(8, 142, 255, 1)),
-                  ],
-                )
-              : SizedBox.shrink(),
-          is_visible == true
-              ? Container(
-                  margin: EdgeInsets.only(top: 30),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Card(
-                          child: ListTile(
-                            leading: Container(
-                              alignment: Alignment.center,
-                              width: 50, // Adjust width as needed
-                              child: Icon(Icons.article_outlined),
-                            ),
-                            title: Text(
-                              'Total Monthly Order',
-                              textAlign: TextAlign.center,
-                            ),
-                            subtitle: Text(
-                              monthly_total_order.toString(),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Card(
-                          child: ListTile(
-                            leading: Container(
-                              alignment: Alignment.center,
-                              width: 50, // Adjust width as needed
-                              child: Icon(Icons.attach_money_outlined),
-                            ),
-                            title: Text(
-                              'Total Monthly Revenue',
-                              textAlign: TextAlign.center,
-                            ),
-                            subtitle: Text(
-                              formatCurrency(monthly_total),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            IgnorePointer(
+              ignoring: ignore_date,
+              child: tanggal,
+            ),
+            is_visible == true
+                ? SfCartesianChart(
+                    primaryXAxis: CategoryAxis(),
+                    title: ChartTitle(text: "Monthly Sales"),
+                    // primaryYAxis: NumericAxis(minimum: 0, maximum: 40, interval: 10),
+                    tooltipBehavior: TooltipBehavior(enable: true),
+                    series: <ChartSeries<_ChartData, String>>[
+                      ColumnSeries<_ChartData, String>(
+                          dataSource: data,
+                          xValueMapper: (_ChartData data, _) => data.x,
+                          yValueMapper: (_ChartData data, _) =>
+                              data.y.toDouble(),
+                          name: 'Sales',
+                          color: Color.fromRGBO(8, 142, 255, 1)),
                     ],
-                  ),
-                )
-              : SizedBox.shrink(),
-          is_visible == true
-              ? Container(
-                  margin: EdgeInsets.only(top: 10),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Card(
-                          child: ListTile(
-                            leading: Container(
-                              alignment: Alignment.center,
-                              width: 50, // Adjust width as needed
-                              child: Icon(Icons.article_outlined),
-                            ),
-                            title: Text(
-                              'Total Daily Order',
-                              textAlign: TextAlign.center,
-                            ),
-                            subtitle: Text(
-                              total_daily_order.toString(),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Card(
-                          child: ListTile(
-                            leading: Container(
-                              alignment: Alignment.center,
-                              width: 50, // Adjust width as needed
-                              child: Icon(Icons.attach_money_outlined),
-                            ),
-                            title: Text(
-                              'Total Daily Revenue',
-                              textAlign: TextAlign.center,
-                            ),
-                            subtitle: Text(
-                              formatCurrency(total_daily),
-                              textAlign: TextAlign.center,
+                  )
+                : SizedBox.shrink(),
+            is_visible == true
+                ? Container(
+                    margin: EdgeInsets.only(top: 30),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Card(
+                            child: ListTile(
+                              leading: Container(
+                                alignment: Alignment.center,
+                                width: 50, // Adjust width as needed
+                                child: Icon(Icons.article_outlined),
+                              ),
+                              title: Text(
+                                'Total Monthly Order',
+                                textAlign: TextAlign.center,
+                              ),
+                              subtitle: Text(
+                                monthly_total_order.toString(),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-              : SizedBox.shrink(),
-        ],
+                        Expanded(
+                          child: Card(
+                            child: ListTile(
+                              leading: Container(
+                                alignment: Alignment.center,
+                                width: 50, // Adjust width as needed
+                                child: Icon(Icons.attach_money_outlined),
+                              ),
+                              title: Text(
+                                'Total Monthly Revenue',
+                                textAlign: TextAlign.center,
+                              ),
+                              subtitle: Text(
+                                formatCurrency(monthly_total),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : SizedBox.shrink(),
+            is_visible == true
+                ? Container(
+                    margin: EdgeInsets.only(top: 10),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Card(
+                            child: ListTile(
+                              leading: Container(
+                                alignment: Alignment.center,
+                                width: 50, // Adjust width as needed
+                                child: Icon(Icons.article_outlined),
+                              ),
+                              title: Text(
+                                'Total Daily Order',
+                                textAlign: TextAlign.center,
+                              ),
+                              subtitle: Text(
+                                total_daily_order.toString(),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Card(
+                            child: ListTile(
+                              leading: Container(
+                                alignment: Alignment.center,
+                                width: 50, // Adjust width as needed
+                                child: Icon(Icons.attach_money_outlined),
+                              ),
+                              title: Text(
+                                'Total Daily Revenue',
+                                textAlign: TextAlign.center,
+                              ),
+                              subtitle: Text(
+                                formatCurrency(total_daily),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : SizedBox.shrink(),
+          ],
+        ),
       ),
     );
   }

@@ -599,7 +599,7 @@ class _OrderSumState extends State<OrderSum> {
             // });
           },
           child: Container(
-            margin: EdgeInsets.only(bottom: 20, left: 10, right: 10),
+            margin: EdgeInsets.only(bottom: 10, left: 10, right: 10),
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(20)),
               color: Color.fromARGB(

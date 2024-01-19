@@ -702,8 +702,8 @@ class Req {
     };
   }
 
-  Future<Map<String, dynamic>> updateOutlet(payload) async {
-    String url = apiUrl + '/outlet/update-outlet/1';
+  Future<Map<String, dynamic>> updateOutlet(payload, pk) async {
+    String url = apiUrl + '/outlet/update-outlet/' + pk.toString();
     dynamic req = await get_req(url, req_type: 'put', reqBody: payload);
     return {
       "status_code":

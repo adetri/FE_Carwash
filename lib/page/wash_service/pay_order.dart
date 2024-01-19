@@ -56,8 +56,9 @@ class _PayOrderState extends State<PayOrder> {
   }
 
   void radioCallback() {
-    print(paymentMethod!.value);
+    print(paymentMethod!.value['value']);
     setState(() {
+      paylod['payment_method'] = paymentMethod!.value['value'];
       if (paymentMethod!.value['is_cash'] == false) {
         nominal = d_order?['order']['sub_total'];
         nominalController.text = nominal.toString();
@@ -96,6 +97,7 @@ class _PayOrderState extends State<PayOrder> {
       );
 
       paymentMethod?.value = payment_method[0];
+      paylod['payment_method'] = paymentMethod?.value['value'];
       dbg("this debug value  12312 31 ${paymentMethod?.value}");
     });
 
@@ -495,8 +497,8 @@ class _PayOrderState extends State<PayOrder> {
       child: TextButton(
         onPressed: () async {
           // print(data['order']['sub_total']);
-          print(nominal);
-          print(data);
+          // print(nominal);
+          // print(data);
           if (nominal! < data['sub_total']) {
             dialog(
                 "Nominal Most be Equar or higher than total", "Nominal Error");
@@ -509,18 +511,19 @@ class _PayOrderState extends State<PayOrder> {
             paylod['nominal'] = nominal;
             printRecipt(data, data_outlet);
 
-            // Map<String, dynamic>? send_req =
-            //     await req?.payOrder(data['id_order'], paylod);
+            Map<String, dynamic>? send_req =
+                await req?.payOrder(data['id_order'], paylod);
 
-            // if (send_req?['status_code'] == 201) {
-            //   printRecipt(data, data_outlet);
+            if (send_req?['status_code'] == 201) {
+              printRecipt(data, data_outlet);
 
-            //   dialog("Success to add order data", "Success",
-            //       monitoring: "istrue");
-            // } else {
-            //   dialog(send_req?['response'], "Failed");
-            // }
-            // print(send_req);
+              dialog("Success to add order data", "Success",
+                  monitoring: "istrue");
+            } else {
+              dialog(send_req?['response'], "Failed");
+            }
+            print(send_req);
+            dbg(paylod);
           } else {
             Navigator.push(
               context,

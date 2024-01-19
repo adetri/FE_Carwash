@@ -49,7 +49,7 @@ class CategoryForm extends StatelessWidget {
         Text(
           'Category Form',
           style: TextStyle(
-            fontSize: 40,
+            fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
         ),
