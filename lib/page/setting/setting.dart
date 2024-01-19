@@ -179,7 +179,7 @@ class Settings extends StatelessWidget {
                       child: Column(
                         children: [
                           Image.asset(
-                            'assets/setting.png',
+                            'assets/outlet.png',
                             height: 100,
                             width: 100,
                           ),

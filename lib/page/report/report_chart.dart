@@ -106,6 +106,7 @@ class _MyReportChartState extends State<MyReportChart> {
     });
   }
 
+  double tile_size = 250;
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -134,97 +135,193 @@ class _MyReportChartState extends State<MyReportChart> {
                   )
                 : SizedBox.shrink(),
             is_visible == true
-                ? Container(
-                    margin: EdgeInsets.only(top: 30),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Card(
-                            child: ListTile(
-                              leading: Container(
-                                alignment: Alignment.center,
-                                width: 50, // Adjust width as needed
-                                child: Icon(Icons.article_outlined),
-                              ),
-                              title: Text(
-                                'Total Monthly Order',
-                                textAlign: TextAlign.center,
-                              ),
-                              subtitle: Text(
-                                monthly_total_order.toString(),
-                                textAlign: TextAlign.center,
-                              ),
+                ? Wrap(
+                    alignment: WrapAlignment.center,
+                    children: [
+                      Container(
+                        width: tile_size,
+                        height: 100,
+                        margin: EdgeInsets.only(top: 10),
+                        child: Card(
+                          child: ListTile(
+                            leading: Container(
+                              alignment: Alignment.center,
+                              width: 50, // Adjust width as needed
+                              child: Icon(Icons.article_outlined),
+                            ),
+                            title: Text(
+                              'Total Monthly Order',
+                              textAlign: TextAlign.center,
+                            ),
+                            subtitle: Text(
+                              monthly_total_order.toString(),
+                              textAlign: TextAlign.center,
                             ),
                           ),
                         ),
-                        Expanded(
-                          child: Card(
-                            child: ListTile(
-                              leading: Container(
-                                alignment: Alignment.center,
-                                width: 50, // Adjust width as needed
-                                child: Icon(Icons.attach_money_outlined),
-                              ),
-                              title: Text(
-                                'Total Monthly Revenue',
-                                textAlign: TextAlign.center,
-                              ),
-                              subtitle: Text(
-                                formatCurrency(monthly_total),
-                                textAlign: TextAlign.center,
-                              ),
+                      ),
+                      Container(
+                        width: tile_size,
+                        height: 100,
+                        margin: EdgeInsets.only(top: 10),
+                        child: Card(
+                          child: ListTile(
+                            leading: Container(
+                              alignment: Alignment.center,
+                              width: 50, // Adjust width as needed
+                              child: Icon(Icons.attach_money_outlined),
+                            ),
+                            title: Text(
+                              'Total Monthly Revenue',
+                              textAlign: TextAlign.center,
+                            ),
+                            subtitle: Text(
+                              formatCurrency(monthly_total),
+                              textAlign: TextAlign.center,
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  )
-                : SizedBox.shrink(),
-            is_visible == true
-                ? Container(
-                    margin: EdgeInsets.only(top: 10),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Card(
-                            child: ListTile(
-                              leading: Container(
-                                alignment: Alignment.center,
-                                width: 50, // Adjust width as needed
-                                child: Icon(Icons.article_outlined),
-                              ),
-                              title: Text(
-                                'Total Daily Order',
-                                textAlign: TextAlign.center,
-                              ),
-                              subtitle: Text(
-                                total_daily_order.toString(),
-                                textAlign: TextAlign.center,
-                              ),
+                      ),
+                      Container(
+                        width: tile_size,
+                        height: 100,
+                        margin: EdgeInsets.only(top: 10),
+                        child: Card(
+                          child: ListTile(
+                            leading: Container(
+                              alignment: Alignment.center,
+                              width: 50, // Adjust width as needed
+                              child: Icon(Icons.article_outlined),
+                            ),
+                            title: Text(
+                              'Total Daily Order',
+                              textAlign: TextAlign.center,
+                            ),
+                            subtitle: Text(
+                              total_daily_order.toString(),
+                              textAlign: TextAlign.center,
                             ),
                           ),
                         ),
-                        Expanded(
-                          child: Card(
-                            child: ListTile(
-                              leading: Container(
-                                alignment: Alignment.center,
-                                width: 50, // Adjust width as needed
-                                child: Icon(Icons.attach_money_outlined),
-                              ),
-                              title: Text(
-                                'Total Daily Revenue',
-                                textAlign: TextAlign.center,
-                              ),
-                              subtitle: Text(
-                                formatCurrency(total_daily),
-                                textAlign: TextAlign.center,
-                              ),
+                      ),
+                      Container(
+                        width: tile_size,
+                        height: 100,
+                        margin: EdgeInsets.only(top: 10),
+                        child: Card(
+                          child: ListTile(
+                            leading: Container(
+                              alignment: Alignment.center,
+                              width: 50, // Adjust width as needed
+                              child: Icon(Icons.attach_money_outlined),
+                            ),
+                            title: Text(
+                              'Total Daily Revenue',
+                              textAlign: TextAlign.center,
+                            ),
+                            subtitle: Text(
+                              formatCurrency(total_daily),
+                              textAlign: TextAlign.center,
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      )
+
+                      // is_visible == true
+                      //     ? Container(
+                      //         margin: EdgeInsets.only(top: 30),
+                      //         child: Row(
+                      //           children: [
+                      //             Expanded(
+                      //               child: Card(
+                      //                 child: ListTile(
+                      //                   leading: Container(
+                      //                     alignment: Alignment.center,
+                      //                     width: 50, // Adjust width as needed
+                      //                     child: Icon(Icons.article_outlined),
+                      //                   ),
+                      //                   title: Text(
+                      //                     'Total Monthly Order',
+                      //                     textAlign: TextAlign.center,
+                      //                   ),
+                      //                   subtitle: Text(
+                      //                     monthly_total_order.toString(),
+                      //                     textAlign: TextAlign.center,
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //             Expanded(
+                      //               child: Card(
+                      //                 child: ListTile(
+                      //                   leading: Container(
+                      //                     alignment: Alignment.center,
+                      //                     width: 50, // Adjust width as needed
+                      //                     child: Icon(Icons.attach_money_outlined),
+                      //                   ),
+                      //                   title: Text(
+                      //                     'Total Monthly Revenue',
+                      //                     textAlign: TextAlign.center,
+                      //                   ),
+                      //                   subtitle: Text(
+                      //                     formatCurrency(monthly_total),
+                      //                     textAlign: TextAlign.center,
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       )
+                      //     : SizedBox.shrink(),
+                      // is_visible == true
+                      //     ? Container(
+                      //         margin: EdgeInsets.only(top: 10),
+                      //         child: Row(
+                      //           children: [
+                      //             Expanded(
+                      //               child: Card(
+                      //                 child: ListTile(
+                      //                   leading: Container(
+                      //                     alignment: Alignment.center,
+                      //                     width: 50, // Adjust width as needed
+                      //                     child: Icon(Icons.article_outlined),
+                      //                   ),
+                      //                   title: Text(
+                      //                     'Total Daily Order',
+                      //                     textAlign: TextAlign.center,
+                      //                   ),
+                      //                   subtitle: Text(
+                      //                     total_daily_order.toString(),
+                      //                     textAlign: TextAlign.center,
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //             Expanded(
+                      //               child: Card(
+                      //                 child: ListTile(
+                      //                   leading: Container(
+                      //                     alignment: Alignment.center,
+                      //                     width: 50, // Adjust width as needed
+                      //                     child: Icon(Icons.attach_money_outlined),
+                      //                   ),
+                      //                   title: Text(
+                      //                     'Total Daily Revenue',
+                      //                     textAlign: TextAlign.center,
+                      //                   ),
+                      //                   subtitle: Text(
+                      //                     formatCurrency(total_daily),
+                      //                     textAlign: TextAlign.center,
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       )
+                      //     : SizedBox.shrink(),
+                    ],
                   )
                 : SizedBox.shrink(),
           ],

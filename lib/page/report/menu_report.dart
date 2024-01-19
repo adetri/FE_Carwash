@@ -76,7 +76,7 @@ class ReportMenu extends StatelessWidget {
                           Expanded(
                             child: Center(
                               child: Image.asset(
-                                'assets/report.png',
+                                'assets/chart.png',
                               ),
                             ),
                           ),

@@ -44,7 +44,7 @@ void main() {
 class StratAt extends StatelessWidget {
   StratAt({Key? key}) : super(key: key);
 
-  bool loading = LOADING;
+  // bool loading = LOADING;
 
   @override
   Widget build(BuildContext context) {

@@ -234,7 +234,7 @@ class _MainmenuState extends State<Mainmenu> {
                                     Expanded(
                                       child: Center(
                                         child: Image.asset(
-                                          'assets/setting.png',
+                                          'assets/log out.png',
                                         ),
                                       ),
                                     ),
